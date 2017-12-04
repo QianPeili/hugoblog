@@ -140,7 +140,7 @@ One min read
 
 <p>当 bash 启动时，会开启三个标准文件描述符：stdin, stdout, stderr。</p>
 
-<p><img src="/images/r-1.png" alt="" /></p>
+<p><img src="/hugoblog/images/r-1.png" alt="" /></p>
 
 <p>它们都指向了 <code>/dev/tty0</code> 即我们当前使用的控制台。 <code>0</code> 代表 stdin， <code>1</code> 代表 stdout, <code>2</code> 代表stderr。</p>
 
@@ -153,11 +153,11 @@ One min read
 
 <p><code>python test.py &gt; file</code> 命令等同于 <code>python test.py 1&gt;file</code>，因为 <code>1</code> 就代表标准输出 <code>stdout</code>。这个时候的文件描述符指向如下：</p>
 
-<p><img src="/images/r-2.png" alt="" /></p>
+<p><img src="/hugoblog/images/r-2.png" alt="" /></p>
 
 <p>那么 <code>2&gt;&amp;1</code> 代表什么呢，它代表的是，将 <code>2</code> 所在文件描述符指向 <code>1</code> 所指向的内容。 如果 <code>1</code> 此时指向的是 <code>file</code>， 那么 <code>2</code> 也指向同一个 <code>file</code>。如下图所示：</p>
 
-<p><img src="/images/r-3.png" alt="" /></p>
+<p><img src="/hugoblog/images/r-3.png" alt="" /></p>
 
 <p>另外命令<code>python test.py &amp;&gt; file</code>可以实现与 <code>2&gt;&amp;1</code> 一样的效果， <code>&amp;&gt;</code> 运算符指的是同时把命令的 stdout 和 stderr 重定向到同一个 <code>file</code>中。</p>
 
@@ -177,11 +177,11 @@ One min read
 
 <p>第一个命令的效果是：</p>
 
-<p><img src="/images/r-3.png" alt="" /></p>
+<p><img src="/hugoblog/images/r-3.png" alt="" /></p>
 
 <p>但是第二个命令的效果是：</p>
 
-<p><img src="/images/r-4.png" alt="" /></p>
+<p><img src="/hugoblog/images/r-4.png" alt="" /></p>
 
 </div>
 
