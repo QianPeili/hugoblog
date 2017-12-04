@@ -2,20 +2,20 @@
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
     <title>Gcc on 爪子</title>
-    <link>/tags/gcc/</link>
+    <link>hugoblog/tags/gcc/</link>
     <description>Recent content in Gcc on 爪子</description>
     <generator>Hugo -- gohugo.io</generator>
     <lastBuildDate>Wed, 16 Aug 2017 21:10:24 +0800</lastBuildDate>
     
-	<atom:link href="/tags/gcc/index.xml" rel="self" type="application/rss+xml" />
+	<atom:link href="hugoblog/tags/gcc/index.xml" rel="self" type="application/rss+xml" />
     
     
     <item>
       <title>升级 GCC 来解决 heapdump build Error</title>
-      <link>/posts/%E5%8D%87%E7%BA%A7gcc%E8%A7%A3%E5%86%B3heapdump%E5%AE%89%E8%A3%85%E9%94%99%E8%AF%AF/</link>
+      <link>hugoblog/posts/%E5%8D%87%E7%BA%A7gcc%E8%A7%A3%E5%86%B3heapdump%E5%AE%89%E8%A3%85%E9%94%99%E8%AF%AF/</link>
       <pubDate>Wed, 16 Aug 2017 21:10:24 +0800</pubDate>
       
-      <guid>/posts/%E5%8D%87%E7%BA%A7gcc%E8%A7%A3%E5%86%B3heapdump%E5%AE%89%E8%A3%85%E9%94%99%E8%AF%AF/</guid>
+      <guid>hugoblog/posts/%E5%8D%87%E7%BA%A7gcc%E8%A7%A3%E5%86%B3heapdump%E5%AE%89%E8%A3%85%E9%94%99%E8%AF%AF/</guid>
       <description>今天要部署一个node.js的项目，第一次玩node.js有点崩溃。安装依赖的时候一个heapdump库出现了build error。
 在github上找到了类似的issue： [error] heapdump@0.3.7 Build Error · Issue #72 · bnoordhuis/node-heapdump
 里面提到的解决方式是升级GCC：

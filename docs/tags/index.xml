@@ -2,101 +2,101 @@
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
     <title>Tags on 爪子</title>
-    <link>/tags/</link>
+    <link>hugoblog/tags/</link>
     <description>Recent content in Tags on 爪子</description>
     <generator>Hugo -- gohugo.io</generator>
     <lastBuildDate>Wed, 16 Aug 2017 21:10:24 +0800</lastBuildDate>
     
-	<atom:link href="/tags/index.xml" rel="self" type="application/rss+xml" />
+	<atom:link href="hugoblog/tags/index.xml" rel="self" type="application/rss+xml" />
     
     
     <item>
       <title>Gcc</title>
-      <link>/tags/gcc/</link>
+      <link>hugoblog/tags/gcc/</link>
       <pubDate>Wed, 16 Aug 2017 21:10:24 +0800</pubDate>
       
-      <guid>/tags/gcc/</guid>
+      <guid>hugoblog/tags/gcc/</guid>
       <description></description>
     </item>
     
     <item>
       <title>Git</title>
-      <link>/tags/git/</link>
+      <link>hugoblog/tags/git/</link>
       <pubDate>Sat, 15 Jul 2017 14:46:17 +0800</pubDate>
       
-      <guid>/tags/git/</guid>
+      <guid>hugoblog/tags/git/</guid>
       <description></description>
     </item>
     
     <item>
       <title>Go</title>
-      <link>/tags/go/</link>
+      <link>hugoblog/tags/go/</link>
       <pubDate>Sun, 03 Dec 2017 18:23:21 +0800</pubDate>
       
-      <guid>/tags/go/</guid>
+      <guid>hugoblog/tags/go/</guid>
       <description></description>
     </item>
     
     <item>
       <title>Linux</title>
-      <link>/tags/linux/</link>
+      <link>hugoblog/tags/linux/</link>
       <pubDate>Wed, 16 Aug 2017 21:10:24 +0800</pubDate>
       
-      <guid>/tags/linux/</guid>
+      <guid>hugoblog/tags/linux/</guid>
       <description></description>
     </item>
     
     <item>
       <title>Mongodb</title>
-      <link>/tags/mongodb/</link>
+      <link>hugoblog/tags/mongodb/</link>
       <pubDate>Thu, 16 Mar 2017 18:11:29 +0800</pubDate>
       
-      <guid>/tags/mongodb/</guid>
+      <guid>hugoblog/tags/mongodb/</guid>
       <description></description>
     </item>
     
     <item>
       <title>Nginx</title>
-      <link>/tags/nginx/</link>
+      <link>hugoblog/tags/nginx/</link>
       <pubDate>Fri, 09 Jun 2017 20:12:05 +0800</pubDate>
       
-      <guid>/tags/nginx/</guid>
+      <guid>hugoblog/tags/nginx/</guid>
       <description></description>
     </item>
     
     <item>
       <title>Node</title>
-      <link>/tags/node/</link>
+      <link>hugoblog/tags/node/</link>
       <pubDate>Wed, 16 Aug 2017 21:10:24 +0800</pubDate>
       
-      <guid>/tags/node/</guid>
+      <guid>hugoblog/tags/node/</guid>
       <description></description>
     </item>
     
     <item>
       <title>Python</title>
-      <link>/tags/python/</link>
+      <link>hugoblog/tags/python/</link>
       <pubDate>Fri, 14 Jul 2017 18:20:59 +0800</pubDate>
       
-      <guid>/tags/python/</guid>
+      <guid>hugoblog/tags/python/</guid>
       <description></description>
     </item>
     
     <item>
       <title>Tcp</title>
-      <link>/tags/tcp/</link>
+      <link>hugoblog/tags/tcp/</link>
       <pubDate>Sat, 20 May 2017 16:15:51 +0800</pubDate>
       
-      <guid>/tags/tcp/</guid>
+      <guid>hugoblog/tags/tcp/</guid>
       <description></description>
     </item>
     
     <item>
       <title>Tcpdump</title>
-      <link>/tags/tcpdump/</link>
+      <link>hugoblog/tags/tcpdump/</link>
       <pubDate>Sat, 20 May 2017 13:46:45 +0800</pubDate>
       
-      <guid>/tags/tcpdump/</guid>
+      <guid>hugoblog/tags/tcpdump/</guid>
       <description></description>
     </item>
     

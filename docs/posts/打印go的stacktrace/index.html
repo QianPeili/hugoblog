@@ -18,19 +18,19 @@ package main import ( &quot;log&quot; &quot;errors&quot; ) func main() { defer f
 但如果只是这样，其实并不能帮助我们很好的排查问题，我们知道有了一个 BUG，但不知道是哪里除了问题。因此我们打印出捕获错误时的 Stack Trace。内建库 runtime 就有这个功能：
 func Stack(buf []byte, all bool) int
 Stack formats a stack trace of the calling goroutine into buf and returns the number of bytes written to buf.'>
-<meta property='og:url' content='/posts/%E6%89%93%E5%8D%B0go%E7%9A%84stacktrace/'>
+<meta property='og:url' content='hugoblog/posts/%E6%89%93%E5%8D%B0go%E7%9A%84stacktrace/'>
 <meta property='og:site_name' content='爪子'>
 <meta property='og:type' content='article'><meta property='article:section' content='Posts'><meta property='article:tag' content='go'><meta property='article:published_time' content='2017-11-04T17:42:02&#43;08:00'/><meta property='article:modified_time' content='2017-11-04T17:42:02&#43;08:00'/><meta name='twitter:card' content='summary'>
 
 <meta name="generator" content="Hugo 0.30.2" />
 
   <title>打印 Go 的Stack Trace • 爪子</title>
-  <link rel='canonical' href='/posts/%E6%89%93%E5%8D%B0go%E7%9A%84stacktrace/'>
+  <link rel='canonical' href='hugoblog/posts/%E6%89%93%E5%8D%B0go%E7%9A%84stacktrace/'>
   
   
-  <link rel='icon' href='/favicon.ico'>
+  <link rel='icon' href='/hugoblog/favicon.ico'>
 <link rel='stylesheet' href='https://fonts.googleapis.com/css?family=Ubuntu:400,400i,700&subset=latin'>
-<link rel='stylesheet' href='/assets/css/main.77da63e1.css'><link rel='stylesheet' href='/css/custom.css'>
+<link rel='stylesheet' href='/hugoblog/assets/css/main.77da63e1.css'><link rel='stylesheet' href='/hugoblog/css/custom.css'>
 <script>
 window.ga=window.ga||function(){(ga.q=ga.q||[]).push(arguments)};ga.l=+new Date;
 ga('create', 'UA-100449520-1', 'auto');
@@ -51,19 +51,19 @@ ga('send', 'pageview');
         <nav id='main-menu' class='main-menu-container' aria-label='Main Menu'>
   <ul class='main-menu'>
   <li>
-      <a href='/'>Home</a>
+      <a href='hugoblog/'>Home</a>
     </li>
   <li>
-      <a href='/posts'>Posts</a>
+      <a href='hugoblog/posts'>Posts</a>
     </li>
   <li>
-      <a href='/categories'>Categories</a>
+      <a href='hugoblog/categories'>Categories</a>
     </li>
   <li>
-      <a href='/tags'>Tags</a>
+      <a href='hugoblog/tags'>Tags</a>
     </li>
   <li>
-      <a href='/about'>About</a>
+      <a href='hugoblog/about'>About</a>
     </li>
   
   </ul>
@@ -225,7 +225,7 @@ main.main()
   
 <nav class='entry-nav-container'>
   <div class='entry-nav'><div class='prev-entry'>
-      <a href='/posts/go%E8%B7%A8%E5%B9%B3%E5%8F%B0%E7%BC%96%E8%AF%91/'>
+      <a href='/hugoblog/posts/go%E8%B7%A8%E5%B9%B3%E5%8F%B0%E7%BC%96%E8%AF%91/'>
         <span aria-hidden='true'><svg class='icon' viewbox='0 0 24 24' stroke-linecap='round' stroke-linejoin='round' stroke-width='2' aria-hidden='true'>
   
   <line x1="20" y1="12" x2="4" y2="12"/>
@@ -235,7 +235,7 @@ main.main()
  Previous</span>
         <span class='screen-reader'>Previous post: </span>Go跨平台编译</a>
     </div><div class='next-entry'>
-      <a href='/posts/go%E7%9A%84append%E4%BD%BF%E7%94%A8%E8%B8%A9%E5%9D%91%E8%AE%B0%E5%BD%95/'>
+      <a href='/hugoblog/posts/go%E7%9A%84append%E4%BD%BF%E7%94%A8%E8%B8%A9%E5%9D%91%E8%AE%B0%E5%BD%95/'>
         <span class='screen-reader'>Next post: </span>Go的append使用踩坑记录<span aria-hidden='true'>Next <svg class='icon' viewbox='0 0 24 24' stroke-linecap='round' stroke-linejoin='round' stroke-width='2' aria-hidden='true'>
   
   <line x1="4" y1="12" x2="20" y2="12"/>
@@ -317,7 +317,7 @@ main.main()
       </div>
     </footer>
 
-  </div><script src='/assets/js/main.5871befd.js'></script><script src='/js/custom.js'></script></body>
+  </div><script src='/hugoblog/assets/js/main.5871befd.js'></script><script src='/hugoblog/js/custom.js'></script></body>
 
 </html>
 

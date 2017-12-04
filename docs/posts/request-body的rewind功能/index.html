@@ -16,19 +16,19 @@ func (t *Transport) RoundTrip(req *http.Request) (*http.Response, error) { if re
  实现一个简单的数据校验功能，对请求 body 做 md5 计算，然后把结果转为十六进制添加到请求 header 中，头部名称为X-Md5。也就是在HTTP 请求 header 中添加一个 X-Md5: 键值对，如果body为空那么就不填。
  我一开始的实现方式很直接暴力：
 func (t *Transport) RoundTrip(req *http.Request) (*http.Response, error) { if req.Body == nil { return t.RoundTripper.RoundTrip(req) } b, err := ioutil.ReadAll(req.Body) if len(b) == 0 { return t.RoundTripper.RoundTrip(req) } if err != nil { log.Fatal(err.Error()) } hexB := md5.Sum(b) req.Header.Add(&quot;X-Md5&quot;, hex.EncodeToString(hexB[:])) return t.RoundTripper.RoundTrip(req) }  直接读出 req.Body 中的字节数据，进行md5运算。我在自己的电脑上测试通过，但是实验环境下 go test 会报类似错误：'>
-<meta property='og:url' content='/posts/request-body%E7%9A%84rewind%E5%8A%9F%E8%83%BD/'>
+<meta property='og:url' content='hugoblog/posts/request-body%E7%9A%84rewind%E5%8A%9F%E8%83%BD/'>
 <meta property='og:site_name' content='爪子'>
 <meta property='og:type' content='article'><meta property='article:section' content='Posts'><meta property='article:tag' content='go'><meta property='article:published_time' content='2017-09-16T18:31:52&#43;08:00'/><meta property='article:modified_time' content='2017-09-16T18:31:52&#43;08:00'/><meta name='twitter:card' content='summary'>
 
 <meta name="generator" content="Hugo 0.30.2" />
 
   <title>Go 的request.Body rewind 功能 • 爪子</title>
-  <link rel='canonical' href='/posts/request-body%E7%9A%84rewind%E5%8A%9F%E8%83%BD/'>
+  <link rel='canonical' href='hugoblog/posts/request-body%E7%9A%84rewind%E5%8A%9F%E8%83%BD/'>
   
   
-  <link rel='icon' href='/favicon.ico'>
+  <link rel='icon' href='/hugoblog/favicon.ico'>
 <link rel='stylesheet' href='https://fonts.googleapis.com/css?family=Ubuntu:400,400i,700&subset=latin'>
-<link rel='stylesheet' href='/assets/css/main.77da63e1.css'><link rel='stylesheet' href='/css/custom.css'>
+<link rel='stylesheet' href='/hugoblog/assets/css/main.77da63e1.css'><link rel='stylesheet' href='/hugoblog/css/custom.css'>
 <script>
 window.ga=window.ga||function(){(ga.q=ga.q||[]).push(arguments)};ga.l=+new Date;
 ga('create', 'UA-100449520-1', 'auto');
@@ -49,19 +49,19 @@ ga('send', 'pageview');
         <nav id='main-menu' class='main-menu-container' aria-label='Main Menu'>
   <ul class='main-menu'>
   <li>
-      <a href='/'>Home</a>
+      <a href='hugoblog/'>Home</a>
     </li>
   <li>
-      <a href='/posts'>Posts</a>
+      <a href='hugoblog/posts'>Posts</a>
     </li>
   <li>
-      <a href='/categories'>Categories</a>
+      <a href='hugoblog/categories'>Categories</a>
     </li>
   <li>
-      <a href='/tags'>Tags</a>
+      <a href='hugoblog/tags'>Tags</a>
     </li>
   <li>
-      <a href='/about'>About</a>
+      <a href='hugoblog/about'>About</a>
     </li>
   
   </ul>
@@ -239,7 +239,7 @@ ga('send', 'pageview');
   
 <nav class='entry-nav-container'>
   <div class='entry-nav'><div class='prev-entry'>
-      <a href='/posts/%E5%8D%87%E7%BA%A7gcc%E8%A7%A3%E5%86%B3heapdump%E5%AE%89%E8%A3%85%E9%94%99%E8%AF%AF/'>
+      <a href='/hugoblog/posts/%E5%8D%87%E7%BA%A7gcc%E8%A7%A3%E5%86%B3heapdump%E5%AE%89%E8%A3%85%E9%94%99%E8%AF%AF/'>
         <span aria-hidden='true'><svg class='icon' viewbox='0 0 24 24' stroke-linecap='round' stroke-linejoin='round' stroke-width='2' aria-hidden='true'>
   
   <line x1="20" y1="12" x2="4" y2="12"/>
@@ -249,7 +249,7 @@ ga('send', 'pageview');
  Previous</span>
         <span class='screen-reader'>Previous post: </span>升级 GCC 来解决 heapdump build Error</a>
     </div><div class='next-entry'>
-      <a href='/posts/go%E8%B7%A8%E5%B9%B3%E5%8F%B0%E7%BC%96%E8%AF%91/'>
+      <a href='/hugoblog/posts/go%E8%B7%A8%E5%B9%B3%E5%8F%B0%E7%BC%96%E8%AF%91/'>
         <span class='screen-reader'>Next post: </span>Go跨平台编译<span aria-hidden='true'>Next <svg class='icon' viewbox='0 0 24 24' stroke-linecap='round' stroke-linejoin='round' stroke-width='2' aria-hidden='true'>
   
   <line x1="4" y1="12" x2="20" y2="12"/>
@@ -331,7 +331,7 @@ ga('send', 'pageview');
       </div>
     </footer>
 
-  </div><script src='/assets/js/main.5871befd.js'></script><script src='/js/custom.js'></script></body>
+  </div><script src='/hugoblog/assets/js/main.5871befd.js'></script><script src='/hugoblog/js/custom.js'></script></body>
 
 </html>
 
