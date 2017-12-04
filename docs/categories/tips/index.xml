@@ -2,20 +2,20 @@
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
     <title>Tips on 爪子</title>
-    <link>qianpeili.github.io/categories/tips/</link>
+    <link>qianpeili.github.io/hugoblog/categories/tips/</link>
     <description>Recent content in Tips on 爪子</description>
     <generator>Hugo -- gohugo.io</generator>
     <lastBuildDate>Sat, 04 Nov 2017 17:42:02 +0800</lastBuildDate>
     
-	<atom:link href="qianpeili.github.io/categories/tips/index.xml" rel="self" type="application/rss+xml" />
+	<atom:link href="qianpeili.github.io/hugoblog/categories/tips/index.xml" rel="self" type="application/rss+xml" />
     
     
     <item>
       <title>打印 Go 的Stack Trace</title>
-      <link>qianpeili.github.io/posts/%E6%89%93%E5%8D%B0go%E7%9A%84stacktrace/</link>
+      <link>qianpeili.github.io/hugoblog/posts/%E6%89%93%E5%8D%B0go%E7%9A%84stacktrace/</link>
       <pubDate>Sat, 04 Nov 2017 17:42:02 +0800</pubDate>
       
-      <guid>qianpeili.github.io/posts/%E6%89%93%E5%8D%B0go%E7%9A%84stacktrace/</guid>
+      <guid>qianpeili.github.io/hugoblog/posts/%E6%89%93%E5%8D%B0go%E7%9A%84stacktrace/</guid>
       <description>算是写了第一个比较正式的 Go 项目吧，然后现在在考虑如何设计日志系统。
 服务采用 TCP 长连接，每个 session 都是单独启动一个 goroutine 处理事务（其实发消息也有一个协程，不过发消息部分逻辑简单），所以考虑在最顶层写一个 recover 函数，收集上报的错误信息并输出。大致是这么个东西：
 package main import ( &amp;quot;log&amp;quot; &amp;quot;errors&amp;quot; ) func main() { defer func() { if r := recover(); r != nil { log.Println(r) } }() // make a panic panic(errors.New(&amp;quot;ha! A bug&amp;quot;)) }  输出： 2017/11/04 17:19:16 ha! A bug
@@ -26,10 +26,10 @@ Stack formats a stack trace of the calling goroutine into buf and returns the nu
     
     <item>
       <title>解决 Git Hooks 无法运行的问题</title>
-      <link>qianpeili.github.io/posts/%E8%A7%A3%E5%86%B3git%E9%92%A9%E5%AD%90%E6%97%A0%E6%B3%95%E8%BF%90%E8%A1%8C%E7%9A%84%E9%97%AE%E9%A2%98/</link>
+      <link>qianpeili.github.io/hugoblog/posts/%E8%A7%A3%E5%86%B3git%E9%92%A9%E5%AD%90%E6%97%A0%E6%B3%95%E8%BF%90%E8%A1%8C%E7%9A%84%E9%97%AE%E9%A2%98/</link>
       <pubDate>Sat, 15 Jul 2017 14:46:17 +0800</pubDate>
       
-      <guid>qianpeili.github.io/posts/%E8%A7%A3%E5%86%B3git%E9%92%A9%E5%AD%90%E6%97%A0%E6%B3%95%E8%BF%90%E8%A1%8C%E7%9A%84%E9%97%AE%E9%A2%98/</guid>
+      <guid>qianpeili.github.io/hugoblog/posts/%E8%A7%A3%E5%86%B3git%E9%92%A9%E5%AD%90%E6%97%A0%E6%B3%95%E8%BF%90%E8%A1%8C%E7%9A%84%E9%97%AE%E9%A2%98/</guid>
       <description>这两天在研究 Git Hooks 的过程中，遇到一个问题。
 在触发钩子时，终端一直输出：
 remote: error: cannot run hooks/post-receive: No such file or directory  其实这不是文件不存在的问题，反而是文件存在，但是有问题才会出现这个提示。
@@ -47,10 +47,10 @@ Git - remote: error: cannot run hooks/post-receive: No such file or directory - 
     
     <item>
       <title>unicode小技巧</title>
-      <link>qianpeili.github.io/posts/unicode%E5%B0%8F%E6%8A%80%E5%B7%A7/</link>
+      <link>qianpeili.github.io/hugoblog/posts/unicode%E5%B0%8F%E6%8A%80%E5%B7%A7/</link>
       <pubDate>Fri, 07 Apr 2017 10:20:30 +0800</pubDate>
       
-      <guid>qianpeili.github.io/posts/unicode%E5%B0%8F%E6%8A%80%E5%B7%A7/</guid>
+      <guid>qianpeili.github.io/hugoblog/posts/unicode%E5%B0%8F%E6%8A%80%E5%B7%A7/</guid>
       <description>今天遇到一个问题
 在mysql查询日志时，发现一些unicode字符串存储变成了
 u7528u6237u53d6u6d88u8ba2u5355u8bf7u6c42  这个形式，手动加\虽然可行，但毕竟不是长久的办法
@@ -62,10 +62,10 @@ import re a = &amp;quot;u7528u6237u53d6u6d88u8ba2u5355u8bf7u6c42&amp;quot; patte
     
     <item>
       <title>用mongodb统计去重后的数量</title>
-      <link>qianpeili.github.io/posts/calculate_unique_size_with_mongodb/</link>
+      <link>qianpeili.github.io/hugoblog/posts/calculate_unique_size_with_mongodb/</link>
       <pubDate>Thu, 16 Mar 2017 18:11:29 +0800</pubDate>
       
-      <guid>qianpeili.github.io/posts/calculate_unique_size_with_mongodb/</guid>
+      <guid>qianpeili.github.io/hugoblog/posts/calculate_unique_size_with_mongodb/</guid>
       <description>假设有一个活动记录表，记录了玩家的参与信息，每个玩家有多条记录，格式如下
 { _id: ObjectId(), uid: 1014, score: 10 }  要求统计参与活动的玩家中，分数大于等于10的人数。
 var num = db.activity_log.aggregate([ {$match: {&amp;quot;score&amp;quot;: {&amp;quot;$ge&amp;quot;: 10}}}, # 筛选 {$group: {&amp;quot;_id&amp;quot;: null, &amp;quot;users&amp;quot;: {$addToSet: &amp;quot;$uid&amp;quot;}}}, # 将玩家ID放入一个集合，作去重 {&amp;quot;$project&amp;quot;: {&amp;quot;_id&amp;quot;: {&amp;quot;$size&amp;quot;: &amp;quot;$users&amp;quot;}}} # 求集合大小 ]);  得出结果{&amp;quot;_id&amp;quot;: 46}</description>

@@ -2,12 +2,12 @@
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
     <title>爪子</title>
-    <link>qianpeili.github.io/about/</link>
+    <link>qianpeili.github.io/hugoblog/about/</link>
     <description>Recent content on 爪子</description>
     <generator>Hugo -- gohugo.io</generator>
     <lastBuildDate>Sun, 03 Dec 2017 20:48:23 +0800</lastBuildDate>
     
-	<atom:link href="qianpeili.github.io/about/index.xml" rel="self" type="application/rss+xml" />
+	<atom:link href="qianpeili.github.io/hugoblog/about/index.xml" rel="self" type="application/rss+xml" />
     
     
   </channel>

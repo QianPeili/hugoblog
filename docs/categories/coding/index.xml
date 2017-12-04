@@ -2,20 +2,20 @@
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
     <title>Coding on 爪子</title>
-    <link>qianpeili.github.io/categories/coding/</link>
+    <link>qianpeili.github.io/hugoblog/categories/coding/</link>
     <description>Recent content in Coding on 爪子</description>
     <generator>Hugo -- gohugo.io</generator>
     <lastBuildDate>Fri, 14 Jul 2017 18:20:59 +0800</lastBuildDate>
     
-	<atom:link href="qianpeili.github.io/categories/coding/index.xml" rel="self" type="application/rss+xml" />
+	<atom:link href="qianpeili.github.io/hugoblog/categories/coding/index.xml" rel="self" type="application/rss+xml" />
     
     
     <item>
       <title>通过 pre-hook 判断是否推送重复的内容</title>
-      <link>qianpeili.github.io/posts/pre-receive%E4%B8%AD%E5%88%A4%E6%96%AD%E9%87%8D%E5%A4%8D%E7%9A%84%E6%96%87%E4%BB%B6/</link>
+      <link>qianpeili.github.io/hugoblog/posts/pre-receive%E4%B8%AD%E5%88%A4%E6%96%AD%E9%87%8D%E5%A4%8D%E7%9A%84%E6%96%87%E4%BB%B6/</link>
       <pubDate>Fri, 14 Jul 2017 18:20:59 +0800</pubDate>
       
-      <guid>qianpeili.github.io/posts/pre-receive%E4%B8%AD%E5%88%A4%E6%96%AD%E9%87%8D%E5%A4%8D%E7%9A%84%E6%96%87%E4%BB%B6/</guid>
+      <guid>qianpeili.github.io/hugoblog/posts/pre-receive%E4%B8%AD%E5%88%A4%E6%96%AD%E9%87%8D%E5%A4%8D%E7%9A%84%E6%96%87%E4%BB%B6/</guid>
       <description>前言 昨天运维同事找我，要求实现一个 pre-receive 钩子，在里面判断推送的文件中是否有重复的文件，如果有就拒绝此次 push。问我该如何实现。
 虽然觉得这个判断标准有点莫名其妙，但还是想办法实现了一下。途中遇到过很多问题，以为无法实现，不过最终还是找到了解决方法。
 简单介绍 pre-receive  参考连接： Git - githooks Documentation
@@ -28,10 +28,10 @@ Writing objects: 100% (3/3), 253 bytes | 0 bytes/s, done.</description>
     
     <item>
       <title>Replace Type Code With State/Strategy</title>
-      <link>qianpeili.github.io/posts/replace_type_code_with_state_strategy/</link>
+      <link>qianpeili.github.io/hugoblog/posts/replace_type_code_with_state_strategy/</link>
       <pubDate>Mon, 26 Dec 2016 20:55:47 +0800</pubDate>
       
-      <guid>qianpeili.github.io/posts/replace_type_code_with_state_strategy/</guid>
+      <guid>qianpeili.github.io/hugoblog/posts/replace_type_code_with_state_strategy/</guid>
       <description>今天在阅读《重构：改善既有代码的设计》第一个案例中，遇到了一个replace type code with state/strategy的概念，不是很了解， 但大概懂了意思。决定用python实现一下其代码。
 觉得主要思想是：
 一个对象(Movie)有一个属性(price_code)，这个属性的不同会导致对象的方法(get_charge)返回不同的结果。

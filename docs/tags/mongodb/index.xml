@@ -2,20 +2,20 @@
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
     <title>Mongodb on 爪子</title>
-    <link>qianpeili.github.io/tags/mongodb/</link>
+    <link>qianpeili.github.io/hugoblog/tags/mongodb/</link>
     <description>Recent content in Mongodb on 爪子</description>
     <generator>Hugo -- gohugo.io</generator>
     <lastBuildDate>Thu, 16 Mar 2017 18:11:29 +0800</lastBuildDate>
     
-	<atom:link href="qianpeili.github.io/tags/mongodb/index.xml" rel="self" type="application/rss+xml" />
+	<atom:link href="qianpeili.github.io/hugoblog/tags/mongodb/index.xml" rel="self" type="application/rss+xml" />
     
     
     <item>
       <title>用mongodb统计去重后的数量</title>
-      <link>qianpeili.github.io/posts/calculate_unique_size_with_mongodb/</link>
+      <link>qianpeili.github.io/hugoblog/posts/calculate_unique_size_with_mongodb/</link>
       <pubDate>Thu, 16 Mar 2017 18:11:29 +0800</pubDate>
       
-      <guid>qianpeili.github.io/posts/calculate_unique_size_with_mongodb/</guid>
+      <guid>qianpeili.github.io/hugoblog/posts/calculate_unique_size_with_mongodb/</guid>
       <description>假设有一个活动记录表，记录了玩家的参与信息，每个玩家有多条记录，格式如下
 { _id: ObjectId(), uid: 1014, score: 10 }  要求统计参与活动的玩家中，分数大于等于10的人数。
 var num = db.activity_log.aggregate([ {$match: {&amp;quot;score&amp;quot;: {&amp;quot;$ge&amp;quot;: 10}}}, # 筛选 {$group: {&amp;quot;_id&amp;quot;: null, &amp;quot;users&amp;quot;: {$addToSet: &amp;quot;$uid&amp;quot;}}}, # 将玩家ID放入一个集合，作去重 {&amp;quot;$project&amp;quot;: {&amp;quot;_id&amp;quot;: {&amp;quot;$size&amp;quot;: &amp;quot;$users&amp;quot;}}} # 求集合大小 ]);  得出结果{&amp;quot;_id&amp;quot;: 46}</description>
