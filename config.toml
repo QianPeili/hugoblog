@@ -1,6 +1,7 @@
 publishDir = "docs"
 contentDir = "content"
 buildDrafts = false
+canonifyurls = true
 baseURL = "www.qperrie.com"
 title = "爪子"
 
