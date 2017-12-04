@@ -1,8 +1,8 @@
 ---
 title: "升级 GCC 来解决 heapdump build Error"
 date: 2017-08-16T21:10:24+08:00
-category: 
- - 笔记
+categories: 
+ - note
 tags: 
  - gcc
  - node

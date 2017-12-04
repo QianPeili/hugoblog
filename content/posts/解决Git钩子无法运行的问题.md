@@ -1,8 +1,8 @@
 ---
 title: "解决 Git Hooks 无法运行的问题"
 date: 2017-07-15T14:46:17+08:00
-category: 
- - 小技巧
+categories: 
+ - tips
 tags: 
  - git
 ---

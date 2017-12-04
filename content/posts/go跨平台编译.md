@@ -1,8 +1,8 @@
 ---
 title: "Go跨平台编译"
 date: 2017-11-01T19:22:02+08:00
-category: 
- - 笔记
+categories: 
+ - note
 tags: 
  - go
 ---

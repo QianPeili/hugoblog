@@ -1,8 +1,8 @@
 ---
 title: "Go的append使用踩坑记录"
 date: 2017-12-03T18:23:21+08:00
-category:
- - 笔记
+categories:
+ - note
 tags: 
  - go
 ---

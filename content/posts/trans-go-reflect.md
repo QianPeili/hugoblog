@@ -1,8 +1,8 @@
 ---
 title: "【翻译】Go语言中的反射机制"
 date: 2017-07-28T20:48:11+08:00
-category: 
- - 翻译
+categories: 
+ - translation
 tags: 
  - go
 ---

@@ -1,8 +1,8 @@
 ---
 title: "Go的依赖管理工具govendor"
 date: 2017-05-22T18:11:05+08:00
-category: 
- - 笔记
+categories: 
+ - note
 tags: 
  - go
 ---

@@ -1,8 +1,8 @@
 ---
 title: "Replace Type Code With State/Strategy"
 date: 2016-12-26T20:55:47+08:00
-category: 
- - 笔记
+categories: 
+ - coding
 ---
 
 今天在阅读《重构：改善既有代码的设计》第一个案例中，遇到了一个**replace type code with state/strategy**的概念，不是很了解，

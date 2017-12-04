@@ -1,8 +1,8 @@
 ---
 title: "用mongodb统计去重后的数量"
 date: 2017-03-16T18:11:29+08:00
-category: 
- - 小技巧
+categories: 
+ - tips
 tags: 
  - mongodb
 ---

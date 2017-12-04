@@ -1,8 +1,8 @@
 ---
 title: "tcpdump的使用实例"
 date: 2017-05-20T13:46:45+08:00
-category: 
- - 笔记
+categories: 
+ - note
 tags: 
  - linux
  - tcpdump

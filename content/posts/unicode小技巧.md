@@ -1,8 +1,8 @@
 ---
 title: "unicode小技巧"
 date: 2017-04-07T10:20:30+08:00
-category: 
- - 小技巧
+categories: 
+ - tips
 tags: 
  - linux
  - tcpdump

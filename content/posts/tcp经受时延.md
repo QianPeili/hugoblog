@@ -1,8 +1,8 @@
 ---
 title: "tcp经受时延"
 date: 2017-05-20T16:15:51+08:00
-category: 
- - 笔记
+categories: 
+ - note
 tags: 
  - tcp
 ---

@@ -1,8 +1,8 @@
 ---
 title: "通过 pre-hook 判断是否推送重复的内容" 
 date: 2017-07-14T18:20:59+08:00
-category:
- - 笔记
+categories:
+ - coding
 tags: 
  - git
  - python

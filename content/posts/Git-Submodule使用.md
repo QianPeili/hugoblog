@@ -1,8 +1,8 @@
 ---
 title: "Git Submodule的使用"
 date: 2017-06-13T19:11:01+08:00
-category: 
- - 笔记
+categories: 
+ - note
 tags: 
  - git
 ---

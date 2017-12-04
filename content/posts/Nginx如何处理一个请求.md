@@ -1,8 +1,8 @@
 ---
 title: "【翻译】 Nginx 如何处理一个请求"
 date: 2017-06-09T20:12:05+08:00
-category: 
- - 文档
+categories: 
+ - translation
 tags: 
  - nginx
 ---

@@ -1,8 +1,8 @@
 ---
 title: "打印 Go 的Stack Trace"
 date: 2017-11-04T17:42:02+08:00
-category: 
- - 小技巧
+categories: 
+ - tips
 tags: 
  - go
 ---
