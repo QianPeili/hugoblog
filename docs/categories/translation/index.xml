@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Translation on 爪子</title>
+    <link>qianpeili.github.io/categories/translation/</link>
+    <description>Recent content in Translation on 爪子</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <lastBuildDate>Fri, 28 Jul 2017 20:48:11 +0800</lastBuildDate>
+    
+	<atom:link href="qianpeili.github.io/categories/translation/index.xml" rel="self" type="application/rss+xml" />
+    
+    
+    <item>
+      <title>【翻译】Go语言中的反射机制</title>
+      <link>qianpeili.github.io/posts/trans-go-reflect/</link>
+      <pubDate>Fri, 28 Jul 2017 20:48:11 +0800</pubDate>
+      
+      <guid>qianpeili.github.io/posts/trans-go-reflect/</guid>
+      <description>原文链接： The Laws of Reflection - The Go Blog
+作者： Rob Pike
+翻译： 钱佩丽
+介绍 反射( reflection )在计算机中指的是一个程序审查自身结构的能力，尤其是类型( Types )。 反射是元编程的一种形式，也是让人觉得头疼的一个点。
+在这篇文章中，我们将对反射在 Go 中的工作原理做一些解释说明。 各种计算机语言的反射机制不尽相同（有的甚至没有反射）， 但这篇文章，我们只关心 Go 语言中的反射， 文中所有反射，都是在 Go 语言的背景下。
+类型和接口 由于反射建立在类型机制上，所以我们先来介绍一下 Go 的类型。
+Go 是静态类型语言，每个变量都有一个静态的类型，就是说，在编译的时候，变量的类型必须是固定且唯一的。 比如： int, float32, *MyType, []byte 等等。如果我们如下申明：
+type MyInt int var i int var j MyInt  那么，变量 i 就是 int 类型，变量 j 就是 MyInt 类型。 尽管 i 和 j 拥有相同的底层类型， 但他们本身是完全不同的类型，他们不能直接互相赋值，必须通过类型转换。
+接口( interface )是 Go 类型中非常重要的一种类型，它代表一些方法的固定集合。 一个接口变量可以存放任意的（非接口）具体值，只要这个值实现了接口包含的所有方法。 比较著名的一对例子就是 io.</description>
+    </item>
+    
+    <item>
+      <title>【翻译】 Nginx 如何处理一个请求</title>
+      <link>qianpeili.github.io/posts/nginx%E5%A6%82%E4%BD%95%E5%A4%84%E7%90%86%E4%B8%80%E4%B8%AA%E8%AF%B7%E6%B1%82/</link>
+      <pubDate>Fri, 09 Jun 2017 20:12:05 +0800</pubDate>
+      
+      <guid>qianpeili.github.io/posts/nginx%E5%A6%82%E4%BD%95%E5%A4%84%E7%90%86%E4%B8%80%E4%B8%AA%E8%AF%B7%E6%B1%82/</guid>
+      <description>原文：How nginx processes a request
+网上不乏好的翻译，我再做一次翻译，只是为了让自己更好地理解，也方便以后自己翻阅。
+Name-based virtual servers nginx 首先需要判断哪个 Server 来处理这个请求。让我们来看一个简单的配置文件，里面定义了3个虚拟服务器，并且都监听了80端口。
+server { listen 80; server_name example.org www.example.org; ... } server { listen 80; server_name example.net www.example.net; ... } server { listen 80; server_name example.com www.example.com; ... }  这份配置文件测试的情况是，nginx 根据请求头中的 Host 字段，选择将请求导向哪个 Server。如果Host的值不匹配所有 server_name,或者值为空，那么 nginx 会将请求导向监听这个端口的默认虚拟 Server。如上的配置文件，nginx 会默认把第一个 Server 选为默认 Server。当然也可以通过配置 listen 指令的 default_server 参数，来指定默认 Server。
+server { listen 80 default_server; server_name example.net www.example.net; ... }  How to prevent processing requests with undefined server names 如果想要阻止没有Host头字段的请求，可以通过配置一个如下Server来实现：</description>
+    </item>
+    
+  </channel>
+</rss>

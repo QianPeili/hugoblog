@@ -1,0 +1,312 @@
+<!DOCTYPE html>
+<html lang='en'>
+
+<head>
+  <meta charset='utf-8'>
+<meta name='viewport' content='width=device-width, initial-scale=1'>
+<meta name='description' content='对 bash 命令一直不太熟，每次使用 nohup 命令都要从网上现找。 有时会看到一些命令后面跟着 &quot;2&gt;&amp;1&quot; 的参数。比如
+nohupy python test.py &gt; test.log 2&gt;&amp;1  之前也没有多管，直接用了。前几天又在其他人的 shell 脚本中看到 &quot;2&gt;&amp;1&quot;, 才想起去了解一下 ，现把内容整理一下做记录。
+主要内容借鉴于Bash One-Liners Explained, Part III: All about redirections - good coders code, great coders reuse，原文非常详细，欢迎访问原文。
+当 bash 启动时，会开启三个标准文件描述符：stdin, stdout, stderr。
+它们都指向了 /dev/tty0 即我们当前使用的控制台。 0 代表 stdin， 1 代表 stdout, 2 代表stderr。
+当我们输入一个命令：
+python test.py &gt; file  &gt; 就是输出重定向运算符，bash 首先会以写的形式打开 file，成功后上述命令的 stdout 就会被发送到这个打开的 file 中。如果打开失败，则整个命令失败。
+python test.py &gt; file 命令等同于 python test.'>
+
+<meta property='og:title' content='Bash输出重定向 • 爪子'>
+<meta property='og:description' content='对 bash 命令一直不太熟，每次使用 nohup 命令都要从网上现找。 有时会看到一些命令后面跟着 &quot;2&gt;&amp;1&quot; 的参数。比如
+nohupy python test.py &gt; test.log 2&gt;&amp;1  之前也没有多管，直接用了。前几天又在其他人的 shell 脚本中看到 &quot;2&gt;&amp;1&quot;, 才想起去了解一下 ，现把内容整理一下做记录。
+主要内容借鉴于Bash One-Liners Explained, Part III: All about redirections - good coders code, great coders reuse，原文非常详细，欢迎访问原文。
+当 bash 启动时，会开启三个标准文件描述符：stdin, stdout, stderr。
+它们都指向了 /dev/tty0 即我们当前使用的控制台。 0 代表 stdin， 1 代表 stdout, 2 代表stderr。
+当我们输入一个命令：
+python test.py &gt; file  &gt; 就是输出重定向运算符，bash 首先会以写的形式打开 file，成功后上述命令的 stdout 就会被发送到这个打开的 file 中。如果打开失败，则整个命令失败。
+python test.py &gt; file 命令等同于 python test.'>
+<meta property='og:url' content='qianpeili.github.io/posts/%E8%BE%93%E5%87%BA%E9%87%8D%E5%AE%9A%E5%90%91/'>
+<meta property='og:site_name' content='爪子'>
+<meta property='og:type' content='article'><meta property='article:section' content='Posts'><meta property='article:tag' content='linux'><meta property='article:published_time' content='2017-07-09T15:20:36&#43;08:00'/><meta property='article:modified_time' content='2017-07-09T15:20:36&#43;08:00'/><meta name='twitter:card' content='summary'>
+
+<meta name="generator" content="Hugo 0.30.2" />
+
+  <title>Bash输出重定向 • 爪子</title>
+  <link rel='canonical' href='qianpeili.github.io/posts/%E8%BE%93%E5%87%BA%E9%87%8D%E5%AE%9A%E5%90%91/'>
+  
+  
+  <link rel='icon' href='/qianpeili.github.io/favicon.ico'>
+<link rel='stylesheet' href='https://fonts.googleapis.com/css?family=Ubuntu:400,400i,700&subset=latin'>
+<link rel='stylesheet' href='/qianpeili.github.io/assets/css/main.77da63e1.css'><link rel='stylesheet' href='/qianpeili.github.io/css/custom.css'>
+<script>
+window.ga=window.ga||function(){(ga.q=ga.q||[]).push(arguments)};ga.l=+new Date;
+ga('create', 'UA-100449520-1', 'auto');
+ga('send', 'pageview');
+</script>
+<script async src='//www.google-analytics.com/analytics.js'></script>
+
+</head>
+
+
+<body class='page type-posts'>
+  <div class='site'>
+
+    <a class='screen-reader' href='#main'>Skip to Content</a>
+
+    <header id='header' class='header-container'>
+      <div class='header site-header'>
+        <nav id='main-menu' class='main-menu-container' aria-label='Main Menu'>
+  <ul class='main-menu'>
+  <li>
+      <a href='qianpeili.github.io/'>Home</a>
+    </li>
+  <li>
+      <a href='qianpeili.github.io/posts'>Posts</a>
+    </li>
+  <li>
+      <a href='qianpeili.github.io/categories'>Categories</a>
+    </li>
+  <li>
+      <a href='qianpeili.github.io/tags'>Tags</a>
+    </li>
+  <li>
+      <a href='qianpeili.github.io/about'>About</a>
+    </li>
+  
+  </ul>
+</nav>
+
+        <div class='header-info'>
+          
+          <p class='site-title title'>爪子</p>
+          
+          <p class='site-description subtitle'>易燃易爆炸</p>
+        </div>
+      </div>
+    </header>
+
+
+<main id='main' class='main'>
+  <article lang='en' class='entry'>
+    <header class='header-container'>
+  <div class='header entry-header'>
+    <div class='header-info'>
+      <h1 class='title'>Bash输出重定向</h1>
+      
+
+    </div>
+    
+<div class='meta'>
+  <span class='posted-on'><svg class='icon' viewbox='0 0 24 24' stroke-linecap='round' stroke-linejoin='round' stroke-width='2' aria-hidden='true'>
+  
+  <rect x="3" y="4" width="18" height="18" rx="2" ry="2"/>
+  <line x1="16" y1="2" x2="16" y2="6"/>
+  <line x1="8" y1="2" x2="8" y2="6"/>
+  <line x1="3" y1="10" x2="21" y2="10"/>
+  
+</svg>
+<span class='screen-reader'>Posted on </span>
+  <time class='date' datetime='2017-07-09T15:20:36&#43;08:00'>2017, Jul 09</time>
+</span>
+
+  
+  
+<span class='reading-time'><svg class='icon' viewbox='0 0 24 24' stroke-linecap='round' stroke-linejoin='round' stroke-width='2' aria-hidden='true'>
+  
+  <circle cx="12" cy="12" r="10"/>
+  <polyline points="12 6 12 12 15 15"/>
+  
+</svg>
+One min read
+</span>
+
+
+</div>
+
+
+  </div>
+</header>
+
+    
+    
+
+    <div class='entry-content'>
+  <p>对 bash 命令一直不太熟，每次使用 nohup 命令都要从网上现找。
+有时会看到一些命令后面跟着 <code>&quot;2&gt;&amp;1&quot;</code> 的参数。比如</p>
+
+<pre><code>nohupy python test.py &gt; test.log 2&gt;&amp;1
+</code></pre>
+
+<p>之前也没有多管，直接用了。前几天又在其他人的 shell 脚本中看到 <code>&quot;2&gt;&amp;1&quot;</code>, 才想起去了解一下 ，现把内容整理一下做记录。</p>
+
+<p>主要内容借鉴于<a href="http://www.catonmat.net/blog/bash-one-liners-explained-part-three/" target="_blank">Bash One-Liners Explained, Part III: All about redirections - good coders code, great coders reuse</a>，原文非常详细，欢迎访问原文。</p>
+
+<p>当 bash 启动时，会开启三个标准文件描述符：stdin, stdout, stderr。</p>
+
+<p><img src="/static/r-1.png" alt="" /></p>
+
+<p>它们都指向了 <code>/dev/tty0</code> 即我们当前使用的控制台。 <code>0</code> 代表 stdin， <code>1</code> 代表 stdout, <code>2</code> 代表stderr。</p>
+
+<p>当我们输入一个命令：</p>
+
+<pre><code>python test.py &gt; file
+</code></pre>
+
+<p><code>&gt;</code> 就是输出重定向运算符，bash 首先会以写的形式打开 <code>file</code>，成功后上述命令的 stdout 就会被发送到这个打开的 <code>file</code> 中。如果打开失败，则整个命令失败。</p>
+
+<p><code>python test.py &gt; file</code> 命令等同于 <code>python test.py 1&gt;file</code>，因为 <code>1</code> 就代表标准输出 <code>stdout</code>。这个时候的文件描述符指向如下：</p>
+
+<p><img src="/static/r-2.png" alt="" /></p>
+
+<p>那么 <code>2&gt;&amp;1</code> 代表什么呢，它代表的是，将 <code>2</code> 所在文件描述符指向 <code>1</code> 所指向的内容。 如果 <code>1</code> 此时指向的是 <code>file</code>， 那么 <code>2</code> 也指向同一个 <code>file</code>。如下图所示：</p>
+
+<p><img src="/static/r-3.png" alt="" /></p>
+
+<p>另外命令<code>python test.py &amp;&gt; file</code>可以实现与 <code>2&gt;&amp;1</code> 一样的效果， <code>&amp;&gt;</code> 运算符指的是同时把命令的 stdout 和 stderr 重定向到同一个 <code>file</code>中。</p>
+
+<p><strong>注意：重定向命令的参数是受顺序影响的！</strong></p>
+
+<p>比如：</p>
+
+<pre><code>python test.py &gt; file 2&gt;&amp;1
+</code></pre>
+
+<p>和命令</p>
+
+<pre><code>python test.py 2&gt;&amp;1 &gt;file
+</code></pre>
+
+<p>是不一样的。</p>
+
+<p>第一个命令的效果是：</p>
+
+<p><img src="/static/r-3.png" alt="" /></p>
+
+<p>但是第二个命令的效果是：</p>
+
+<p><img src="/static/r-4.png" alt="" /></p>
+
+</div>
+
+    
+<footer class='entry-footer-container'>
+  <div class='entry-footer'>
+  <div class='categories'>
+  <span class='taxonomyTerm-icon'><svg class='icon' viewbox='0 0 24 24' stroke-linecap='round' stroke-linejoin='round' stroke-width='2' aria-hidden='true'>
+  
+  <path d="M22,19a2,2,0,0,1-2,2H4a2,2,0,0,1-2-2V5A2,2,0,0,1,4,3H9l2,3h9a2,2,0,0,1,2,2Z"/>
+  
+</svg>
+</span>
+  <span class='screen-reader'>Categories: </span><a class='category' href='/categories/note'>Note</a></div>
+<div class='tags'>
+  <span class='taxonomyTerm-icon'><svg class='icon' viewbox='0 0 24 24' stroke-linecap='round' stroke-linejoin='round' stroke-width='2' aria-hidden='true'>
+  
+  <path d="M20.59,13.41l-7.17,7.17a2,2,0,0,1-2.83,0L2,12V2H12l8.59,8.59A2,2,0,0,1,20.59,13.41Z"/>
+  <line x1="7" y1="7" x2="7" y2="7"/>
+  
+</svg>
+</span>
+  <span class='screen-reader'>Tags: </span><a class='tag' href='/tags/linux'>Linux</a></div>
+
+  </div>
+</footer>
+
+
+  </article>
+  
+<nav class='entry-nav-container'>
+  <div class='entry-nav'><div class='prev-entry'>
+      <a href='/qianpeili.github.io/posts/git-submodule%E4%BD%BF%E7%94%A8/'>
+        <span aria-hidden='true'><svg class='icon' viewbox='0 0 24 24' stroke-linecap='round' stroke-linejoin='round' stroke-width='2' aria-hidden='true'>
+  
+  <line x1="20" y1="12" x2="4" y2="12"/>
+  <polyline points="10 18 4 12 10 6"/>
+  
+</svg>
+ Previous</span>
+        <span class='screen-reader'>Previous post: </span>Git Submodule的使用</a>
+    </div><div class='next-entry'>
+      <a href='/qianpeili.github.io/posts/pre-receive%E4%B8%AD%E5%88%A4%E6%96%AD%E9%87%8D%E5%A4%8D%E7%9A%84%E6%96%87%E4%BB%B6/'>
+        <span class='screen-reader'>Next post: </span>通过 pre-hook 判断是否推送重复的内容<span aria-hidden='true'>Next <svg class='icon' viewbox='0 0 24 24' stroke-linecap='round' stroke-linejoin='round' stroke-width='2' aria-hidden='true'>
+  
+  <line x1="4" y1="12" x2="20" y2="12"/>
+  <polyline points="14 6 20 12 14 18"/>
+  
+</svg>
+</span>
+      </a>
+    </div></div>
+</nav>
+
+  
+<div class='comments-container'>
+  <div id="disqus_thread"></div>
+<script>
+    var disqus_config = function () {
+    
+    
+    
+    };
+    (function() {
+        if (["localhost", "127.0.0.1"].indexOf(window.location.hostname) != -1) {
+            document.getElementById('disqus_thread').innerHTML = 'Disqus comments not available by default when the website is previewed locally.';
+            return;
+        }
+        var d = document, s = d.createElement('script'); s.async = true;
+        s.src = '//' + "zhuazi" + '.disqus.com/embed.js';
+        s.setAttribute('data-timestamp', +new Date());
+        (d.head || d.body).appendChild(s);
+    })();
+</script>
+<noscript>Please enable JavaScript to view the <a href="https://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+<a href="https://disqus.com" class="dsq-brlink">comments powered by <span class="logo-disqus">Disqus</span></a>
+</div>
+
+</main>
+
+    <footer id='footer' class='footer-container'>
+      <div class='footer'>
+        <div class='social-menu-container'>
+  <nav aria-label='Social Menu'>
+    <ul class='social-menu'><li>
+        <a href='https://github.com/qianpeili' target='_blank' rel='noopener'>
+          <span class='screen-reader'>Open Github account in new tab</span><svg class='icon' viewbox='0 0 24 24' stroke-linecap='round' stroke-linejoin='round' stroke-width='2' aria-hidden='true'>
+  
+  <path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22"/>
+  
+</svg>
+</a>
+      </li><li>
+        <a href='https://twitter.com/qianperry' target='_blank' rel='noopener'>
+          <span class='screen-reader'>Open Twitter account in new tab</span><svg class='icon' viewbox='0 0 24 24' stroke-linecap='round' stroke-linejoin='round' stroke-width='2' aria-hidden='true'>
+  
+  <path d="M23 3a10.9 10.9 0 0 1-3.14 1.53 4.48 4.48 0 0 0-7.86 3v1A10.66 10.66 0 0 1 3 4s-4 9 5 13a11.64 11.64 0 0 1-7 2c9 5 20 0 20-11.5a4.5 4.5 0 0 0-.08-.83A7.72 7.72 0 0 0 23 3z"/>
+  
+</svg>
+</a>
+      </li><li>
+        <a href='mailto:qianperry@outlook.com' target='_blank' rel='noopener'>
+          <span class='screen-reader'>Contact via Email</span><svg class='icon' viewbox='0 0 24 24' stroke-linecap='round' stroke-linejoin='round' stroke-width='2' aria-hidden='true'>
+  
+  <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/>
+  <polyline points="22,6 12,13 2,6"/>
+  
+</svg>
+</a>
+      </li></ul>
+  </nav>
+</div>
+        <div class='copyright'>
+  <p>
+        
+      
+
+       &copy; 2017 爪子 
+  </p>
+</div>
+
+      </div>
+    </footer>
+
+  </div><script src='/qianpeili.github.io/assets/js/main.5871befd.js'></script><script src='/qianpeili.github.io/js/custom.js'></script></body>
+
+</html>
+

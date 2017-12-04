@@ -1,0 +1,333 @@
+<!DOCTYPE html>
+<html lang='en'>
+
+<head>
+  <meta charset='utf-8'>
+<meta name='viewport' content='width=device-width, initial-scale=1'>
+<meta name='description' content='学 TCP/IP 协议听到最多的就是三次握手和四次挥手协议了吧。由于最近在折腾 tcpdump ，就想着实战抓一下 tcp 协议的这个握手和挥手协议。于是我在本地向内网测试机器的服务上发起了一个 POST 请求，抓到如下信息：
+15:05:03.904647 IP socket-client.56558 &gt; socket-server.3000: Flags [S], seq 2090421259, win 64240, options [mss 1460,nop,wscale 8,nop,nop,sackOK], length 0 15:05:03.904699 IP socket-server.3000 &gt; socket-client.56558: Flags [S.], seq 2303886283, ack 2090421260, win 29200, options [mss 1460,nop,nop,sackOK,nop,wscale 7], length 0 15:05:03.905263 IP socket-client.56558 &gt; socket-server.3000: Flags [.], ack 1, win 2053, length 0 15:05:03.905596 IP socket-client.56558 &gt; socket-server.3000: Flags [P.], seq 1:230, ack 1, win 2053, length 229 15:05:03.'>
+
+<meta property='og:title' content='tcp经受时延 • 爪子'>
+<meta property='og:description' content='学 TCP/IP 协议听到最多的就是三次握手和四次挥手协议了吧。由于最近在折腾 tcpdump ，就想着实战抓一下 tcp 协议的这个握手和挥手协议。于是我在本地向内网测试机器的服务上发起了一个 POST 请求，抓到如下信息：
+15:05:03.904647 IP socket-client.56558 &gt; socket-server.3000: Flags [S], seq 2090421259, win 64240, options [mss 1460,nop,wscale 8,nop,nop,sackOK], length 0 15:05:03.904699 IP socket-server.3000 &gt; socket-client.56558: Flags [S.], seq 2303886283, ack 2090421260, win 29200, options [mss 1460,nop,nop,sackOK,nop,wscale 7], length 0 15:05:03.905263 IP socket-client.56558 &gt; socket-server.3000: Flags [.], ack 1, win 2053, length 0 15:05:03.905596 IP socket-client.56558 &gt; socket-server.3000: Flags [P.], seq 1:230, ack 1, win 2053, length 229 15:05:03.'>
+<meta property='og:url' content='qianpeili.github.io/posts/tcp%E7%BB%8F%E5%8F%97%E6%97%B6%E5%BB%B6/'>
+<meta property='og:site_name' content='爪子'>
+<meta property='og:type' content='article'><meta property='article:section' content='Posts'><meta property='article:tag' content='tcp'><meta property='article:published_time' content='2017-05-20T16:15:51&#43;08:00'/><meta property='article:modified_time' content='2017-05-20T16:15:51&#43;08:00'/><meta name='twitter:card' content='summary'>
+
+<meta name="generator" content="Hugo 0.30.2" />
+
+  <title>tcp经受时延 • 爪子</title>
+  <link rel='canonical' href='qianpeili.github.io/posts/tcp%E7%BB%8F%E5%8F%97%E6%97%B6%E5%BB%B6/'>
+  
+  
+  <link rel='icon' href='/qianpeili.github.io/favicon.ico'>
+<link rel='stylesheet' href='https://fonts.googleapis.com/css?family=Ubuntu:400,400i,700&subset=latin'>
+<link rel='stylesheet' href='/qianpeili.github.io/assets/css/main.77da63e1.css'><link rel='stylesheet' href='/qianpeili.github.io/css/custom.css'>
+<script>
+window.ga=window.ga||function(){(ga.q=ga.q||[]).push(arguments)};ga.l=+new Date;
+ga('create', 'UA-100449520-1', 'auto');
+ga('send', 'pageview');
+</script>
+<script async src='//www.google-analytics.com/analytics.js'></script>
+
+</head>
+
+
+<body class='page type-posts'>
+  <div class='site'>
+
+    <a class='screen-reader' href='#main'>Skip to Content</a>
+
+    <header id='header' class='header-container'>
+      <div class='header site-header'>
+        <nav id='main-menu' class='main-menu-container' aria-label='Main Menu'>
+  <ul class='main-menu'>
+  <li>
+      <a href='qianpeili.github.io/'>Home</a>
+    </li>
+  <li>
+      <a href='qianpeili.github.io/posts'>Posts</a>
+    </li>
+  <li>
+      <a href='qianpeili.github.io/categories'>Categories</a>
+    </li>
+  <li>
+      <a href='qianpeili.github.io/tags'>Tags</a>
+    </li>
+  <li>
+      <a href='qianpeili.github.io/about'>About</a>
+    </li>
+  
+  </ul>
+</nav>
+
+        <div class='header-info'>
+          
+          <p class='site-title title'>爪子</p>
+          
+          <p class='site-description subtitle'>易燃易爆炸</p>
+        </div>
+      </div>
+    </header>
+
+
+<main id='main' class='main'>
+  <article lang='en' class='entry'>
+    <header class='header-container'>
+  <div class='header entry-header'>
+    <div class='header-info'>
+      <h1 class='title'>tcp经受时延</h1>
+      
+
+    </div>
+    
+<div class='meta'>
+  <span class='posted-on'><svg class='icon' viewbox='0 0 24 24' stroke-linecap='round' stroke-linejoin='round' stroke-width='2' aria-hidden='true'>
+  
+  <rect x="3" y="4" width="18" height="18" rx="2" ry="2"/>
+  <line x1="16" y1="2" x2="16" y2="6"/>
+  <line x1="8" y1="2" x2="8" y2="6"/>
+  <line x1="3" y1="10" x2="21" y2="10"/>
+  
+</svg>
+<span class='screen-reader'>Posted on </span>
+  <time class='date' datetime='2017-05-20T16:15:51&#43;08:00'>2017, May 20</time>
+</span>
+
+  
+  
+<span class='reading-time'><svg class='icon' viewbox='0 0 24 24' stroke-linecap='round' stroke-linejoin='round' stroke-width='2' aria-hidden='true'>
+  
+  <circle cx="12" cy="12" r="10"/>
+  <polyline points="12 6 12 12 15 15"/>
+  
+</svg>
+3 mins read
+</span>
+
+
+</div>
+
+
+  </div>
+</header>
+
+    
+    
+
+    <div class='entry-content'>
+  <p>学 <code>TCP/IP</code> 协议听到最多的就是三次握手和四次挥手协议了吧。由于最近在折腾 <code>tcpdump</code> ，就想着实战抓一下 <code>tcp</code> 协议的这个握手和挥手协议。于是我在本地向内网测试机器的服务上发起了一个
+ <code>POST</code> 请求，抓到如下信息：</p>
+
+<pre><code>15:05:03.904647 IP socket-client.56558 &gt; socket-server.3000: Flags [S], seq 2090421259, win 64240, options [mss 1460,nop,wscale 8,nop,nop,sackOK], length 0
+15:05:03.904699 IP socket-server.3000 &gt; socket-client.56558: Flags [S.], seq 2303886283, ack 2090421260, win 29200, options [mss 1460,nop,nop,sackOK,nop,wscale 7], length 0
+15:05:03.905263 IP socket-client.56558 &gt; socket-server.3000: Flags [.], ack 1, win 2053, length 0
+15:05:03.905596 IP socket-client.56558 &gt; socket-server.3000: Flags [P.], seq 1:230, ack 1, win 2053, length 229
+15:05:03.905611 IP socket-server.3000 &gt; socket-client.56558: Flags [.], ack 230, win 237, length 0
+15:05:03.906212 IP socket-client.56558 &gt; socket-server.3000: Flags [P.], seq 230:786, ack 1, win 2053, length 556
+15:05:03.906247 IP socket-server.3000 &gt; socket-client.56558: Flags [.], ack 786, win 246, length 0
+15:05:03.912497 IP socket-server.3000 &gt; socket-client.56558: Flags [P.], seq 1:336, ack 786, win 246, length 335
+15:05:03.913375 IP socket-client.56558 &gt; socket-server.3000: Flags [F.], seq 786, ack 336, win 2051, length 0
+15:05:03.913807 IP socket-server.3000 &gt; socket-client.56558: Flags [F.], seq 336, ack 787, win 246, length 0
+15:05:03.914068 IP socket-client.56558 &gt; socket-server.3000: Flags [.], ack 337, win 2051, length 0
+</code></pre>
+
+<p>三次握手协议很明显，但是说好的四次挥手协议只有三条！。</p>
+
+<p>难道我们抓的是假的<code>TCP</code>包？当然不是，在<strong>《TCP/IP详解》</strong>卷一第十九章中，有这么一段话：</p>
+
+<blockquote>
+<p>把从bsdi发送到srv4的7个ACK标记为经受时延的ACK。通常TCP在接收到数据时并不立即发送ACK；相反，它推迟发送，以便将ACK与需要沿该方向发送的数据一起发送（有时称这种现象为数据捎带ACK）。绝大多数实现采用的时延为200 ms，也就是说，TCP将以最大200 ms的时延等待是否有数据一起发送。</p>
+</blockquote>
+
+<p>这个行为叫做<strong>经受时延</strong>(<code>Delay ACK</code>)</p>
+
+<blockquote>
+<p>TCP delayed acknowledgment is a technique used by some implementations of the Transmission Control Protocol in an effort to improve network performance. In essence, several ACK responses may be combined together into a single response, reducing protocol overhead. However, in some circumstances, the technique can reduce application performance.</p>
+</blockquote>
+
+<p>由于 <code>HTTP</code> 请求双发在发完消息后，双发几乎是同时关闭连接的，所以倒数第二条消息中，被动关闭方同时把 <code>FIN</code> 和 <code>ACK</code> 消息一同发送了，就变成了三次挥手。如果我们要看到四次挥手，只要让被动关闭方在主动关闭方发起 <code>FIN</code> 消息<strong>&gt;=200ms</strong>之后再关闭连接，应该就可以看到四次挥手了。</p>
+
+<p>所以写了段小代码测试。</p>
+
+<p>服务端 <code>server.py</code>：</p>
+
+<pre><code>import socket
+import time
+
+HOST, PORT = 'socket-server', 3005
+s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+s.bind((HOST, PORT))
+s.listen(1)
+conn, addr = s.accept()
+while 1:
+    data = conn.recv(1024)
+    time.sleep(1)
+    break
+conn.close()
+s.close()
+</code></pre>
+
+<p>客户端 <code>client.py</code>：</p>
+
+<pre><code>import socket
+import time
+
+HOST, PORT = 'socket-server', 3005
+s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+s.connect((HOST, PORT))
+s.sendall(&quot;hello&quot;)
+s.close()
+</code></pre>
+
+<p>其中，客户端连接到服务器后，发送一条消息，并立即关闭连接。而服务端收到客户端的消息后，沉睡1秒后再关闭连接。</p>
+
+<p>我再 <code>socket-server</code> 机器上跑 <code>server.py</code> 脚本，然后用 <code>tcpdump</code> 抓取 <code>3005</code> 端口的消息：</p>
+
+<pre><code>sudo tcpdump -ttt -i eno1 tcp and host socket-server and port 3005
+</code></pre>
+
+<p><code>-ttt</code> 参数可以帮我们显示出两条消息之间的间隔。</p>
+
+<p>然后再我自己的电脑上跑 <code>client.py</code> 脚本。抓到如下数据：</p>
+
+<pre><code>00:00:00.000000 IP socket-client.55683 &gt; socket-server.3005: Flags [S], seq 3277094545, win 64240, options [mss 1460,nop,wscale 8,nop,nop,sackOK], length 0
+ 00:00:00.000048 IP socket-server.3005 &gt; socket-client.55683: Flags [S.], seq 450801491, ack 3277094546, win 29200, options [mss 1460,nop,nop,sackOK,nop,wscale 7], length 0
+ 00:00:00.000528 IP socket-client.55683 &gt; socket-server.3005: Flags [.], ack 1, win 2053, length 0
+ 00:00:00.000042 IP socket-client.55683 &gt; socket-server.3005: Flags [P.], seq 1:6, ack 1, win 2053, length 5
+ 00:00:00.000013 IP socket-server.3005 &gt; socket-client.55683: Flags [.], ack 6, win 229, length 0
+ 00:00:00.000004 IP socket-client.55683 &gt; socket-server.3005: Flags [F.], seq 6, ack 1, win 2053, length 0
+ 00:00:00.036681 IP socket-server.3005 &gt; socket-client.55683: Flags [.], ack 7, win 229, length 0
+ 00:00:00.964009 IP socket-server.3005 &gt; socket-client.55683: Flags [F.], seq 1, ack 7, win 229, length 0
+ 00:00:00.000541 IP socket-client.55683 &gt; socket-server.3005: Flags [.], ack 2, win 2053, length 0
+</code></pre>
+
+<p>在上面，我们已经可以看到四次挥手了，实验成功（就是他妈有点水- -）！</p>
+
+</div>
+
+    
+<footer class='entry-footer-container'>
+  <div class='entry-footer'>
+  <div class='categories'>
+  <span class='taxonomyTerm-icon'><svg class='icon' viewbox='0 0 24 24' stroke-linecap='round' stroke-linejoin='round' stroke-width='2' aria-hidden='true'>
+  
+  <path d="M22,19a2,2,0,0,1-2,2H4a2,2,0,0,1-2-2V5A2,2,0,0,1,4,3H9l2,3h9a2,2,0,0,1,2,2Z"/>
+  
+</svg>
+</span>
+  <span class='screen-reader'>Categories: </span><a class='category' href='/categories/note'>Note</a></div>
+<div class='tags'>
+  <span class='taxonomyTerm-icon'><svg class='icon' viewbox='0 0 24 24' stroke-linecap='round' stroke-linejoin='round' stroke-width='2' aria-hidden='true'>
+  
+  <path d="M20.59,13.41l-7.17,7.17a2,2,0,0,1-2.83,0L2,12V2H12l8.59,8.59A2,2,0,0,1,20.59,13.41Z"/>
+  <line x1="7" y1="7" x2="7" y2="7"/>
+  
+</svg>
+</span>
+  <span class='screen-reader'>Tags: </span><a class='tag' href='/tags/tcp'>Tcp</a></div>
+
+  </div>
+</footer>
+
+
+  </article>
+  
+<nav class='entry-nav-container'>
+  <div class='entry-nav'><div class='prev-entry'>
+      <a href='/qianpeili.github.io/posts/tcpdump%E7%9A%84%E4%BD%BF%E7%94%A8%E5%AE%9E%E4%BE%8B/'>
+        <span aria-hidden='true'><svg class='icon' viewbox='0 0 24 24' stroke-linecap='round' stroke-linejoin='round' stroke-width='2' aria-hidden='true'>
+  
+  <line x1="20" y1="12" x2="4" y2="12"/>
+  <polyline points="10 18 4 12 10 6"/>
+  
+</svg>
+ Previous</span>
+        <span class='screen-reader'>Previous post: </span>tcpdump的使用实例</a>
+    </div><div class='next-entry'>
+      <a href='/qianpeili.github.io/posts/go%E7%9A%84%E4%BE%9D%E8%B5%96%E7%AE%A1%E7%90%86%E5%B7%A5%E5%85%B7govendor/'>
+        <span class='screen-reader'>Next post: </span>Go的依赖管理工具govendor<span aria-hidden='true'>Next <svg class='icon' viewbox='0 0 24 24' stroke-linecap='round' stroke-linejoin='round' stroke-width='2' aria-hidden='true'>
+  
+  <line x1="4" y1="12" x2="20" y2="12"/>
+  <polyline points="14 6 20 12 14 18"/>
+  
+</svg>
+</span>
+      </a>
+    </div></div>
+</nav>
+
+  
+<div class='comments-container'>
+  <div id="disqus_thread"></div>
+<script>
+    var disqus_config = function () {
+    
+    
+    
+    };
+    (function() {
+        if (["localhost", "127.0.0.1"].indexOf(window.location.hostname) != -1) {
+            document.getElementById('disqus_thread').innerHTML = 'Disqus comments not available by default when the website is previewed locally.';
+            return;
+        }
+        var d = document, s = d.createElement('script'); s.async = true;
+        s.src = '//' + "zhuazi" + '.disqus.com/embed.js';
+        s.setAttribute('data-timestamp', +new Date());
+        (d.head || d.body).appendChild(s);
+    })();
+</script>
+<noscript>Please enable JavaScript to view the <a href="https://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+<a href="https://disqus.com" class="dsq-brlink">comments powered by <span class="logo-disqus">Disqus</span></a>
+</div>
+
+</main>
+
+    <footer id='footer' class='footer-container'>
+      <div class='footer'>
+        <div class='social-menu-container'>
+  <nav aria-label='Social Menu'>
+    <ul class='social-menu'><li>
+        <a href='https://github.com/qianpeili' target='_blank' rel='noopener'>
+          <span class='screen-reader'>Open Github account in new tab</span><svg class='icon' viewbox='0 0 24 24' stroke-linecap='round' stroke-linejoin='round' stroke-width='2' aria-hidden='true'>
+  
+  <path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22"/>
+  
+</svg>
+</a>
+      </li><li>
+        <a href='https://twitter.com/qianperry' target='_blank' rel='noopener'>
+          <span class='screen-reader'>Open Twitter account in new tab</span><svg class='icon' viewbox='0 0 24 24' stroke-linecap='round' stroke-linejoin='round' stroke-width='2' aria-hidden='true'>
+  
+  <path d="M23 3a10.9 10.9 0 0 1-3.14 1.53 4.48 4.48 0 0 0-7.86 3v1A10.66 10.66 0 0 1 3 4s-4 9 5 13a11.64 11.64 0 0 1-7 2c9 5 20 0 20-11.5a4.5 4.5 0 0 0-.08-.83A7.72 7.72 0 0 0 23 3z"/>
+  
+</svg>
+</a>
+      </li><li>
+        <a href='mailto:qianperry@outlook.com' target='_blank' rel='noopener'>
+          <span class='screen-reader'>Contact via Email</span><svg class='icon' viewbox='0 0 24 24' stroke-linecap='round' stroke-linejoin='round' stroke-width='2' aria-hidden='true'>
+  
+  <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/>
+  <polyline points="22,6 12,13 2,6"/>
+  
+</svg>
+</a>
+      </li></ul>
+  </nav>
+</div>
+        <div class='copyright'>
+  <p>
+        
+      
+
+       &copy; 2017 爪子 
+  </p>
+</div>
+
+      </div>
+    </footer>
+
+  </div><script src='/qianpeili.github.io/assets/js/main.5871befd.js'></script><script src='/qianpeili.github.io/js/custom.js'></script></body>
+
+</html>
+

@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Gcc on 爪子</title>
+    <link>qianpeili.github.io/tags/gcc/</link>
+    <description>Recent content in Gcc on 爪子</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <lastBuildDate>Wed, 16 Aug 2017 21:10:24 +0800</lastBuildDate>
+    
+	<atom:link href="qianpeili.github.io/tags/gcc/index.xml" rel="self" type="application/rss+xml" />
+    
+    
+    <item>
+      <title>升级 GCC 来解决 heapdump build Error</title>
+      <link>qianpeili.github.io/posts/%E5%8D%87%E7%BA%A7gcc%E8%A7%A3%E5%86%B3heapdump%E5%AE%89%E8%A3%85%E9%94%99%E8%AF%AF/</link>
+      <pubDate>Wed, 16 Aug 2017 21:10:24 +0800</pubDate>
+      
+      <guid>qianpeili.github.io/posts/%E5%8D%87%E7%BA%A7gcc%E8%A7%A3%E5%86%B3heapdump%E5%AE%89%E8%A3%85%E9%94%99%E8%AF%AF/</guid>
+      <description>今天要部署一个node.js的项目，第一次玩node.js有点崩溃。安装依赖的时候一个heapdump库出现了build error。
+在github上找到了类似的issue： [error] heapdump@0.3.7 Build Error · Issue #72 · bnoordhuis/node-heapdump
+里面提到的解决方式是升级GCC：
+ Well, I have fixed it!
+My gcc version is 4.6.3 when I update to 4.9.1 and retry it work!
+ 我查看了一下机器的gcc版本，是 4.4.7 的，问题应该就在这了。所以安装一个新版本的gcc应该就行了。
+国内为了速度可以选择中科院的镜像： Index of /gnu/gcc/
+我选择了 6.1.0 版本，下载源码后简单地根据官方教程 InstallingGCC - GCC Wiki 进行安装。
+tar xzf gcc-6.1.0.tar.gz cd gcc-6.1.0 ./contrib/download_prerequisites cd .. mkdir objdir cd objdir $PWD/../gcc-6.1.0/configure --prefix=$HOME/gcc-6.1.0 --disable-multilib  因为gcc编译真的要好久好久，所以我用上了全部 cpu 核心。
+make -j 16 make -j 16 install  替换旧版的gcc</description>
+    </item>
+    
+  </channel>
+</rss>

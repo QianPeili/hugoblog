@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Nginx on 爪子</title>
+    <link>qianpeili.github.io/tags/nginx/</link>
+    <description>Recent content in Nginx on 爪子</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <lastBuildDate>Fri, 09 Jun 2017 20:12:05 +0800</lastBuildDate>
+    
+	<atom:link href="qianpeili.github.io/tags/nginx/index.xml" rel="self" type="application/rss+xml" />
+    
+    
+    <item>
+      <title>【翻译】 Nginx 如何处理一个请求</title>
+      <link>qianpeili.github.io/posts/nginx%E5%A6%82%E4%BD%95%E5%A4%84%E7%90%86%E4%B8%80%E4%B8%AA%E8%AF%B7%E6%B1%82/</link>
+      <pubDate>Fri, 09 Jun 2017 20:12:05 +0800</pubDate>
+      
+      <guid>qianpeili.github.io/posts/nginx%E5%A6%82%E4%BD%95%E5%A4%84%E7%90%86%E4%B8%80%E4%B8%AA%E8%AF%B7%E6%B1%82/</guid>
+      <description>原文：How nginx processes a request
+网上不乏好的翻译，我再做一次翻译，只是为了让自己更好地理解，也方便以后自己翻阅。
+Name-based virtual servers nginx 首先需要判断哪个 Server 来处理这个请求。让我们来看一个简单的配置文件，里面定义了3个虚拟服务器，并且都监听了80端口。
+server { listen 80; server_name example.org www.example.org; ... } server { listen 80; server_name example.net www.example.net; ... } server { listen 80; server_name example.com www.example.com; ... }  这份配置文件测试的情况是，nginx 根据请求头中的 Host 字段，选择将请求导向哪个 Server。如果Host的值不匹配所有 server_name,或者值为空，那么 nginx 会将请求导向监听这个端口的默认虚拟 Server。如上的配置文件，nginx 会默认把第一个 Server 选为默认 Server。当然也可以通过配置 listen 指令的 default_server 参数，来指定默认 Server。
+server { listen 80 default_server; server_name example.net www.example.net; ... }  How to prevent processing requests with undefined server names 如果想要阻止没有Host头字段的请求，可以通过配置一个如下Server来实现：</description>
+    </item>
+    
+  </channel>
+</rss>

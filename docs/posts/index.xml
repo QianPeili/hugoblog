@@ -1,0 +1,258 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Posts on 爪子</title>
+    <link>qianpeili.github.io/posts/</link>
+    <description>Recent content in Posts on 爪子</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <lastBuildDate>Sun, 03 Dec 2017 18:23:21 +0800</lastBuildDate>
+    
+	<atom:link href="qianpeili.github.io/posts/index.xml" rel="self" type="application/rss+xml" />
+    
+    
+    <item>
+      <title>Go的append使用踩坑记录</title>
+      <link>qianpeili.github.io/posts/go%E7%9A%84append%E4%BD%BF%E7%94%A8%E8%B8%A9%E5%9D%91%E8%AE%B0%E5%BD%95/</link>
+      <pubDate>Sun, 03 Dec 2017 18:23:21 +0800</pubDate>
+      
+      <guid>qianpeili.github.io/posts/go%E7%9A%84append%E4%BD%BF%E7%94%A8%E8%B8%A9%E5%9D%91%E8%AE%B0%E5%BD%95/</guid>
+      <description>go 有个很好用的数据类型——slice，有点类似 python 里的 list。go 中给 slice 添加元素，用的是 append 函数，它跟python中的list.append方法有些不同，每次都会返回一个对象，所以我之前一直都把go中的append当做python中的 + 变形。
+在我之前的理解中，某些情况下，两者其实是差不多的，比如：
+go 代码
+package main import &amp;quot;log&amp;quot; func main() { a := []int{1, 2} a = append(a, []int{3, 4}...) log.Println(a) }  python 代码
+a = [1, 2] a = a + [3, 4] print(a)  输出结果 a 都是： [1, 2, 3, 4]，两者确实很相似
+但是我今天在刷题目时，想要实现这么一个情况：
+python 代码：
+a = [1, 2, 3, 4, 5] b = a[:2] + a[3:]  执行后的结果： a == [1, 2, 3, 4, 5], b == [1, 2, 4, 5]</description>
+    </item>
+    
+    <item>
+      <title>打印 Go 的Stack Trace</title>
+      <link>qianpeili.github.io/posts/%E6%89%93%E5%8D%B0go%E7%9A%84stacktrace/</link>
+      <pubDate>Sat, 04 Nov 2017 17:42:02 +0800</pubDate>
+      
+      <guid>qianpeili.github.io/posts/%E6%89%93%E5%8D%B0go%E7%9A%84stacktrace/</guid>
+      <description>算是写了第一个比较正式的 Go 项目吧，然后现在在考虑如何设计日志系统。
+服务采用 TCP 长连接，每个 session 都是单独启动一个 goroutine 处理事务（其实发消息也有一个协程，不过发消息部分逻辑简单），所以考虑在最顶层写一个 recover 函数，收集上报的错误信息并输出。大致是这么个东西：
+package main import ( &amp;quot;log&amp;quot; &amp;quot;errors&amp;quot; ) func main() { defer func() { if r := recover(); r != nil { log.Println(r) } }() // make a panic panic(errors.New(&amp;quot;ha! A bug&amp;quot;)) }  输出： 2017/11/04 17:19:16 ha! A bug
+但如果只是这样，其实并不能帮助我们很好的排查问题，我们知道有了一个 BUG，但不知道是哪里除了问题。因此我们打印出捕获错误时的 Stack Trace。内建库 runtime 就有这个功能：
+func Stack(buf []byte, all bool) int
+Stack formats a stack trace of the calling goroutine into buf and returns the number of bytes written to buf.</description>
+    </item>
+    
+    <item>
+      <title>Go跨平台编译</title>
+      <link>qianpeili.github.io/posts/go%E8%B7%A8%E5%B9%B3%E5%8F%B0%E7%BC%96%E8%AF%91/</link>
+      <pubDate>Wed, 01 Nov 2017 19:22:02 +0800</pubDate>
+      
+      <guid>qianpeili.github.io/posts/go%E8%B7%A8%E5%B9%B3%E5%8F%B0%E7%BC%96%E8%AF%91/</guid>
+      <description>公司开发系统是 Windows，服务器部署环境是 Linux。一开始测试的时候选的是 git pull 带生产机上，编译后启动。
+但这个方法太笨，一是代码容易泄露，二是生产机要同时同步库文件，不管是 go get 方式还是 govendor 方式都显得太麻烦。
+不过好在 Go 的跨平台编译非常方便，所以我们完全可以在开发环境下编译好可执行文件，再放入生产机部署。
+总结一下 windows环境下 go 跨平台编译的方式。
+GOOS 和 GOARCH 关于这两个环境变量的含义，我们可以从官方文档： Installing Go from source - The Go Programming Language中了解，分别是目标系统的 操作系统 和 编译架构。只要我们设置好这两个参数的内容，就可以轻松进行跨平台编译了。
+支持的列表
+$GOOS $GOARCH android arm darwin 386 darwin amd64 darwin arm darwin arm64 dragonfly amd64 freebsd 386 freebsd amd64 freebsd arm linux 386 linux amd64 linux arm linux arm64 linux ppc64 linux ppc64le linux mips linux mipsle linux mips64 linux mips64le netbsd 386 netbsd amd64 netbsd arm openbsd 386 openbsd amd64 openbsd arm plan9 386 plan9 amd64 solaris amd64 windows 386 windows amd64  Windows cmd 最直接的了，需要修改环境变量</description>
+    </item>
+    
+    <item>
+      <title>Go 的request.Body rewind 功能</title>
+      <link>qianpeili.github.io/posts/request-body%E7%9A%84rewind%E5%8A%9F%E8%83%BD/</link>
+      <pubDate>Sat, 16 Sep 2017 18:31:52 +0800</pubDate>
+      
+      <guid>qianpeili.github.io/posts/request-body%E7%9A%84rewind%E5%8A%9F%E8%83%BD/</guid>
+      <description>近日参加了实验楼的 楼赛 第15期 Go语言项目挑战 - 实验楼
+第一道题的题目要求是：
+ 实现一个简单的数据校验功能，对请求 body 做 md5 计算，然后把结果转为十六进制添加到请求 header 中，头部名称为X-Md5。也就是在HTTP 请求 header 中添加一个 X-Md5: 键值对，如果body为空那么就不填。
+ 我一开始的实现方式很直接暴力：
+func (t *Transport) RoundTrip(req *http.Request) (*http.Response, error) { if req.Body == nil { return t.RoundTripper.RoundTrip(req) } b, err := ioutil.ReadAll(req.Body) if len(b) == 0 { return t.RoundTripper.RoundTrip(req) } if err != nil { log.Fatal(err.Error()) } hexB := md5.Sum(b) req.Header.Add(&amp;quot;X-Md5&amp;quot;, hex.EncodeToString(hexB[:])) return t.RoundTripper.RoundTrip(req) }  直接读出 req.Body 中的字节数据，进行md5运算。我在自己的电脑上测试通过，但是实验环境下 go test 会报类似错误：</description>
+    </item>
+    
+    <item>
+      <title>升级 GCC 来解决 heapdump build Error</title>
+      <link>qianpeili.github.io/posts/%E5%8D%87%E7%BA%A7gcc%E8%A7%A3%E5%86%B3heapdump%E5%AE%89%E8%A3%85%E9%94%99%E8%AF%AF/</link>
+      <pubDate>Wed, 16 Aug 2017 21:10:24 +0800</pubDate>
+      
+      <guid>qianpeili.github.io/posts/%E5%8D%87%E7%BA%A7gcc%E8%A7%A3%E5%86%B3heapdump%E5%AE%89%E8%A3%85%E9%94%99%E8%AF%AF/</guid>
+      <description>今天要部署一个node.js的项目，第一次玩node.js有点崩溃。安装依赖的时候一个heapdump库出现了build error。
+在github上找到了类似的issue： [error] heapdump@0.3.7 Build Error · Issue #72 · bnoordhuis/node-heapdump
+里面提到的解决方式是升级GCC：
+ Well, I have fixed it!
+My gcc version is 4.6.3 when I update to 4.9.1 and retry it work!
+ 我查看了一下机器的gcc版本，是 4.4.7 的，问题应该就在这了。所以安装一个新版本的gcc应该就行了。
+国内为了速度可以选择中科院的镜像： Index of /gnu/gcc/
+我选择了 6.1.0 版本，下载源码后简单地根据官方教程 InstallingGCC - GCC Wiki 进行安装。
+tar xzf gcc-6.1.0.tar.gz cd gcc-6.1.0 ./contrib/download_prerequisites cd .. mkdir objdir cd objdir $PWD/../gcc-6.1.0/configure --prefix=$HOME/gcc-6.1.0 --disable-multilib  因为gcc编译真的要好久好久，所以我用上了全部 cpu 核心。
+make -j 16 make -j 16 install  替换旧版的gcc</description>
+    </item>
+    
+    <item>
+      <title>【翻译】Go语言中的反射机制</title>
+      <link>qianpeili.github.io/posts/trans-go-reflect/</link>
+      <pubDate>Fri, 28 Jul 2017 20:48:11 +0800</pubDate>
+      
+      <guid>qianpeili.github.io/posts/trans-go-reflect/</guid>
+      <description>原文链接： The Laws of Reflection - The Go Blog
+作者： Rob Pike
+翻译： 钱佩丽
+介绍 反射( reflection )在计算机中指的是一个程序审查自身结构的能力，尤其是类型( Types )。 反射是元编程的一种形式，也是让人觉得头疼的一个点。
+在这篇文章中，我们将对反射在 Go 中的工作原理做一些解释说明。 各种计算机语言的反射机制不尽相同（有的甚至没有反射）， 但这篇文章，我们只关心 Go 语言中的反射， 文中所有反射，都是在 Go 语言的背景下。
+类型和接口 由于反射建立在类型机制上，所以我们先来介绍一下 Go 的类型。
+Go 是静态类型语言，每个变量都有一个静态的类型，就是说，在编译的时候，变量的类型必须是固定且唯一的。 比如： int, float32, *MyType, []byte 等等。如果我们如下申明：
+type MyInt int var i int var j MyInt  那么，变量 i 就是 int 类型，变量 j 就是 MyInt 类型。 尽管 i 和 j 拥有相同的底层类型， 但他们本身是完全不同的类型，他们不能直接互相赋值，必须通过类型转换。
+接口( interface )是 Go 类型中非常重要的一种类型，它代表一些方法的固定集合。 一个接口变量可以存放任意的（非接口）具体值，只要这个值实现了接口包含的所有方法。 比较著名的一对例子就是 io.</description>
+    </item>
+    
+    <item>
+      <title>解决 Git Hooks 无法运行的问题</title>
+      <link>qianpeili.github.io/posts/%E8%A7%A3%E5%86%B3git%E9%92%A9%E5%AD%90%E6%97%A0%E6%B3%95%E8%BF%90%E8%A1%8C%E7%9A%84%E9%97%AE%E9%A2%98/</link>
+      <pubDate>Sat, 15 Jul 2017 14:46:17 +0800</pubDate>
+      
+      <guid>qianpeili.github.io/posts/%E8%A7%A3%E5%86%B3git%E9%92%A9%E5%AD%90%E6%97%A0%E6%B3%95%E8%BF%90%E8%A1%8C%E7%9A%84%E9%97%AE%E9%A2%98/</guid>
+      <description>这两天在研究 Git Hooks 的过程中，遇到一个问题。
+在触发钩子时，终端一直输出：
+remote: error: cannot run hooks/post-receive: No such file or directory  其实这不是文件不存在的问题，反而是文件存在，但是有问题才会出现这个提示。
+经过网上查找，主要有两个原因
+一、 脚本解释器异常
+比如不小心把 /bin/bash 写成了 /bin/bsah, 这个情况修改成正确可用的解释器即可。
+二、 错误的换行符
+在 windows 系统里，采用 CRLF 作换行符，而在 linux 下采用 LF 作换行符。
+因为我的脚本是在 windows 系统下编写完成后，直接放到 gitlab 服务器上的。所以代码里的换行符是 CRLF，这造成了 git 运行文件时的失败。
+修复方法，去掉脚本文件中的 /r 字符：
+sed -i -e &#39;s/\r//g&#39; .git/hooks/pre-commit  参考：
+Git - remote: error: cannot run hooks/post-receive: No such file or directory - Stack Overflow
+另外推荐一篇讲 GIT 换行符的</description>
+    </item>
+    
+    <item>
+      <title>通过 pre-hook 判断是否推送重复的内容</title>
+      <link>qianpeili.github.io/posts/pre-receive%E4%B8%AD%E5%88%A4%E6%96%AD%E9%87%8D%E5%A4%8D%E7%9A%84%E6%96%87%E4%BB%B6/</link>
+      <pubDate>Fri, 14 Jul 2017 18:20:59 +0800</pubDate>
+      
+      <guid>qianpeili.github.io/posts/pre-receive%E4%B8%AD%E5%88%A4%E6%96%AD%E9%87%8D%E5%A4%8D%E7%9A%84%E6%96%87%E4%BB%B6/</guid>
+      <description>前言 昨天运维同事找我，要求实现一个 pre-receive 钩子，在里面判断推送的文件中是否有重复的文件，如果有就拒绝此次 push。问我该如何实现。
+虽然觉得这个判断标准有点莫名其妙，但还是想办法实现了一下。途中遇到过很多问题，以为无法实现，不过最终还是找到了解决方法。
+简单介绍 pre-receive  参考连接： Git - githooks Documentation
+ pre-receive 是 Git 众多 Hooks 中的一种，在远程库中触发。当 server 端(比如：gitlab)收到用户的 push 内容后，在更改远程库内容前，如果 pre-receive 文件存在，就会执行这个文件。文件正常退出（exit 0）表示接受该次 push, 反之则拒绝。
+server 端执行 pre-receive 时，没有参数，但会从标准输入写入一行数据：
+&amp;lt;old-value&amp;gt; SP &amp;lt;new-value&amp;gt; SP &amp;lt;ref-name&amp;gt; LF  Git object  参考连接：
+ Git Book - The Git Object Model Git Magic - Chapter 8. Secrets Revealed   在使用 git push 命令时，终端可以看到类似下面的输出
+Writing objects: 100% (3/3), 253 bytes | 0 bytes/s, done.</description>
+    </item>
+    
+    <item>
+      <title>Bash输出重定向</title>
+      <link>qianpeili.github.io/posts/%E8%BE%93%E5%87%BA%E9%87%8D%E5%AE%9A%E5%90%91/</link>
+      <pubDate>Sun, 09 Jul 2017 15:20:36 +0800</pubDate>
+      
+      <guid>qianpeili.github.io/posts/%E8%BE%93%E5%87%BA%E9%87%8D%E5%AE%9A%E5%90%91/</guid>
+      <description>对 bash 命令一直不太熟，每次使用 nohup 命令都要从网上现找。 有时会看到一些命令后面跟着 &amp;quot;2&amp;gt;&amp;amp;1&amp;quot; 的参数。比如
+nohupy python test.py &amp;gt; test.log 2&amp;gt;&amp;amp;1  之前也没有多管，直接用了。前几天又在其他人的 shell 脚本中看到 &amp;quot;2&amp;gt;&amp;amp;1&amp;quot;, 才想起去了解一下 ，现把内容整理一下做记录。
+主要内容借鉴于Bash One-Liners Explained, Part III: All about redirections - good coders code, great coders reuse，原文非常详细，欢迎访问原文。
+当 bash 启动时，会开启三个标准文件描述符：stdin, stdout, stderr。
+它们都指向了 /dev/tty0 即我们当前使用的控制台。 0 代表 stdin， 1 代表 stdout, 2 代表stderr。
+当我们输入一个命令：
+python test.py &amp;gt; file  &amp;gt; 就是输出重定向运算符，bash 首先会以写的形式打开 file，成功后上述命令的 stdout 就会被发送到这个打开的 file 中。如果打开失败，则整个命令失败。
+python test.py &amp;gt; file 命令等同于 python test.</description>
+    </item>
+    
+    <item>
+      <title>Git Submodule的使用</title>
+      <link>qianpeili.github.io/posts/git-submodule%E4%BD%BF%E7%94%A8/</link>
+      <pubDate>Tue, 13 Jun 2017 19:11:01 +0800</pubDate>
+      
+      <guid>qianpeili.github.io/posts/git-submodule%E4%BD%BF%E7%94%A8/</guid>
+      <description>Submodule介绍 前几天因为项目需求，接触了Git的Submodule功能。
+客户端和服务端的项目各自独立开发，因为要用到一个共同的子库——SubA，SubA即需要独立保持版本信息，又需要同时给客户端和服务端的项目提供支持。Submodule正好可以帮助我们管理这个问题。
+Submodule语法 git submodule [--quiet] add [&amp;lt;options&amp;gt;] [--] &amp;lt;repository[&amp;lt;path&amp;gt;] git submodule [--quiet] status [--cached] [--recursive] [--] [&amp;lt;path&amp;gt;…​] git submodule [--quiet] init [--] [&amp;lt;path&amp;gt;…​] git submodule [--quiet] deinit [-f|--force] (--all|[--] &amp;lt;path&amp;gt;…​) git submodule [--quiet] update [&amp;lt;options&amp;gt;] [--] [&amp;lt;path&amp;gt;…​] git submodule [--quiet] summary [&amp;lt;options&amp;gt;] [--] [&amp;lt;path&amp;gt;…​] git submodule [--quiet] foreach [--recursive] &amp;lt;command&amp;gt; git submodule [--quiet] sync [--recursive] [--] [&amp;lt;path&amp;gt;…​] git submodule [--quiet] absorbgitdirs [--] [&amp;lt;path&amp;gt;…​]  Submodule实践 目前有3个库： Main， SubA, SubB</description>
+    </item>
+    
+    <item>
+      <title>【翻译】 Nginx 如何处理一个请求</title>
+      <link>qianpeili.github.io/posts/nginx%E5%A6%82%E4%BD%95%E5%A4%84%E7%90%86%E4%B8%80%E4%B8%AA%E8%AF%B7%E6%B1%82/</link>
+      <pubDate>Fri, 09 Jun 2017 20:12:05 +0800</pubDate>
+      
+      <guid>qianpeili.github.io/posts/nginx%E5%A6%82%E4%BD%95%E5%A4%84%E7%90%86%E4%B8%80%E4%B8%AA%E8%AF%B7%E6%B1%82/</guid>
+      <description>原文：How nginx processes a request
+网上不乏好的翻译，我再做一次翻译，只是为了让自己更好地理解，也方便以后自己翻阅。
+Name-based virtual servers nginx 首先需要判断哪个 Server 来处理这个请求。让我们来看一个简单的配置文件，里面定义了3个虚拟服务器，并且都监听了80端口。
+server { listen 80; server_name example.org www.example.org; ... } server { listen 80; server_name example.net www.example.net; ... } server { listen 80; server_name example.com www.example.com; ... }  这份配置文件测试的情况是，nginx 根据请求头中的 Host 字段，选择将请求导向哪个 Server。如果Host的值不匹配所有 server_name,或者值为空，那么 nginx 会将请求导向监听这个端口的默认虚拟 Server。如上的配置文件，nginx 会默认把第一个 Server 选为默认 Server。当然也可以通过配置 listen 指令的 default_server 参数，来指定默认 Server。
+server { listen 80 default_server; server_name example.net www.example.net; ... }  How to prevent processing requests with undefined server names 如果想要阻止没有Host头字段的请求，可以通过配置一个如下Server来实现：</description>
+    </item>
+    
+    <item>
+      <title>Go的依赖管理工具govendor</title>
+      <link>qianpeili.github.io/posts/go%E7%9A%84%E4%BE%9D%E8%B5%96%E7%AE%A1%E7%90%86%E5%B7%A5%E5%85%B7govendor/</link>
+      <pubDate>Mon, 22 May 2017 18:11:05 +0800</pubDate>
+      
+      <guid>qianpeili.github.io/posts/go%E7%9A%84%E4%BE%9D%E8%B5%96%E7%AE%A1%E7%90%86%E5%B7%A5%E5%85%B7govendor/</guid>
+      <description>依赖管理是我接触 go 以来，觉得比较麻烦的事情。 不过在 go-1.5 版本中，出现了一个 vendor 的概念，并且 vendor 作为一个默认功能存在于1.7之后的版本中。
+vendor的概念就类似于python中的 virtualenv 建立的 env，它是一个文件夹，里面存放了项目所用的依赖。如果项目中有个文件 import 了第三方的 package，而这个 package 又存在项目的 vendor 目录中，这个文件编译的时候会从 vendor 中 import 这个 package
+比如：
+$GOPATH | src/ | | project/ | | | main.go | | | vendor/ | | | | github.com/pkg/sftp/ | | | | golang.org/x/crypto/ssh/ | | | | | agent/  其中 project/main.go 中:
+import ( ... &amp;quot;golang.org/x/crypto/ssh&amp;quot; )  因为项目 project 中有 vendor 目录，并且存在 golang.</description>
+    </item>
+    
+    <item>
+      <title>tcp经受时延</title>
+      <link>qianpeili.github.io/posts/tcp%E7%BB%8F%E5%8F%97%E6%97%B6%E5%BB%B6/</link>
+      <pubDate>Sat, 20 May 2017 16:15:51 +0800</pubDate>
+      
+      <guid>qianpeili.github.io/posts/tcp%E7%BB%8F%E5%8F%97%E6%97%B6%E5%BB%B6/</guid>
+      <description>学 TCP/IP 协议听到最多的就是三次握手和四次挥手协议了吧。由于最近在折腾 tcpdump ，就想着实战抓一下 tcp 协议的这个握手和挥手协议。于是我在本地向内网测试机器的服务上发起了一个 POST 请求，抓到如下信息：
+15:05:03.904647 IP socket-client.56558 &amp;gt; socket-server.3000: Flags [S], seq 2090421259, win 64240, options [mss 1460,nop,wscale 8,nop,nop,sackOK], length 0 15:05:03.904699 IP socket-server.3000 &amp;gt; socket-client.56558: Flags [S.], seq 2303886283, ack 2090421260, win 29200, options [mss 1460,nop,nop,sackOK,nop,wscale 7], length 0 15:05:03.905263 IP socket-client.56558 &amp;gt; socket-server.3000: Flags [.], ack 1, win 2053, length 0 15:05:03.905596 IP socket-client.56558 &amp;gt; socket-server.3000: Flags [P.], seq 1:230, ack 1, win 2053, length 229 15:05:03.</description>
+    </item>
+    
+    <item>
+      <title>tcpdump的使用实例</title>
+      <link>qianpeili.github.io/posts/tcpdump%E7%9A%84%E4%BD%BF%E7%94%A8%E5%AE%9E%E4%BE%8B/</link>
+      <pubDate>Sat, 20 May 2017 13:46:45 +0800</pubDate>
+      
+      <guid>qianpeili.github.io/posts/tcpdump%E7%9A%84%E4%BD%BF%E7%94%A8%E5%AE%9E%E4%BE%8B/</guid>
+      <description>介绍 tcpdump 是 Linux 系统下进行网络分析的重要工具，我也因为对抓包这一块有些好奇，就找了些资料学习，然后整理成这篇文章。
+使用说明 命令模式：
+tcpdump [ -AbdDefhHIJKlLnNOpqStuUvxX# ] [ -B buffer_size ] [ -c count ] [ -C file_size ] [ -G rotate_seconds ] [ -F file ] [ -i interface ] [ -j tstamp_type ] [ -m module ] [ -M secret ] [ --number ] [ -Q in|out|inout ] [ -r file ] [ -V file ] [ -s snaplen ] [ -T type ] [ -w file ] [ -W filecount ] [ -E spi@ipaddr algo:secret,.</description>
+    </item>
+    
+    <item>
+      <title>unicode小技巧</title>
+      <link>qianpeili.github.io/posts/unicode%E5%B0%8F%E6%8A%80%E5%B7%A7/</link>
+      <pubDate>Fri, 07 Apr 2017 10:20:30 +0800</pubDate>
+      
+      <guid>qianpeili.github.io/posts/unicode%E5%B0%8F%E6%8A%80%E5%B7%A7/</guid>
+      <description>今天遇到一个问题
+在mysql查询日志时，发现一些unicode字符串存储变成了
+u7528u6237u53d6u6d88u8ba2u5355u8bf7u6c42  这个形式，手动加\虽然可行，但毕竟不是长久的办法
+所以最好的办法是将字符串中的内容，根据unicode格式转换成unicode
+代码如下:
+import re a = &amp;quot;u7528u6237u53d6u6d88u8ba2u5355u8bf7u6c42&amp;quot; pattern = re.compile(&amp;quot;\u(.{4})&amp;quot;) maps = pattern.findall(a) s = &amp;quot;&amp;quot; for i in maps: tmp = unichr(int(i, 16)) s += tmp print s  就会输出原先代表的文字意思了
+注： 以上是代码是python2版本， python3需要把unichr改成chr</description>
+    </item>
+    
+    <item>
+      <title>用mongodb统计去重后的数量</title>
+      <link>qianpeili.github.io/posts/calculate_unique_size_with_mongodb/</link>
+      <pubDate>Thu, 16 Mar 2017 18:11:29 +0800</pubDate>
+      
+      <guid>qianpeili.github.io/posts/calculate_unique_size_with_mongodb/</guid>
+      <description>假设有一个活动记录表，记录了玩家的参与信息，每个玩家有多条记录，格式如下
+{ _id: ObjectId(), uid: 1014, score: 10 }  要求统计参与活动的玩家中，分数大于等于10的人数。
+var num = db.activity_log.aggregate([ {$match: {&amp;quot;score&amp;quot;: {&amp;quot;$ge&amp;quot;: 10}}}, # 筛选 {$group: {&amp;quot;_id&amp;quot;: null, &amp;quot;users&amp;quot;: {$addToSet: &amp;quot;$uid&amp;quot;}}}, # 将玩家ID放入一个集合，作去重 {&amp;quot;$project&amp;quot;: {&amp;quot;_id&amp;quot;: {&amp;quot;$size&amp;quot;: &amp;quot;$users&amp;quot;}}} # 求集合大小 ]);  得出结果{&amp;quot;_id&amp;quot;: 46}</description>
+    </item>
+    
+    <item>
+      <title>Replace Type Code With State/Strategy</title>
+      <link>qianpeili.github.io/posts/replace_type_code_with_state_strategy/</link>
+      <pubDate>Mon, 26 Dec 2016 20:55:47 +0800</pubDate>
+      
+      <guid>qianpeili.github.io/posts/replace_type_code_with_state_strategy/</guid>
+      <description>今天在阅读《重构：改善既有代码的设计》第一个案例中，遇到了一个replace type code with state/strategy的概念，不是很了解， 但大概懂了意思。决定用python实现一下其代码。
+觉得主要思想是：
+一个对象(Movie)有一个属性(price_code)，这个属性的不同会导致对象的方法(get_charge)返回不同的结果。
+最开始的想法肯定是用subclass进行分类，但是一部电影可以更换price_code，一个对象没法更换其所属类，所以直接建立一个price对象作为属性，改变price_code时，即改变了price对象。
+重构前的代码：
+class Movie(object): REGULAR = 0 NEW_RELEASE = 1 CHILDRENS = 2 def __init__(self, title, price_code): self.title = title self.price_code = price_code def get_charge(self, days_rented): result = 0 if self.price_code == self.REGULAR: result += 2 if days_rented &amp;gt; 2: result += (days_rented - 2) * 1.5 elif self.price_code == self.NEW_RELEASE: result += days_rented * 3 elif self.price_code == self.CHILDRENS: result += 1.</description>
+    </item>
+    
+  </channel>
+</rss>

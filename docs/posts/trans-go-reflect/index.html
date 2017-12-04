@@ -1,0 +1,732 @@
+<!DOCTYPE html>
+<html lang='en'>
+
+<head>
+  <meta charset='utf-8'>
+<meta name='viewport' content='width=device-width, initial-scale=1'>
+<meta name='description' content='原文链接： The Laws of Reflection - The Go Blog
+作者： Rob Pike
+翻译： 钱佩丽
+介绍 反射( reflection )在计算机中指的是一个程序审查自身结构的能力，尤其是类型( Types )。 反射是元编程的一种形式，也是让人觉得头疼的一个点。
+在这篇文章中，我们将对反射在 Go 中的工作原理做一些解释说明。 各种计算机语言的反射机制不尽相同（有的甚至没有反射）， 但这篇文章，我们只关心 Go 语言中的反射， 文中所有反射，都是在 Go 语言的背景下。
+类型和接口 由于反射建立在类型机制上，所以我们先来介绍一下 Go 的类型。
+Go 是静态类型语言，每个变量都有一个静态的类型，就是说，在编译的时候，变量的类型必须是固定且唯一的。 比如： int, float32, *MyType, []byte 等等。如果我们如下申明：
+type MyInt int var i int var j MyInt  那么，变量 i 就是 int 类型，变量 j 就是 MyInt 类型。 尽管 i 和 j 拥有相同的底层类型， 但他们本身是完全不同的类型，他们不能直接互相赋值，必须通过类型转换。
+接口( interface )是 Go 类型中非常重要的一种类型，它代表一些方法的固定集合。 一个接口变量可以存放任意的（非接口）具体值，只要这个值实现了接口包含的所有方法。 比较著名的一对例子就是 io.'>
+
+<meta property='og:title' content='【翻译】Go语言中的反射机制 • 爪子'>
+<meta property='og:description' content='原文链接： The Laws of Reflection - The Go Blog
+作者： Rob Pike
+翻译： 钱佩丽
+介绍 反射( reflection )在计算机中指的是一个程序审查自身结构的能力，尤其是类型( Types )。 反射是元编程的一种形式，也是让人觉得头疼的一个点。
+在这篇文章中，我们将对反射在 Go 中的工作原理做一些解释说明。 各种计算机语言的反射机制不尽相同（有的甚至没有反射）， 但这篇文章，我们只关心 Go 语言中的反射， 文中所有反射，都是在 Go 语言的背景下。
+类型和接口 由于反射建立在类型机制上，所以我们先来介绍一下 Go 的类型。
+Go 是静态类型语言，每个变量都有一个静态的类型，就是说，在编译的时候，变量的类型必须是固定且唯一的。 比如： int, float32, *MyType, []byte 等等。如果我们如下申明：
+type MyInt int var i int var j MyInt  那么，变量 i 就是 int 类型，变量 j 就是 MyInt 类型。 尽管 i 和 j 拥有相同的底层类型， 但他们本身是完全不同的类型，他们不能直接互相赋值，必须通过类型转换。
+接口( interface )是 Go 类型中非常重要的一种类型，它代表一些方法的固定集合。 一个接口变量可以存放任意的（非接口）具体值，只要这个值实现了接口包含的所有方法。 比较著名的一对例子就是 io.'>
+<meta property='og:url' content='qianpeili.github.io/posts/trans-go-reflect/'>
+<meta property='og:site_name' content='爪子'>
+<meta property='og:type' content='article'><meta property='article:section' content='Posts'><meta property='article:tag' content='go'><meta property='article:published_time' content='2017-07-28T20:48:11&#43;08:00'/><meta property='article:modified_time' content='2017-07-28T20:48:11&#43;08:00'/><meta name='twitter:card' content='summary'>
+
+<meta name="generator" content="Hugo 0.30.2" />
+
+  <title>【翻译】Go语言中的反射机制 • 爪子</title>
+  <link rel='canonical' href='qianpeili.github.io/posts/trans-go-reflect/'>
+  
+  
+  <link rel='icon' href='/qianpeili.github.io/favicon.ico'>
+<link rel='stylesheet' href='https://fonts.googleapis.com/css?family=Ubuntu:400,400i,700&subset=latin'>
+<link rel='stylesheet' href='/qianpeili.github.io/assets/css/main.77da63e1.css'><link rel='stylesheet' href='/qianpeili.github.io/css/custom.css'>
+<script>
+window.ga=window.ga||function(){(ga.q=ga.q||[]).push(arguments)};ga.l=+new Date;
+ga('create', 'UA-100449520-1', 'auto');
+ga('send', 'pageview');
+</script>
+<script async src='//www.google-analytics.com/analytics.js'></script>
+
+</head>
+
+
+<body class='page type-posts'>
+  <div class='site'>
+
+    <a class='screen-reader' href='#main'>Skip to Content</a>
+
+    <header id='header' class='header-container'>
+      <div class='header site-header'>
+        <nav id='main-menu' class='main-menu-container' aria-label='Main Menu'>
+  <ul class='main-menu'>
+  <li>
+      <a href='qianpeili.github.io/'>Home</a>
+    </li>
+  <li>
+      <a href='qianpeili.github.io/posts'>Posts</a>
+    </li>
+  <li>
+      <a href='qianpeili.github.io/categories'>Categories</a>
+    </li>
+  <li>
+      <a href='qianpeili.github.io/tags'>Tags</a>
+    </li>
+  <li>
+      <a href='qianpeili.github.io/about'>About</a>
+    </li>
+  
+  </ul>
+</nav>
+
+        <div class='header-info'>
+          
+          <p class='site-title title'>爪子</p>
+          
+          <p class='site-description subtitle'>易燃易爆炸</p>
+        </div>
+      </div>
+    </header>
+
+
+<main id='main' class='main'>
+  <article lang='en' class='entry'>
+    <header class='header-container'>
+  <div class='header entry-header'>
+    <div class='header-info'>
+      <h1 class='title'>【翻译】Go语言中的反射机制</h1>
+      
+
+    </div>
+    
+<div class='meta'>
+  <span class='posted-on'><svg class='icon' viewbox='0 0 24 24' stroke-linecap='round' stroke-linejoin='round' stroke-width='2' aria-hidden='true'>
+  
+  <rect x="3" y="4" width="18" height="18" rx="2" ry="2"/>
+  <line x1="16" y1="2" x2="16" y2="6"/>
+  <line x1="8" y1="2" x2="8" y2="6"/>
+  <line x1="3" y1="10" x2="21" y2="10"/>
+  
+</svg>
+<span class='screen-reader'>Posted on </span>
+  <time class='date' datetime='2017-07-28T20:48:11&#43;08:00'>2017, Jul 28</time>
+</span>
+
+  
+  
+<span class='reading-time'><svg class='icon' viewbox='0 0 24 24' stroke-linecap='round' stroke-linejoin='round' stroke-width='2' aria-hidden='true'>
+  
+  <circle cx="12" cy="12" r="10"/>
+  <polyline points="12 6 12 12 15 15"/>
+  
+</svg>
+5 mins read
+</span>
+
+
+</div>
+
+
+  </div>
+</header>
+
+    
+    
+
+    <div class='entry-content'>
+  
+
+<p>原文链接： <a href="https://blog.golang.org/laws-of-reflection" target="_blank">The Laws of Reflection - The Go Blog</a></p>
+
+<p>作者： Rob Pike</p>
+
+<p>翻译： 钱佩丽</p>
+
+<h1 id="介绍">介绍</h1>
+
+<p>反射( <code>reflection</code> )在计算机中指的是一个程序审查自身结构的能力，尤其是类型( <code>Types</code> )。
+反射是元编程的一种形式，也是让人觉得头疼的一个点。</p>
+
+<p>在这篇文章中，我们将对反射在 Go 中的工作原理做一些解释说明。
+各种计算机语言的反射机制不尽相同（有的甚至没有反射），
+但这篇文章，我们只关心 Go 语言中的反射，
+文中所有反射，都是在 Go 语言的背景下。</p>
+
+<h1 id="类型和接口">类型和接口</h1>
+
+<p>由于反射建立在类型机制上，所以我们先来介绍一下 Go 的类型。</p>
+
+<p>Go 是静态类型语言，每个变量都有一个静态的类型，就是说，在编译的时候，变量的类型必须是固定且唯一的。
+比如： <code>int</code>, <code>float32</code>, <code>*MyType</code>, <code>[]byte</code> 等等。如果我们如下申明：</p>
+
+<pre><code>type MyInt int
+
+var i int
+var j MyInt
+</code></pre>
+
+<p>那么，变量 <code>i</code> 就是 <code>int</code> 类型，变量 <code>j</code> 就是 <code>MyInt</code> 类型。 尽管 <code>i</code> 和 <code>j</code> 拥有相同的底层类型，
+但他们本身是完全不同的类型，他们不能直接互相赋值，必须通过类型转换。</p>
+
+<p>接口( <code>interface</code> )是 Go 类型中非常重要的一种类型，它代表一些方法的固定集合。
+一个接口变量可以存放任意的（非接口）具体值，只要这个值实现了接口包含的所有方法。
+比较著名的一对例子就是 <code>io.Reader</code> 和 <code>io.Writer</code>，
+<code>Reader</code> 和 <code>Writer</code> 两个类型都来自包 <a href="http://golang.org/pkg/io/" target="_blank">io-package</a>。</p>
+
+<pre><code>// Reader is the interface that wraps the basic Read method.
+type Reader interface {
+Read(p []byte) (n int, err error)
+}
+
+// Writer is the interface that wraps the basic Write method.
+type Writer interface {
+Write(p []byte) (n int, err error)
+}
+</code></pre>
+
+<p>任何类型，只要实现了上述的 <code>Read</code> （或者 <code>Write</code>）方法，我们就说它实现了 <code>io.Reader</code> （或者 <code>io.Writer</code>）接口。
+也就是说，<code>io.Reader</code> 对象可以存放任何实现了 <code>Read</code> 方法的值。</p>
+
+<pre><code>var r io.Reader
+r = os.Stdin
+r = bufio.NewReader(r)
+r = new(bytes.Buffer)
+// and so on
+</code></pre>
+
+<p>但必须清楚一点，不管 <code>r</code> 的具体值是什么，<code>r</code> 的类型只会是 <code>io.Reader</code>： Go 是静态类型，而 <code>r</code> 的静态类型就是 <code>io.Reader</code>。</p>
+
+<p>接口的一个极端例子是空接口：</p>
+
+<pre><code>interface{}
+</code></pre>
+
+<p>它代表一个空的方法集合并且适用于任何值，因为任务值都有至少零个或者更多个方法。</p>
+
+<p>有些人可能会误解 Go 的接口是动态类型，
+但它其实是静态类型：
+一个值的接口类型永远只会是同一个静态类型，
+即使在程序运行时，
+接口的值类型发生了变化，
+这个值也永远都会满足这个接口所定义的方法。</p>
+
+<p>我们需要明确了解以上这些信息，因为反射和接口密切相关。</p>
+
+<h1 id="接口的表示">接口的表示</h1>
+
+<p>Russ Cox 曾写过一篇 <a href="http://research.swtch.com/2009/12/go-data-structures-interfaces.html" target="_blank">文章</a> 详细讲述了 Go 语言中接口的表示。
+这里就不再长篇大论了，只做一个简短总结。</p>
+
+<p>一个接口变量存储的内容是成对的：
+变量的具体值和值的类型描述。
+更精确的说，值就是实现接口的底层的数据，
+而类型就是底层数据的原始类型。
+举个例子，如果做如下申明：</p>
+
+<pre><code>var r io.Reader
+tty, err := os.OpenFile(&quot;/dev/tty&quot;, os.O_RDWR, 0)
+if err != nil {
+    return nil, err
+}
+r = tty
+</code></pre>
+
+<p><code>r</code> 包含的 (值、类型) 对大致是： (<code>tty</code>, <code>*os.File</code>)。
+注意尽管接口只需要我们提供 <code>Read</code> 方法，
+但是 <code>*os.File</code> 类型实现了 <code>Read</code> 以外的方法，
+内部的值包含了值的类型信息，因此我们也可以这么做：</p>
+
+<pre><code>var w io.Writer
+w = r.(io.Writer)
+</code></pre>
+
+<p>上面的表达式完成了一次类型断言。
+断言的内容是 <code>r</code> 内部的值也实现了 <code>io.Writer</code> 的接口，
+因此我们可以把这个值赋值给 <code>w</code>。赋值后，
+<code>w</code> 保存了跟 <code>r</code> 一样的一对信息(<code>tty</code>, <code>*os.File</code>)。
+接口的静态类型决定了接口变量可以调用哪些方法，
+而不用去管这个具体值是否拥有更多其它的方法。</p>
+
+<p>接下来，我们来实现以下代码：</p>
+
+<pre><code>var empty interface{}
+empty = w
+</code></pre>
+
+<p>我们的接口变量 <code>empty</code> 包含了同样的信息对 (<code>tty</code>, <code>*os.File</code>)。
+这很好理解：一个空接口可以存放任何值，
+并包含了所有我们需要的关于这个值的信息。</p>
+
+<p>（在这里我们不需要进行类型断言，
+因为我们知道 <code>w</code> 肯定满足成为一个空接口的要求。
+而在将值从一个 <code>Writer</code> 接口类型赋值到 <code>Reader</code> 接口类型的例子中，
+我们必须要通过类型断言明确知道这个值是否符合新的接口类型，
+因为 <code>Writer</code> 和 <code>Reader</code> 接口所需要实现的方法是完全不同的。）</p>
+
+<p>一个重要细节是，
+一个接口变量的信息对永远只会是（值，具体类型）,
+而不会是（值，接口类型）。
+接口不存放接口值。</p>
+
+<h1 id="反射定律">反射定律</h1>
+
+<h2 id="第一定律-反射可以将接口值转换成反射对象">第一定律：反射可以将接口值转换成反射对象</h2>
+
+<p>在基础层面，反射仅仅是一种用来检查接口变量值-类型对的机制。
+首先，我们需要了解 <a href="https://golang.org/pkg/reflect/" target="_blank">reflect - package</a> 的:<br />
+<a href="https://golang.org/pkg/reflect/#Type" target="_blank">Type</a> 和
+<a href="https://golang.org/pkg/reflect/#Value" target="_blank">Value</a>，
+这两个类型可以让我们访问一个接口变量的内容。另外两个简单的函数，
+<code>reflect.TypeOf</code> 和 <code>reflect.ValueOf</code> 可以帮我们获取接口值的 <code>reflect.Value</code> 和 <code>reflect.Type</code>。
+当然通过 <code>reflect.Value</code> 可以很容易得到 <code>reflect.Type</code>，但现在我们先把这两者的概念分离。</p>
+
+<p>现在我们开始使用 <code>TypeOf</code> 吧：</p>
+
+<pre><code>package main
+
+import (
+    &quot;fmt&quot;
+    &quot;reflect&quot;
+)
+
+func main() {
+    var x float64 = 3.4
+    fmt.Println(&quot;type:&quot;, reflect.TypeOf(x))
+}
+</code></pre>
+
+<p>程序输出：</p>
+
+<pre><code>type: float64
+</code></pre>
+
+<p>你也许会好奇这段代码跟接口有什么关系，
+这个程序看起来只是单纯地将一个 <code>float64</code> 的值赋值给 <code>x</code>，
+而不是一个接口值，然后调用了 <code>reflect.TypeOf</code> 函数。
+但是这里确实用到了接口，
+在文档 <a href="https://golang.org/pkg/reflect/#TypeOf" target="_blank">godoc reports</a> 里可以看到，<code>reflect.TypeOf</code> 的参数是一个空接口。</p>
+
+<pre><code>// TypeOf returns the reflection Type of the value in the interface{}.
+func TypeOf(i interface{}) Type
+</code></pre>
+
+<p>当我们调用 <code>reflect.TypeOf(x)</code>时，
+<code>x</code> 是被放在空接口中作为参数传递给函数的，
+然后 <code>reflect.TypeOf</code> 通过解析空接口变量来复原类型信息。</p>
+
+<p>而 <code>reflect.ValueOf</code> 函数自然是复原它的值信息
+（现在开始，让我们忽略样板，只关注代码的执行）。</p>
+
+<pre><code>var x float64 = 3.4
+fmt.Println(&quot;value:&quot;, reflect.ValueOf(x).String())
+</code></pre>
+
+<p>输出：</p>
+
+<pre><code>value: &lt;float64 Value&gt;
+</code></pre>
+
+<p><code>reflect.Type</code> 和 <code>reflect.Value</code> 还有许多其它好用的方法。
+一个显著的例子是 <code>Value</code> 有一个 <code>Type</code> 方法，
+它会返回一个 <code>reflect.Value</code> 的 <code>Type</code> 。
+还有一个例子是，<code>Type</code> 和 <code>Value</code> 都有一个 <code>Kind</code> 方法，
+返回表示底层数据存储的类型常量，
+比如: <code>Uint</code>, <code>Float64</code>, <code>Slice</code> 等等。
+<code>Value</code> 还有 <code>Int</code> 和 <code>Float</code> 方法来帮我们挖掘底层数据的值 (比如 <code>int64</code> 和 <code>float64</code>):</p>
+
+<pre><code>var x float64 = 3.4
+v := reflect.ValueOf(x)
+fmt.Println(&quot;type:&quot;, v.Type())
+fmt.Println(&quot;kind is float64:&quot;, v.Kind() == reflect.Float64)
+fmt.Println(&quot;value:&quot;, v.Float())
+</code></pre>
+
+<p>输出：</p>
+
+<pre><code>type: float64
+kind is float64: true
+value: 3.4
+</code></pre>
+
+<p>另外还有一些方法如 <code>SetInt</code> 和 <code>SetFloat</code>，
+但想要使用它们我们必须要懂 &ldquo;可设值性（<code>settability</code>）&rdquo;,
+这是反射第三定律的主题，我们将会在下面讨论。</p>
+
+<p>反射库有很多值得单独讨论的内容。
+首先，为了保持 API 的简洁，<code>Value</code> 的 <code>getter</code> 和 <code>setter</code> 方法会使用范围最大的类型来存放数据，
+比如： 用 <code>int64</code> 来存放所有含符号整数。
+也就是说 <code>Value</code> 的 <code>Int</code> 方法返回的是数据类型 <code>int64</code>，<code>SetInt</code> 方法接收一个 <code>int64</code> 数据。 有时候我们就不得不转换类型来应对这个情况:</p>
+
+<pre><code>var x uint8 = 'x'
+v := reflect.ValueOf(x)
+fmt.Println(&quot;type:&quot;, v.Type())                            // uint8.
+fmt.Println(&quot;kind is uint8: &quot;, v.Kind() == reflect.Uint8) // true.
+x = uint8(v.Uint())                                       // v.Uint returns a uint64.
+</code></pre>
+
+<p>反射对象的 <code>Kind</code> 属性是用来描述底层的类型，
+而不是静态类型。
+如果一个反射对象拥有一个自定义整数类型，比如：</p>
+
+<pre><code>type MyInt int
+var x MyInt = 7
+v := reflect.ValueOf(x)
+</code></pre>
+
+<p>尽管 <code>x</code> 的静态类型是 <code>MyInt</code>, 而不是 <code>int</code>，
+但 <code>v</code> 的 <code>Kind</code> 依旧是 reflect.Int。换句话说就是,
+<code>Kind</code> 无法区分一个 <code>int</code> 类型和 MyInt类型，
+但是 <code>Type</code> 可以。</p>
+
+<h2 id="第二定律-反射可以将反射对象转换成接口值">第二定律：反射可以将反射对象转换成接口值</h2>
+
+<p>跟物理反射类似，Go 的反射也可以生成自己的逆像。</p>
+
+<p>对一个 reflect.Value，
+我们可以通过 <code>Interface</code> 获得其接口值，
+实际上这个方法重修打包成用于表示接口的（<code>Value</code>，<code>Type</code>）对并返回。</p>
+
+<pre><code>// Interface returns v's value as an interface{}.
+func (v Value) Interface() interface{}
+</code></pre>
+
+<p>因此我们可以用以下方式输出反射对象 <code>v</code> 对应的 <code>float64</code> 值：</p>
+
+<pre><code>y := v.Interface().(float64) // y will have type float64.
+fmt.Println(y)
+</code></pre>
+
+<p>We can do even better, though.
+正如之前的例子所展示的，
+fmt.Printf 等函数都是将参数放在空接口中传入，然后解包进行操作。
+所以，如果想要正确输出 <code>reflect.Value</code> 的内容，
+我们需要先调用 <code>Interface</code> 方法，
+再把获得的结果传给格式化输出程序:</p>
+
+<pre><code>fmt.Println(v.Interface())
+</code></pre>
+
+<p>(为什么不直接 fmt.Println(v)?
+因为 <code>v</code> 是一个 reflect.Value，
+但我们需要的是它所存放的具体值。)
+因为 <code>v</code> 是一个 <code>float64</code> 数字，我们也可以格式化输出浮点类型:</p>
+
+<pre><code>fmt.Printf(&quot;value is %7.1e\n&quot;, v.Interface())
+</code></pre>
+
+<p>得到结果：</p>
+
+<pre><code>3.4e+00
+</code></pre>
+
+<p>再强调一遍， 我们并不需要对 <code>v.Interface()</code> 的结果做 <code>float64</code> 的类型断言，
+空接口值内部已经包含了对应的信息，在输出函数中会对这些信息进行恢复。</p>
+
+<p>总而言之，除了那些只能是空接口的值，
+<code>Interface</code> 方法可以将 <code>ValueOf</code> 函数的结果进行逆转。</p>
+
+<p>重申： 反射可以将接口值转换成反射对象，也可以逆向转回接口值。</p>
+
+<h2 id="第三定律-只有具有可设置性的反射对象才可以修改">第三定律：只有具有可设置性的反射对象才可以修改</h2>
+
+<p>反射的第三条定律是最微妙也是最令人迷惑的，
+但如果我们从第一条定律开始推，那么就很好理解了。</p>
+
+<p>这里有一段无法正常运行，但很值得学习的代码：</p>
+
+<pre><code>var x float64 = 3.4
+v := reflect.ValueOf(x)
+v.SetFloat(7.1) // Error: will panic.
+</code></pre>
+
+<p>如果你运行这段代码，就会看到这样的报错信息：</p>
+
+<pre><code>panic: reflect.Value.SetFloat using unaddressable value
+</code></pre>
+
+<p>这里的问题并不是说 <code>7.1</code> 这个数据无法访问，
+而是因为 <code>v</code> 是不可设置（<code>settable</code>）的。
+可设置性（<code>settability</code>）是 <code>reflect.Value</code> 的一个属性，
+并不是所有 <code>reflect.Value</code> 都有这个属性。</p>
+
+<p><code>Value</code> 有一个 <code>CanSet</code> 方法判断其是不是可设置的。比如：</p>
+
+<pre><code>var x float64 = 3.4
+v := reflect.ValueOf(x)
+fmt.Println(&quot;settability of v:&quot;, v.CanSet())
+</code></pre>
+
+<p>输出：</p>
+
+<pre><code>settability of v: false
+</code></pre>
+
+<p>对一个不可设置的 <code>Value</code> 进行 <code>Set</code> 操作，就会报错。那么，什么是可设置性？</p>
+
+<p>可设置性有点类似可寻址性（<code>addressability</code>），
+但是比可寻址性更严格。 可设置性表示的是，
+反射对象是否可以修改组成其自身的实际存储信息，
+它由反射对象是否存有原始对象决定。当我们运行：</p>
+
+<pre><code>var x float64 = 3.4
+v := reflect.ValueOf(x)
+</code></pre>
+
+<p>我们调用 <code>reflect.ValueOf</code> 时，传进去的是一个 <code>x</code> 的拷贝对象生成的接口，
+而不是 <code>x</code> 本身。如果以下语句：</p>
+
+<pre><code>v.SetFloat(7.1)
+</code></pre>
+
+<p>我们假设它成功了，也不会改变 <code>x</code> 本身，尽管 <code>v</code> 的内容来自 <code>x</code> 。
+这个语句改变的只是包含在接口值中的 <code>x</code> 的拷贝对象，
+对 <code>x</code> 本身来说并不受任何影响。这样的结果会造成误解，
+也不产生实际作用，所以这是非法的，
+这也是可设置性属性用来避免的情况。</p>
+
+<p>虽然看起来很离奇，但它其实只是用一个奇怪的形式，
+实现了一个我们很熟悉的方法。
+假设我们要把 <code>x</code> 传给一个函数:</p>
+
+<pre><code>f(x)
+</code></pre>
+
+<p>我们并不能期望 <code>f</code> 能够改变 <code>x</code> 的内容，
+因为我们传进的是一个拷贝值，而不是 <code>x</code> 本身。
+如果我们想要 <code>f</code> 能够修改 <code>x</code>，
+我们必须传递 <code>x</code> 的地址给函数(也就是 <code>x</code> 的指针):</p>
+
+<pre><code>f(&amp;x)
+</code></pre>
+
+<p>现在看起来就比较直观和熟悉了，
+反射的原理其实也是同样的。
+如果我们想通过反射修改 <code>x</code>，
+我们必须将 <code>x</code> 的指针传给反射工具。</p>
+
+<p>我们来试试吧。首先我们像往常一下初始化 <code>x</code> ，
+然后创建一个指向它的指针的反射 <code>p</code>。</p>
+
+<pre><code>var x float64 = 3.4
+p := reflect.ValueOf(&amp;x) // Note: take the address of x.
+fmt.Println(&quot;type of p:&quot;, p.Type())
+fmt.Println(&quot;settability of p:&quot;, p.CanSet())
+</code></pre>
+
+<p>输出：</p>
+
+<pre><code>type of p: *float64
+settability of p: false
+</code></pre>
+
+<p>反射对象 <code>p</code> 并没有可设置性，但 <code>p</code> 并不是我们想要修改的，<code>*p</code> 才是。
+我们可以使用 <code>Value</code> 的 <code>Elem</code> 方法，
+间接通过指针来获取它所指向的对象，我们把结果赋值给 <code>v</code>:</p>
+
+<pre><code>v := p.Elem()
+fmt.Println(&quot;settability of v:&quot;, v.CanSet())
+</code></pre>
+
+<p>现在，<code>v</code> 就是一个可设置的反射对象了：</p>
+
+<pre><code>settability of v: true
+</code></pre>
+
+<p>这里的 <code>v</code> 代表的就是 <code>x</code>，我们终于可以通过 <code>v.SetFloat</code> 来修改 <code>x</code> 的值了：</p>
+
+<pre><code>v.SetFloat(7.1)
+fmt.Println(v.Interface())
+fmt.Println(x)
+</code></pre>
+
+<p>如我们所料，输出变成了：</p>
+
+<pre><code>7.1
+7.1
+</code></pre>
+
+<p>反射有些难以理解，但它所做的都是一个编程语言该做的，
+只不过用反射的 <code>Types</code> 和 <code>Values</code> 进行了封装。
+记住一点，反射值需要知道变量的地址才能修改他们所代表的对象。</p>
+
+<h2 id="结构体">结构体</h2>
+
+<p>在我们前面的例子中， v 并不是指针，它只是从指针获取的一个对象。 我们通常用这个方式来通过反射修改结构体。只要我们拥有这个结构体的地址，我们就可以修改结构体的字段。</p>
+
+<p>这里有一个处理结构体 <code>t</code> 的小例子。我们使用结构体的地址来创建一个反射对象，稍后我们会用它来修改这个结构体。然后我们将 <code>s</code> 的类型信息记录在 <code>typeOfT</code>，然后通过它来迭代获取字段信息 (详细内容请参考 <code>reflect</code> 库)。我们从结构体类型中提取出了字段的名字，但这些字段本身通常也是 <code>reflect.Value</code> 对象。</p>
+
+<pre><code>type T struct {
+    A int
+    B string
+}
+t := T{23, &quot;skidoo&quot;}
+s := reflect.ValueOf(&amp;t).Elem()
+typeOfT := s.Type()
+for i := 0; i &lt; s.NumField(); i++ {
+    f := s.Field(i)
+    fmt.Printf(&quot;%d: %s %s = %v\n&quot;, i,
+        typeOfT.Field(i).Name, f.Type(), f.Interface())
+}
+</code></pre>
+
+<p>程序的输出结果是：</p>
+
+<pre><code>0: A int = 23
+1: B string = skidoo
+</code></pre>
+
+<p>关于可设置性的介绍，这里还有一点需要注意：<code>T</code> 的字段名称都是大写开头的（公有的，可被外部访问的）， 因为只有结构体的公有字段才是可设值的。</p>
+
+<p>因为 <code>s</code> 包含的是一个可设值的反射对象，因此我们可以修改结构体的字段值。</p>
+
+<pre><code>s.Field(0).SetInt(77)
+s.Field(1).SetString(&quot;Sunset Strip&quot;)
+fmt.Println(&quot;t is now&quot;, t)
+</code></pre>
+
+<p>输出结果:</p>
+
+<pre><code>t is now {77 Sunset Strip}
+</code></pre>
+
+<p>我们我们的程序中，<code>s</code> 并不是由 <code>&amp;t</code> 而是 <code>t</code> 创建而来，那么 <code>SetInt</code> 和 <code>SetString</code> 的调用都会因为 <code>s</code> 的不可设置性而失败。</p>
+
+<h1 id="总结">总结</h1>
+
+<p>这里再次总结下反射的三个定律:</p>
+
+<ul>
+<li><p>反射可以将接口值转换成反射对象。</p></li>
+
+<li><p>反射可以将反射对象转换成接口值。</p></li>
+
+<li><p>只有具有可设置性的反射对象才可以修改。</p></li>
+</ul>
+
+<p>一旦你理解了 Go 中反射的机制，尽管依旧有点微妙，丹妮你已经可以很容易地使用它们了。 这是一个很强大的工具，所以你使用的时候必须严谨和小心。</p>
+
+<p>还有很多其它的反射内容本文没有涉及——在 <code>channels</code> 中的收发，内存分配，切片和映射的使用，方法和函数调用——但是这篇文章已经足够丰富了，我们将会在后续的文章中讨论这些内容。</p>
+
+</div>
+
+    
+<footer class='entry-footer-container'>
+  <div class='entry-footer'>
+  <div class='categories'>
+  <span class='taxonomyTerm-icon'><svg class='icon' viewbox='0 0 24 24' stroke-linecap='round' stroke-linejoin='round' stroke-width='2' aria-hidden='true'>
+  
+  <path d="M22,19a2,2,0,0,1-2,2H4a2,2,0,0,1-2-2V5A2,2,0,0,1,4,3H9l2,3h9a2,2,0,0,1,2,2Z"/>
+  
+</svg>
+</span>
+  <span class='screen-reader'>Categories: </span><a class='category' href='/categories/translation'>Translation</a></div>
+<div class='tags'>
+  <span class='taxonomyTerm-icon'><svg class='icon' viewbox='0 0 24 24' stroke-linecap='round' stroke-linejoin='round' stroke-width='2' aria-hidden='true'>
+  
+  <path d="M20.59,13.41l-7.17,7.17a2,2,0,0,1-2.83,0L2,12V2H12l8.59,8.59A2,2,0,0,1,20.59,13.41Z"/>
+  <line x1="7" y1="7" x2="7" y2="7"/>
+  
+</svg>
+</span>
+  <span class='screen-reader'>Tags: </span><a class='tag' href='/tags/go'>Go</a></div>
+
+  </div>
+</footer>
+
+
+  </article>
+  
+<nav class='entry-nav-container'>
+  <div class='entry-nav'><div class='prev-entry'>
+      <a href='/qianpeili.github.io/posts/%E8%A7%A3%E5%86%B3git%E9%92%A9%E5%AD%90%E6%97%A0%E6%B3%95%E8%BF%90%E8%A1%8C%E7%9A%84%E9%97%AE%E9%A2%98/'>
+        <span aria-hidden='true'><svg class='icon' viewbox='0 0 24 24' stroke-linecap='round' stroke-linejoin='round' stroke-width='2' aria-hidden='true'>
+  
+  <line x1="20" y1="12" x2="4" y2="12"/>
+  <polyline points="10 18 4 12 10 6"/>
+  
+</svg>
+ Previous</span>
+        <span class='screen-reader'>Previous post: </span>解决 Git Hooks 无法运行的问题</a>
+    </div><div class='next-entry'>
+      <a href='/qianpeili.github.io/posts/%E5%8D%87%E7%BA%A7gcc%E8%A7%A3%E5%86%B3heapdump%E5%AE%89%E8%A3%85%E9%94%99%E8%AF%AF/'>
+        <span class='screen-reader'>Next post: </span>升级 GCC 来解决 heapdump build Error<span aria-hidden='true'>Next <svg class='icon' viewbox='0 0 24 24' stroke-linecap='round' stroke-linejoin='round' stroke-width='2' aria-hidden='true'>
+  
+  <line x1="4" y1="12" x2="20" y2="12"/>
+  <polyline points="14 6 20 12 14 18"/>
+  
+</svg>
+</span>
+      </a>
+    </div></div>
+</nav>
+
+  
+<div class='comments-container'>
+  <div id="disqus_thread"></div>
+<script>
+    var disqus_config = function () {
+    
+    
+    
+    };
+    (function() {
+        if (["localhost", "127.0.0.1"].indexOf(window.location.hostname) != -1) {
+            document.getElementById('disqus_thread').innerHTML = 'Disqus comments not available by default when the website is previewed locally.';
+            return;
+        }
+        var d = document, s = d.createElement('script'); s.async = true;
+        s.src = '//' + "zhuazi" + '.disqus.com/embed.js';
+        s.setAttribute('data-timestamp', +new Date());
+        (d.head || d.body).appendChild(s);
+    })();
+</script>
+<noscript>Please enable JavaScript to view the <a href="https://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+<a href="https://disqus.com" class="dsq-brlink">comments powered by <span class="logo-disqus">Disqus</span></a>
+</div>
+
+</main>
+
+    <footer id='footer' class='footer-container'>
+      <div class='footer'>
+        <div class='social-menu-container'>
+  <nav aria-label='Social Menu'>
+    <ul class='social-menu'><li>
+        <a href='https://github.com/qianpeili' target='_blank' rel='noopener'>
+          <span class='screen-reader'>Open Github account in new tab</span><svg class='icon' viewbox='0 0 24 24' stroke-linecap='round' stroke-linejoin='round' stroke-width='2' aria-hidden='true'>
+  
+  <path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22"/>
+  
+</svg>
+</a>
+      </li><li>
+        <a href='https://twitter.com/qianperry' target='_blank' rel='noopener'>
+          <span class='screen-reader'>Open Twitter account in new tab</span><svg class='icon' viewbox='0 0 24 24' stroke-linecap='round' stroke-linejoin='round' stroke-width='2' aria-hidden='true'>
+  
+  <path d="M23 3a10.9 10.9 0 0 1-3.14 1.53 4.48 4.48 0 0 0-7.86 3v1A10.66 10.66 0 0 1 3 4s-4 9 5 13a11.64 11.64 0 0 1-7 2c9 5 20 0 20-11.5a4.5 4.5 0 0 0-.08-.83A7.72 7.72 0 0 0 23 3z"/>
+  
+</svg>
+</a>
+      </li><li>
+        <a href='mailto:qianperry@outlook.com' target='_blank' rel='noopener'>
+          <span class='screen-reader'>Contact via Email</span><svg class='icon' viewbox='0 0 24 24' stroke-linecap='round' stroke-linejoin='round' stroke-width='2' aria-hidden='true'>
+  
+  <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/>
+  <polyline points="22,6 12,13 2,6"/>
+  
+</svg>
+</a>
+      </li></ul>
+  </nav>
+</div>
+        <div class='copyright'>
+  <p>
+        
+      
+
+       &copy; 2017 爪子 
+  </p>
+</div>
+
+      </div>
+    </footer>
+
+  </div><script src='/qianpeili.github.io/assets/js/main.5871befd.js'></script><script src='/qianpeili.github.io/js/custom.js'></script></body>
+
+</html>
+

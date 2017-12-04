@@ -1,0 +1,389 @@
+<!DOCTYPE html>
+<html lang='en'>
+
+<head>
+  <meta charset='utf-8'>
+<meta name='viewport' content='width=device-width, initial-scale=1'>
+<meta name='description' content='依赖管理是我接触 go 以来，觉得比较麻烦的事情。 不过在 go-1.5 版本中，出现了一个 vendor 的概念，并且 vendor 作为一个默认功能存在于1.7之后的版本中。
+vendor的概念就类似于python中的 virtualenv 建立的 env，它是一个文件夹，里面存放了项目所用的依赖。如果项目中有个文件 import 了第三方的 package，而这个 package 又存在项目的 vendor 目录中，这个文件编译的时候会从 vendor 中 import 这个 package
+比如：
+$GOPATH | src/ | | project/ | | | main.go | | | vendor/ | | | | github.com/pkg/sftp/ | | | | golang.org/x/crypto/ssh/ | | | | | agent/  其中 project/main.go 中:
+import ( ... &quot;golang.org/x/crypto/ssh&quot; )  因为项目 project 中有 vendor 目录，并且存在 golang.'>
+
+<meta property='og:title' content='Go的依赖管理工具govendor • 爪子'>
+<meta property='og:description' content='依赖管理是我接触 go 以来，觉得比较麻烦的事情。 不过在 go-1.5 版本中，出现了一个 vendor 的概念，并且 vendor 作为一个默认功能存在于1.7之后的版本中。
+vendor的概念就类似于python中的 virtualenv 建立的 env，它是一个文件夹，里面存放了项目所用的依赖。如果项目中有个文件 import 了第三方的 package，而这个 package 又存在项目的 vendor 目录中，这个文件编译的时候会从 vendor 中 import 这个 package
+比如：
+$GOPATH | src/ | | project/ | | | main.go | | | vendor/ | | | | github.com/pkg/sftp/ | | | | golang.org/x/crypto/ssh/ | | | | | agent/  其中 project/main.go 中:
+import ( ... &quot;golang.org/x/crypto/ssh&quot; )  因为项目 project 中有 vendor 目录，并且存在 golang.'>
+<meta property='og:url' content='qianpeili.github.io/posts/go%E7%9A%84%E4%BE%9D%E8%B5%96%E7%AE%A1%E7%90%86%E5%B7%A5%E5%85%B7govendor/'>
+<meta property='og:site_name' content='爪子'>
+<meta property='og:type' content='article'><meta property='article:section' content='Posts'><meta property='article:tag' content='go'><meta property='article:published_time' content='2017-05-22T18:11:05&#43;08:00'/><meta property='article:modified_time' content='2017-05-22T18:11:05&#43;08:00'/><meta name='twitter:card' content='summary'>
+
+<meta name="generator" content="Hugo 0.30.2" />
+
+  <title>Go的依赖管理工具govendor • 爪子</title>
+  <link rel='canonical' href='qianpeili.github.io/posts/go%E7%9A%84%E4%BE%9D%E8%B5%96%E7%AE%A1%E7%90%86%E5%B7%A5%E5%85%B7govendor/'>
+  
+  
+  <link rel='icon' href='/qianpeili.github.io/favicon.ico'>
+<link rel='stylesheet' href='https://fonts.googleapis.com/css?family=Ubuntu:400,400i,700&subset=latin'>
+<link rel='stylesheet' href='/qianpeili.github.io/assets/css/main.77da63e1.css'><link rel='stylesheet' href='/qianpeili.github.io/css/custom.css'>
+<script>
+window.ga=window.ga||function(){(ga.q=ga.q||[]).push(arguments)};ga.l=+new Date;
+ga('create', 'UA-100449520-1', 'auto');
+ga('send', 'pageview');
+</script>
+<script async src='//www.google-analytics.com/analytics.js'></script>
+
+</head>
+
+
+<body class='page type-posts'>
+  <div class='site'>
+
+    <a class='screen-reader' href='#main'>Skip to Content</a>
+
+    <header id='header' class='header-container'>
+      <div class='header site-header'>
+        <nav id='main-menu' class='main-menu-container' aria-label='Main Menu'>
+  <ul class='main-menu'>
+  <li>
+      <a href='qianpeili.github.io/'>Home</a>
+    </li>
+  <li>
+      <a href='qianpeili.github.io/posts'>Posts</a>
+    </li>
+  <li>
+      <a href='qianpeili.github.io/categories'>Categories</a>
+    </li>
+  <li>
+      <a href='qianpeili.github.io/tags'>Tags</a>
+    </li>
+  <li>
+      <a href='qianpeili.github.io/about'>About</a>
+    </li>
+  
+  </ul>
+</nav>
+
+        <div class='header-info'>
+          
+          <p class='site-title title'>爪子</p>
+          
+          <p class='site-description subtitle'>易燃易爆炸</p>
+        </div>
+      </div>
+    </header>
+
+
+<main id='main' class='main'>
+  <article lang='en' class='entry'>
+    <header class='header-container'>
+  <div class='header entry-header'>
+    <div class='header-info'>
+      <h1 class='title'>Go的依赖管理工具govendor</h1>
+      
+
+    </div>
+    
+<div class='meta'>
+  <span class='posted-on'><svg class='icon' viewbox='0 0 24 24' stroke-linecap='round' stroke-linejoin='round' stroke-width='2' aria-hidden='true'>
+  
+  <rect x="3" y="4" width="18" height="18" rx="2" ry="2"/>
+  <line x1="16" y1="2" x2="16" y2="6"/>
+  <line x1="8" y1="2" x2="8" y2="6"/>
+  <line x1="3" y1="10" x2="21" y2="10"/>
+  
+</svg>
+<span class='screen-reader'>Posted on </span>
+  <time class='date' datetime='2017-05-22T18:11:05&#43;08:00'>2017, May 22</time>
+</span>
+
+  
+  
+<span class='reading-time'><svg class='icon' viewbox='0 0 24 24' stroke-linecap='round' stroke-linejoin='round' stroke-width='2' aria-hidden='true'>
+  
+  <circle cx="12" cy="12" r="10"/>
+  <polyline points="12 6 12 12 15 15"/>
+  
+</svg>
+2 mins read
+</span>
+
+
+</div>
+
+
+  </div>
+</header>
+
+    
+    
+
+    <div class='entry-content'>
+  
+
+<p>依赖管理是我接触 go 以来，觉得比较麻烦的事情。
+不过在 go-1.5 版本中，出现了一个 <code>vendor</code> 的概念，并且 <code>vendor</code> 作为一个默认功能存在于1.7之后的版本中。</p>
+
+<p>vendor的概念就类似于python中的 <code>virtualenv</code> 建立的 <code>env</code>，它是一个文件夹，里面存放了项目所用的依赖。如果项目中有个文件 import 了第三方的 package，而这个 package 又存在项目的 vendor 目录中，这个文件编译的时候会从 vendor 中 import 这个 package</p>
+
+<p>比如：</p>
+
+<pre><code>$GOPATH
+|   src/
+|   |   project/
+|   |   |   main.go
+|   |   |   vendor/
+|   |   |   |   github.com/pkg/sftp/
+|   |   |   |   golang.org/x/crypto/ssh/
+|   |   |   |   |   agent/
+</code></pre>
+
+<p>其中 <code>project/main.go</code> 中:</p>
+
+<pre><code>import (
+    ...
+    &quot;golang.org/x/crypto/ssh&quot;
+)
+</code></pre>
+
+<p>因为项目 project 中有 vendor 目录，并且存在 <code>golang.org/x/crypto/ssh</code>，所以这一行:</p>
+
+<pre><code>import &quot;golang.org/x/crypto/ssh&quot;
+</code></pre>
+
+<p>在编译的时候会变成:</p>
+
+<pre><code>import &quot;project/vendor/golang.org/x/crypto/ssh&quot;
+</code></pre>
+
+<p><a href="https://docs.google.com/document/d/1Bz5-UB7g2uPBdOx-rw5t9MxJwkfpx90cqG9AFL0JAYo/edit" target="_blank">Go 1.5 Vendor Experiment - Google 文档</a> 这里可以看到 vendor 的详细说明。</p>
+
+<h2 id="govendor">Govendor</h2>
+
+<p><code>govendor</code> 是一个管理 vendor 的工具</p>
+
+<p>代码地址： <a href="https://github.com/kardianos/govendor" target="_blank">kardianos/govendor: Go vendor tool that works with the standard vendor file.</a></p>
+
+<h3 id="govendor安装">govendor安装</h3>
+
+<pre><code>go get -u -v github.com/kardianos/govendor
+</code></pre>
+
+<h3 id="govendor使用">govendor使用</h3>
+
+<p>首先对项目进行初始化</p>
+
+<pre><code>govendor init
+</code></pre>
+
+<p>然后列出项目所需的依赖</p>
+
+<pre><code>govendor list
+</code></pre>
+
+<p>下面是我自己的项目所需的依赖，其中 <code>Bomber</code> 是当前项目的名称</p>
+
+<pre><code> e  github.com/golang/protobuf/proto
+ e  golang.org/x/crypto/bcrypt
+ e  golang.org/x/crypto/blowfish
+ e  gopkg.in/mgo.v2
+ e  gopkg.in/mgo.v2/bson
+ e  gopkg.in/mgo.v2/internal/json
+ e  gopkg.in/mgo.v2/internal/sasl
+ e  gopkg.in/mgo.v2/internal/scram
+pl  Bomber
+ l  Bomber/db
+ l  Bomber/gate
+ l  Bomber/handlers
+ l  Bomber/models
+ l  Bomber/network
+ l  Bomber/protodata
+pl  Bomber/test
+ l  Bomber/tools
+</code></pre>
+
+<p>每个 package 前有个 flag 标记，分别代表：</p>
+
+<pre><code>+local    (l) packages in your project
++external (e) referenced packages in GOPATH but not in current project
++program  (p) package is a main package
++all      +all packages
+</code></pre>
+
+<p>现在我们把第三方包加入vendor目录中</p>
+
+<pre><code>govendor add +e
+</code></pre>
+
+<p>或者单独添加某个包</p>
+
+<pre><code>govendor add {package_name}
+</code></pre>
+
+<p>当然还可以添加当前项目到 <code>vendor</code> 中</p>
+
+<pre><code>govendor add +l
+</code></pre>
+
+<p><em>添加当前项目似乎没有太大作用，但是在制作 <code>docker image</code> 的时候将当前项目加入 vendor 会省事不少。</em></p>
+
+<p>然后你会看到项目中的 vendor 目录中，已经把依赖的源码添加进去了。其中还有个 <code>vendor.json</code> 文件，里面记录了 vendor 目录中包含的 package 信息。</p>
+
+<pre><code>{
+    &quot;comment&quot;: &quot;&quot;,
+    &quot;ignore&quot;: &quot;&quot;,
+    &quot;package&quot;: [
+            ...
+            {
+                &quot;checksumSHA1&quot;: &quot;aiUlobdvi4uVkijyZ856jdyvXng=&quot;,
+                &quot;path&quot;: &quot;github.com/golang/protobuf/ptypes&quot;,
+                &quot;revision&quot;: &quot;c9c7427a2a70d2eb3bafa0ab2dc163e45f143317&quot;,
+                &quot;revisionTime&quot;: &quot;2017-03-07T00:15:33Z&quot;
+            },
+            ...
+    ]
+    &quot;rootPath&quot;: &quot;Bomber&quot;
+}
+</code></pre>
+
+<h3 id="将vendor加入版本控制">将vendor加入版本控制</h3>
+
+<p>什么！要把依赖加入版本控制中？！不会很臃肿吗？！</p>
+
+<p>当然会臃肿……</p>
+
+<p>如果你不把依赖源码加入版本控制中，
+你可以直接通过<code>go get ./..</code>安装所需依赖，但是不能指定版本</p>
+
+<p>或者只保留 <code>vendor.json</code> 文件，然后用 <code>govendor sync</code> 命令来下载对应版本的依赖。但是由于 go 的很多第三方包都来自 github ，可靠性和稳定性都会比较差。更可怕的是，由于 GFW 的存在，会导致一些官方包无法下载。所以，把依赖的源码加入版本控制，是个比较好的选择。</p>
+
+</div>
+
+    
+<footer class='entry-footer-container'>
+  <div class='entry-footer'>
+  <div class='categories'>
+  <span class='taxonomyTerm-icon'><svg class='icon' viewbox='0 0 24 24' stroke-linecap='round' stroke-linejoin='round' stroke-width='2' aria-hidden='true'>
+  
+  <path d="M22,19a2,2,0,0,1-2,2H4a2,2,0,0,1-2-2V5A2,2,0,0,1,4,3H9l2,3h9a2,2,0,0,1,2,2Z"/>
+  
+</svg>
+</span>
+  <span class='screen-reader'>Categories: </span><a class='category' href='/categories/note'>Note</a></div>
+<div class='tags'>
+  <span class='taxonomyTerm-icon'><svg class='icon' viewbox='0 0 24 24' stroke-linecap='round' stroke-linejoin='round' stroke-width='2' aria-hidden='true'>
+  
+  <path d="M20.59,13.41l-7.17,7.17a2,2,0,0,1-2.83,0L2,12V2H12l8.59,8.59A2,2,0,0,1,20.59,13.41Z"/>
+  <line x1="7" y1="7" x2="7" y2="7"/>
+  
+</svg>
+</span>
+  <span class='screen-reader'>Tags: </span><a class='tag' href='/tags/go'>Go</a></div>
+
+  </div>
+</footer>
+
+
+  </article>
+  
+<nav class='entry-nav-container'>
+  <div class='entry-nav'><div class='prev-entry'>
+      <a href='/qianpeili.github.io/posts/tcp%E7%BB%8F%E5%8F%97%E6%97%B6%E5%BB%B6/'>
+        <span aria-hidden='true'><svg class='icon' viewbox='0 0 24 24' stroke-linecap='round' stroke-linejoin='round' stroke-width='2' aria-hidden='true'>
+  
+  <line x1="20" y1="12" x2="4" y2="12"/>
+  <polyline points="10 18 4 12 10 6"/>
+  
+</svg>
+ Previous</span>
+        <span class='screen-reader'>Previous post: </span>tcp经受时延</a>
+    </div><div class='next-entry'>
+      <a href='/qianpeili.github.io/posts/nginx%E5%A6%82%E4%BD%95%E5%A4%84%E7%90%86%E4%B8%80%E4%B8%AA%E8%AF%B7%E6%B1%82/'>
+        <span class='screen-reader'>Next post: </span>【翻译】 Nginx 如何处理一个请求<span aria-hidden='true'>Next <svg class='icon' viewbox='0 0 24 24' stroke-linecap='round' stroke-linejoin='round' stroke-width='2' aria-hidden='true'>
+  
+  <line x1="4" y1="12" x2="20" y2="12"/>
+  <polyline points="14 6 20 12 14 18"/>
+  
+</svg>
+</span>
+      </a>
+    </div></div>
+</nav>
+
+  
+<div class='comments-container'>
+  <div id="disqus_thread"></div>
+<script>
+    var disqus_config = function () {
+    
+    
+    
+    };
+    (function() {
+        if (["localhost", "127.0.0.1"].indexOf(window.location.hostname) != -1) {
+            document.getElementById('disqus_thread').innerHTML = 'Disqus comments not available by default when the website is previewed locally.';
+            return;
+        }
+        var d = document, s = d.createElement('script'); s.async = true;
+        s.src = '//' + "zhuazi" + '.disqus.com/embed.js';
+        s.setAttribute('data-timestamp', +new Date());
+        (d.head || d.body).appendChild(s);
+    })();
+</script>
+<noscript>Please enable JavaScript to view the <a href="https://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+<a href="https://disqus.com" class="dsq-brlink">comments powered by <span class="logo-disqus">Disqus</span></a>
+</div>
+
+</main>
+
+    <footer id='footer' class='footer-container'>
+      <div class='footer'>
+        <div class='social-menu-container'>
+  <nav aria-label='Social Menu'>
+    <ul class='social-menu'><li>
+        <a href='https://github.com/qianpeili' target='_blank' rel='noopener'>
+          <span class='screen-reader'>Open Github account in new tab</span><svg class='icon' viewbox='0 0 24 24' stroke-linecap='round' stroke-linejoin='round' stroke-width='2' aria-hidden='true'>
+  
+  <path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22"/>
+  
+</svg>
+</a>
+      </li><li>
+        <a href='https://twitter.com/qianperry' target='_blank' rel='noopener'>
+          <span class='screen-reader'>Open Twitter account in new tab</span><svg class='icon' viewbox='0 0 24 24' stroke-linecap='round' stroke-linejoin='round' stroke-width='2' aria-hidden='true'>
+  
+  <path d="M23 3a10.9 10.9 0 0 1-3.14 1.53 4.48 4.48 0 0 0-7.86 3v1A10.66 10.66 0 0 1 3 4s-4 9 5 13a11.64 11.64 0 0 1-7 2c9 5 20 0 20-11.5a4.5 4.5 0 0 0-.08-.83A7.72 7.72 0 0 0 23 3z"/>
+  
+</svg>
+</a>
+      </li><li>
+        <a href='mailto:qianperry@outlook.com' target='_blank' rel='noopener'>
+          <span class='screen-reader'>Contact via Email</span><svg class='icon' viewbox='0 0 24 24' stroke-linecap='round' stroke-linejoin='round' stroke-width='2' aria-hidden='true'>
+  
+  <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/>
+  <polyline points="22,6 12,13 2,6"/>
+  
+</svg>
+</a>
+      </li></ul>
+  </nav>
+</div>
+        <div class='copyright'>
+  <p>
+        
+      
+
+       &copy; 2017 爪子 
+  </p>
+</div>
+
+      </div>
+    </footer>
+
+  </div><script src='/qianpeili.github.io/assets/js/main.5871befd.js'></script><script src='/qianpeili.github.io/js/custom.js'></script></body>
+
+</html>
+

@@ -1,0 +1,359 @@
+<!DOCTYPE html>
+<html lang='en'>
+
+<head>
+  <meta charset='utf-8'>
+<meta name='viewport' content='width=device-width, initial-scale=1'>
+<meta name='description' content='介绍 tcpdump 是 Linux 系统下进行网络分析的重要工具，我也因为对抓包这一块有些好奇，就找了些资料学习，然后整理成这篇文章。
+使用说明 命令模式：
+tcpdump [ -AbdDefhHIJKlLnNOpqStuUvxX# ] [ -B buffer_size ] [ -c count ] [ -C file_size ] [ -G rotate_seconds ] [ -F file ] [ -i interface ] [ -j tstamp_type ] [ -m module ] [ -M secret ] [ --number ] [ -Q in|out|inout ] [ -r file ] [ -V file ] [ -s snaplen ] [ -T type ] [ -w file ] [ -W filecount ] [ -E spi@ipaddr algo:secret,.'>
+
+<meta property='og:title' content='tcpdump的使用实例 • 爪子'>
+<meta property='og:description' content='介绍 tcpdump 是 Linux 系统下进行网络分析的重要工具，我也因为对抓包这一块有些好奇，就找了些资料学习，然后整理成这篇文章。
+使用说明 命令模式：
+tcpdump [ -AbdDefhHIJKlLnNOpqStuUvxX# ] [ -B buffer_size ] [ -c count ] [ -C file_size ] [ -G rotate_seconds ] [ -F file ] [ -i interface ] [ -j tstamp_type ] [ -m module ] [ -M secret ] [ --number ] [ -Q in|out|inout ] [ -r file ] [ -V file ] [ -s snaplen ] [ -T type ] [ -w file ] [ -W filecount ] [ -E spi@ipaddr algo:secret,.'>
+<meta property='og:url' content='qianpeili.github.io/posts/tcpdump%E7%9A%84%E4%BD%BF%E7%94%A8%E5%AE%9E%E4%BE%8B/'>
+<meta property='og:site_name' content='爪子'>
+<meta property='og:type' content='article'><meta property='article:section' content='Posts'><meta property='article:tag' content='linux'><meta property='article:tag' content='tcpdump'><meta property='article:published_time' content='2017-05-20T13:46:45&#43;08:00'/><meta property='article:modified_time' content='2017-05-20T13:46:45&#43;08:00'/><meta name='twitter:card' content='summary'>
+
+<meta name="generator" content="Hugo 0.30.2" />
+
+  <title>tcpdump的使用实例 • 爪子</title>
+  <link rel='canonical' href='qianpeili.github.io/posts/tcpdump%E7%9A%84%E4%BD%BF%E7%94%A8%E5%AE%9E%E4%BE%8B/'>
+  
+  
+  <link rel='icon' href='/qianpeili.github.io/favicon.ico'>
+<link rel='stylesheet' href='https://fonts.googleapis.com/css?family=Ubuntu:400,400i,700&subset=latin'>
+<link rel='stylesheet' href='/qianpeili.github.io/assets/css/main.77da63e1.css'><link rel='stylesheet' href='/qianpeili.github.io/css/custom.css'>
+<script>
+window.ga=window.ga||function(){(ga.q=ga.q||[]).push(arguments)};ga.l=+new Date;
+ga('create', 'UA-100449520-1', 'auto');
+ga('send', 'pageview');
+</script>
+<script async src='//www.google-analytics.com/analytics.js'></script>
+
+</head>
+
+
+<body class='page type-posts'>
+  <div class='site'>
+
+    <a class='screen-reader' href='#main'>Skip to Content</a>
+
+    <header id='header' class='header-container'>
+      <div class='header site-header'>
+        <nav id='main-menu' class='main-menu-container' aria-label='Main Menu'>
+  <ul class='main-menu'>
+  <li>
+      <a href='qianpeili.github.io/'>Home</a>
+    </li>
+  <li>
+      <a href='qianpeili.github.io/posts'>Posts</a>
+    </li>
+  <li>
+      <a href='qianpeili.github.io/categories'>Categories</a>
+    </li>
+  <li>
+      <a href='qianpeili.github.io/tags'>Tags</a>
+    </li>
+  <li>
+      <a href='qianpeili.github.io/about'>About</a>
+    </li>
+  
+  </ul>
+</nav>
+
+        <div class='header-info'>
+          
+          <p class='site-title title'>爪子</p>
+          
+          <p class='site-description subtitle'>易燃易爆炸</p>
+        </div>
+      </div>
+    </header>
+
+
+<main id='main' class='main'>
+  <article lang='en' class='entry'>
+    <header class='header-container'>
+  <div class='header entry-header'>
+    <div class='header-info'>
+      <h1 class='title'>tcpdump的使用实例</h1>
+      
+
+    </div>
+    
+<div class='meta'>
+  <span class='posted-on'><svg class='icon' viewbox='0 0 24 24' stroke-linecap='round' stroke-linejoin='round' stroke-width='2' aria-hidden='true'>
+  
+  <rect x="3" y="4" width="18" height="18" rx="2" ry="2"/>
+  <line x1="16" y1="2" x2="16" y2="6"/>
+  <line x1="8" y1="2" x2="8" y2="6"/>
+  <line x1="3" y1="10" x2="21" y2="10"/>
+  
+</svg>
+<span class='screen-reader'>Posted on </span>
+  <time class='date' datetime='2017-05-20T13:46:45&#43;08:00'>2017, May 20</time>
+</span>
+
+  
+  
+<span class='reading-time'><svg class='icon' viewbox='0 0 24 24' stroke-linecap='round' stroke-linejoin='round' stroke-width='2' aria-hidden='true'>
+  
+  <circle cx="12" cy="12" r="10"/>
+  <polyline points="12 6 12 12 15 15"/>
+  
+</svg>
+2 mins read
+</span>
+
+
+</div>
+
+
+  </div>
+</header>
+
+    
+    
+
+    <div class='entry-content'>
+  
+
+<h2 id="介绍">介绍</h2>
+
+<p><code>tcpdump</code> 是 Linux 系统下进行网络分析的重要工具，我也因为对抓包这一块有些好奇，就找了些资料学习，然后整理成这篇文章。</p>
+
+<h2 id="使用说明">使用说明</h2>
+
+<p>命令模式：</p>
+
+<pre><code>tcpdump [ -AbdDefhHIJKlLnNOpqStuUvxX# ] [ -B buffer_size ]     
+     [ -c count ]       
+     [ -C file_size ] [ -G rotate_seconds ] [ -F file ]         
+     [ -i interface ] [ -j tstamp_type ] [ -m module ] [ -M secret ]
+     [ --number ] [ -Q in|out|inout ] 
+     [ -r file ] [ -V file ] [ -s snaplen ] [ -T type ] [ -w file ] 
+     [ -W filecount ] 
+     [ -E spi@ipaddr algo:secret,... ] 
+     [ -y datalinktype ] [ -z postrotate-command ] [ -Z user ] 
+     [ --time-stamp-precision=tstamp_precision ] 
+     [ --immediate-mode ] [ --version ] 
+     [ expression ] 
+</code></pre>
+
+<h3 id="参数说明">参数说明</h3>
+
+<p><code>tcpdump</code> 的可选参数很多，我这里只列举几个常用的，更详细的欢迎点击 <strong><a href="http://www.tcpdump.org/tcpdump_man.html" target="_blank">Manpage of TCPDUMP</a></strong> 学习。</p>
+
+<ul>
+<li><code>-i</code>: 监听指定的网络接口，比如我的测试机器是：<code>-i eno1</code></li>
+<li><code>-n</code>: 不解析主机名，用纯 <code>ip</code> 显示。</li>
+<li><code>-t</code>: 每一行数据前面不显示时间戳。</li>
+<li><code>-c</code>: 指定抓取的条数，流量大的时候适用。</li>
+<li><code>-w</code>: 将结果输出到指定文件中。</li>
+<li><code>-r</code>: 从指定文件中读取数据信息。</li>
+</ul>
+
+<h3 id="条件语句">条件语句</h3>
+
+<ul>
+<li><strong>且</strong>: 用 <code>and</code> 或者 <code>&amp;&amp;</code> 表示；</li>
+<li><strong>或</strong>: 用 <code>or</code> 或者 <code>||</code> 表示；</li>
+<li><strong>非</strong>: 用 <code>not</code> 或者 <code>!</code> 表示。</li>
+</ul>
+
+<p>多个条件语句连接示例（引号可加可不加）：</p>
+
+<pre><code>sudo tcpdump -i eno1 'tcp and port 3000 or port 3001'
+</code></pre>
+
+<h2 id="example">Example</h2>
+
+<h3 id="指定主机或端口">指定主机或端口</h3>
+
+<p>指定抓取的 <code>ip</code> 地址</p>
+
+<pre><code>sudo tcpdump -i eno1 host 192.168.1.2
+</code></pre>
+
+<p>指定源 <code>ip</code> 和目的 <code>ip</code></p>
+
+<pre><code>sudo tcpdump -i eno1 src 192.168.1.2
+sudo tcpdump -i eno1 dst 192.168.1.3
+</code></pre>
+
+<p>指定端口，以下两条协议是一样的作用</p>
+
+<pre><code>sudo tcpdump -i eno1 port 21
+sudo tcpdump -i eno1 port ftp
+</code></pre>
+
+<p>指定源端口和目的端口</p>
+
+<pre><code>sudo tcpdump -i eno1 src port 3000 
+sudo tcpdump -i eno1 dst port 5000
+</code></pre>
+
+<p>同时指定协议、 <code>ip</code> 和端口</p>
+
+<pre><code>sudo tcpdump -i eno1 'tcp and host 192.168.1.2 and port 3000'
+</code></pre>
+
+<h3 id="抓取-http-协议">抓取 HTTP 协议</h3>
+
+<blockquote>
+<p>待补充：这里我还不知道如何显示http协议发生的时间</p>
+</blockquote>
+
+<p>抓取 <code>POST</code> 请求：</p>
+
+<pre><code>sudo tcpdump -n -A -i eno1 | grep -e 'POST'
+</code></pre>
+
+<p>得到输出为：</p>
+
+<pre><code>. '.L..?......MP...E...POST /daily_quests/finish_quest HTTP/1.1
+. '.M...`./....P.......POST /getachievementaward HTTP/1.1
+. '.N....&quot;..=;xP.......POST /buylottery/1.9.0 HTTP/1.1
+. '.O....8Q...AP...M...POST /daily_quests/finish_quest HTTP/1.1
+. '.P..&quot;x+m&amp;...P...y...POST /getDailyQuestAward HTTP/1.1
+</code></pre>
+
+<p>其它 <code>methods</code> 类似， 不一一列举。</p>
+
+<h2 id="参考资料">参考资料</h2>
+
+<ul>
+<li><a href="http://www.tcpdump.org/tcpdump_man.html" target="_blank">Manpage of TCPDUMP</a></li>
+<li><a href="http://linuxwiki.github.io/NetTools/tcpdump.html" target="_blank">tcpdump - Linux Wiki</a></li>
+<li><a href="http://www.binarytides.com/tcpdump-tutorial-sniffing-analysing-packets/" target="_blank">Tcpdump tutorial – Sniffing and analysing packets from the commandline</a></li>
+</ul>
+
+</div>
+
+    
+<footer class='entry-footer-container'>
+  <div class='entry-footer'>
+  <div class='categories'>
+  <span class='taxonomyTerm-icon'><svg class='icon' viewbox='0 0 24 24' stroke-linecap='round' stroke-linejoin='round' stroke-width='2' aria-hidden='true'>
+  
+  <path d="M22,19a2,2,0,0,1-2,2H4a2,2,0,0,1-2-2V5A2,2,0,0,1,4,3H9l2,3h9a2,2,0,0,1,2,2Z"/>
+  
+</svg>
+</span>
+  <span class='screen-reader'>Categories: </span><a class='category' href='/categories/note'>Note</a></div>
+<div class='tags'>
+  <span class='taxonomyTerm-icon'><svg class='icon' viewbox='0 0 24 24' stroke-linecap='round' stroke-linejoin='round' stroke-width='2' aria-hidden='true'>
+  
+  <path d="M20.59,13.41l-7.17,7.17a2,2,0,0,1-2.83,0L2,12V2H12l8.59,8.59A2,2,0,0,1,20.59,13.41Z"/>
+  <line x1="7" y1="7" x2="7" y2="7"/>
+  
+</svg>
+</span>
+  <span class='screen-reader'>Tags: </span><a class='tag' href='/tags/linux'>Linux</a>, <a class='tag' href='/tags/tcpdump'>Tcpdump</a></div>
+
+  </div>
+</footer>
+
+
+  </article>
+  
+<nav class='entry-nav-container'>
+  <div class='entry-nav'><div class='prev-entry'>
+      <a href='/qianpeili.github.io/posts/unicode%E5%B0%8F%E6%8A%80%E5%B7%A7/'>
+        <span aria-hidden='true'><svg class='icon' viewbox='0 0 24 24' stroke-linecap='round' stroke-linejoin='round' stroke-width='2' aria-hidden='true'>
+  
+  <line x1="20" y1="12" x2="4" y2="12"/>
+  <polyline points="10 18 4 12 10 6"/>
+  
+</svg>
+ Previous</span>
+        <span class='screen-reader'>Previous post: </span>unicode小技巧</a>
+    </div><div class='next-entry'>
+      <a href='/qianpeili.github.io/posts/tcp%E7%BB%8F%E5%8F%97%E6%97%B6%E5%BB%B6/'>
+        <span class='screen-reader'>Next post: </span>tcp经受时延<span aria-hidden='true'>Next <svg class='icon' viewbox='0 0 24 24' stroke-linecap='round' stroke-linejoin='round' stroke-width='2' aria-hidden='true'>
+  
+  <line x1="4" y1="12" x2="20" y2="12"/>
+  <polyline points="14 6 20 12 14 18"/>
+  
+</svg>
+</span>
+      </a>
+    </div></div>
+</nav>
+
+  
+<div class='comments-container'>
+  <div id="disqus_thread"></div>
+<script>
+    var disqus_config = function () {
+    
+    
+    
+    };
+    (function() {
+        if (["localhost", "127.0.0.1"].indexOf(window.location.hostname) != -1) {
+            document.getElementById('disqus_thread').innerHTML = 'Disqus comments not available by default when the website is previewed locally.';
+            return;
+        }
+        var d = document, s = d.createElement('script'); s.async = true;
+        s.src = '//' + "zhuazi" + '.disqus.com/embed.js';
+        s.setAttribute('data-timestamp', +new Date());
+        (d.head || d.body).appendChild(s);
+    })();
+</script>
+<noscript>Please enable JavaScript to view the <a href="https://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+<a href="https://disqus.com" class="dsq-brlink">comments powered by <span class="logo-disqus">Disqus</span></a>
+</div>
+
+</main>
+
+    <footer id='footer' class='footer-container'>
+      <div class='footer'>
+        <div class='social-menu-container'>
+  <nav aria-label='Social Menu'>
+    <ul class='social-menu'><li>
+        <a href='https://github.com/qianpeili' target='_blank' rel='noopener'>
+          <span class='screen-reader'>Open Github account in new tab</span><svg class='icon' viewbox='0 0 24 24' stroke-linecap='round' stroke-linejoin='round' stroke-width='2' aria-hidden='true'>
+  
+  <path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22"/>
+  
+</svg>
+</a>
+      </li><li>
+        <a href='https://twitter.com/qianperry' target='_blank' rel='noopener'>
+          <span class='screen-reader'>Open Twitter account in new tab</span><svg class='icon' viewbox='0 0 24 24' stroke-linecap='round' stroke-linejoin='round' stroke-width='2' aria-hidden='true'>
+  
+  <path d="M23 3a10.9 10.9 0 0 1-3.14 1.53 4.48 4.48 0 0 0-7.86 3v1A10.66 10.66 0 0 1 3 4s-4 9 5 13a11.64 11.64 0 0 1-7 2c9 5 20 0 20-11.5a4.5 4.5 0 0 0-.08-.83A7.72 7.72 0 0 0 23 3z"/>
+  
+</svg>
+</a>
+      </li><li>
+        <a href='mailto:qianperry@outlook.com' target='_blank' rel='noopener'>
+          <span class='screen-reader'>Contact via Email</span><svg class='icon' viewbox='0 0 24 24' stroke-linecap='round' stroke-linejoin='round' stroke-width='2' aria-hidden='true'>
+  
+  <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/>
+  <polyline points="22,6 12,13 2,6"/>
+  
+</svg>
+</a>
+      </li></ul>
+  </nav>
+</div>
+        <div class='copyright'>
+  <p>
+        
+      
+
+       &copy; 2017 爪子 
+  </p>
+</div>
+
+      </div>
+    </footer>
+
+  </div><script src='/qianpeili.github.io/assets/js/main.5871befd.js'></script><script src='/qianpeili.github.io/js/custom.js'></script></body>
+
+</html>
+

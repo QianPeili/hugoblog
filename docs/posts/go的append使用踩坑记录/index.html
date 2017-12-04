@@ -1,0 +1,345 @@
+<!DOCTYPE html>
+<html lang='en'>
+
+<head>
+  <meta charset='utf-8'>
+<meta name='viewport' content='width=device-width, initial-scale=1'>
+<meta name='description' content='go 有个很好用的数据类型——slice，有点类似 python 里的 list。go 中给 slice 添加元素，用的是 append 函数，它跟python中的list.append方法有些不同，每次都会返回一个对象，所以我之前一直都把go中的append当做python中的 &#43; 变形。
+在我之前的理解中，某些情况下，两者其实是差不多的，比如：
+go 代码
+package main import &quot;log&quot; func main() { a := []int{1, 2} a = append(a, []int{3, 4}...) log.Println(a) }  python 代码
+a = [1, 2] a = a &#43; [3, 4] print(a)  输出结果 a 都是： [1, 2, 3, 4]，两者确实很相似
+但是我今天在刷题目时，想要实现这么一个情况：
+python 代码：
+a = [1, 2, 3, 4, 5] b = a[:2] &#43; a[3:]  执行后的结果： a == [1, 2, 3, 4, 5], b == [1, 2, 4, 5]'>
+
+<meta property='og:title' content='Go的append使用踩坑记录 • 爪子'>
+<meta property='og:description' content='go 有个很好用的数据类型——slice，有点类似 python 里的 list。go 中给 slice 添加元素，用的是 append 函数，它跟python中的list.append方法有些不同，每次都会返回一个对象，所以我之前一直都把go中的append当做python中的 &#43; 变形。
+在我之前的理解中，某些情况下，两者其实是差不多的，比如：
+go 代码
+package main import &quot;log&quot; func main() { a := []int{1, 2} a = append(a, []int{3, 4}...) log.Println(a) }  python 代码
+a = [1, 2] a = a &#43; [3, 4] print(a)  输出结果 a 都是： [1, 2, 3, 4]，两者确实很相似
+但是我今天在刷题目时，想要实现这么一个情况：
+python 代码：
+a = [1, 2, 3, 4, 5] b = a[:2] &#43; a[3:]  执行后的结果： a == [1, 2, 3, 4, 5], b == [1, 2, 4, 5]'>
+<meta property='og:url' content='qianpeili.github.io/posts/go%E7%9A%84append%E4%BD%BF%E7%94%A8%E8%B8%A9%E5%9D%91%E8%AE%B0%E5%BD%95/'>
+<meta property='og:site_name' content='爪子'>
+<meta property='og:type' content='article'><meta property='article:section' content='Posts'><meta property='article:tag' content='go'><meta property='article:published_time' content='2017-12-03T18:23:21&#43;08:00'/><meta property='article:modified_time' content='2017-12-03T18:23:21&#43;08:00'/><meta name='twitter:card' content='summary'>
+
+<meta name="generator" content="Hugo 0.30.2" />
+
+  <title>Go的append使用踩坑记录 • 爪子</title>
+  <link rel='canonical' href='qianpeili.github.io/posts/go%E7%9A%84append%E4%BD%BF%E7%94%A8%E8%B8%A9%E5%9D%91%E8%AE%B0%E5%BD%95/'>
+  
+  
+  <link rel='icon' href='/qianpeili.github.io/favicon.ico'>
+<link rel='stylesheet' href='https://fonts.googleapis.com/css?family=Ubuntu:400,400i,700&subset=latin'>
+<link rel='stylesheet' href='/qianpeili.github.io/assets/css/main.77da63e1.css'><link rel='stylesheet' href='/qianpeili.github.io/css/custom.css'>
+<script>
+window.ga=window.ga||function(){(ga.q=ga.q||[]).push(arguments)};ga.l=+new Date;
+ga('create', 'UA-100449520-1', 'auto');
+ga('send', 'pageview');
+</script>
+<script async src='//www.google-analytics.com/analytics.js'></script>
+
+</head>
+
+
+<body class='page type-posts'>
+  <div class='site'>
+
+    <a class='screen-reader' href='#main'>Skip to Content</a>
+
+    <header id='header' class='header-container'>
+      <div class='header site-header'>
+        <nav id='main-menu' class='main-menu-container' aria-label='Main Menu'>
+  <ul class='main-menu'>
+  <li>
+      <a href='qianpeili.github.io/'>Home</a>
+    </li>
+  <li>
+      <a href='qianpeili.github.io/posts'>Posts</a>
+    </li>
+  <li>
+      <a href='qianpeili.github.io/categories'>Categories</a>
+    </li>
+  <li>
+      <a href='qianpeili.github.io/tags'>Tags</a>
+    </li>
+  <li>
+      <a href='qianpeili.github.io/about'>About</a>
+    </li>
+  
+  </ul>
+</nav>
+
+        <div class='header-info'>
+          
+          <p class='site-title title'>爪子</p>
+          
+          <p class='site-description subtitle'>易燃易爆炸</p>
+        </div>
+      </div>
+    </header>
+
+
+<main id='main' class='main'>
+  <article lang='en' class='entry'>
+    <header class='header-container'>
+  <div class='header entry-header'>
+    <div class='header-info'>
+      <h1 class='title'>Go的append使用踩坑记录</h1>
+      
+
+    </div>
+    
+<div class='meta'>
+  <span class='posted-on'><svg class='icon' viewbox='0 0 24 24' stroke-linecap='round' stroke-linejoin='round' stroke-width='2' aria-hidden='true'>
+  
+  <rect x="3" y="4" width="18" height="18" rx="2" ry="2"/>
+  <line x1="16" y1="2" x2="16" y2="6"/>
+  <line x1="8" y1="2" x2="8" y2="6"/>
+  <line x1="3" y1="10" x2="21" y2="10"/>
+  
+</svg>
+<span class='screen-reader'>Posted on </span>
+  <time class='date' datetime='2017-12-03T18:23:21&#43;08:00'>2017, Dec 03</time>
+</span>
+
+  
+  
+<span class='reading-time'><svg class='icon' viewbox='0 0 24 24' stroke-linecap='round' stroke-linejoin='round' stroke-width='2' aria-hidden='true'>
+  
+  <circle cx="12" cy="12" r="10"/>
+  <polyline points="12 6 12 12 15 15"/>
+  
+</svg>
+2 mins read
+</span>
+
+
+</div>
+
+
+  </div>
+</header>
+
+    
+    
+
+    <div class='entry-content'>
+  <p><code>go</code> 有个很好用的数据类型——<code>slice</code>，有点类似 <code>python</code> 里的 <code>list</code>。<code>go</code> 中给 <code>slice</code> 添加元素，用的是 <code>append</code> 函数，它跟<code>python</code>中的<code>list.append</code>方法有些不同，每次都会返回一个对象，所以我之前一直都把<code>go</code>中的<code>append</code>当做<code>python</code>中的 <code>+</code> 变形。</p>
+
+<p>在我之前的理解中，某些情况下，两者其实是差不多的，比如：</p>
+
+<p><code>go</code> 代码</p>
+
+<pre><code>package main
+
+import &quot;log&quot;
+
+func main() {
+    a := []int{1, 2}
+    a = append(a, []int{3, 4}...)
+    log.Println(a)
+
+}
+</code></pre>
+
+<p><code>python</code> 代码</p>
+
+<pre><code>a = [1, 2]
+a = a + [3, 4]
+print(a)
+</code></pre>
+
+<p>输出结果 <code>a</code> 都是： <strong>[1, 2, 3, 4]</strong>，两者确实很相似</p>
+
+<p>但是我今天在刷题目时，想要实现这么一个情况：</p>
+
+<p>python 代码：</p>
+
+<pre><code>a = [1, 2, 3, 4, 5]
+b = a[:2] + a[3:]
+</code></pre>
+
+<p>执行后的结果： a == [1, 2, 3, 4, 5], b == [1, 2, 4, 5]</p>
+
+<p>然后我用 <code>go</code> 写了这么一段代码：</p>
+
+<pre><code>a := []int{1, 2, 3, 4, 5}
+b := append(a[0:2], a[3:5]...)
+</code></pre>
+
+<p>然后我发现，<code>a</code> 的数据变成了 <strong>[1, 2, 4, 5, 5]</strong>。 太奇怪了，看来我对 <code>append</code> 的理解有些错误，它似乎和 <code>python</code> 中的列表的 <code>+</code> 操作并不一样。我看了 <code>append</code> 函数的注释：</p>
+
+<p><em>// The append built-in function appends elements to the end of a slice. If
+// it has sufficient capacity, the destination is resliced to accommodate the
+// new elements. If it does not, a new underlying array will be allocated.
+// Append returns the updated slice. It is therefore necessary to store the
+// result of append, often in the variable holding the slice itself:
+//  slice = append(slice, elem1, elem2)
+//  slice = append(slice, anotherSlice&hellip;)
+// As a special case, it is legal to append a string to a byte slice, like this:
+//  slice = append([]byte(&ldquo;hello &ldquo;), &ldquo;world&rdquo;&hellip;)
+func append(slice []Type, elems &hellip;Type) []Type</em></p>
+
+<p>注释中 <strong>If it has sufficient capacity, the destination is resliced to accommodate the
+new elements.</strong> 说明了，如果被传入的切片拥有足够容量，那么被添加的元素会直接放到该切片空闲的位置上去。也就是说，<code>append</code> 并不是一定返回一个新的 <code>slice</code> 对象，也有可能是改变了原先的对象并返回。</p>
+
+<p>对 <code>go</code> 的切片进行选取时，如果位置是从 <code>0</code> 开始，那么这个新选取的切片会继承原有切片的容量，所以在上面的例子中, <code>a[0:2]</code> 的长度是2，容量是依旧是5。因此 <code>append</code> 操作会直接在原先的 <code>a</code> 上进行赋值操作。</p>
+
+<p><code>go</code> 的 <code>append</code> 其实既不是 <code>python</code> 中的 <code>+</code> 也不是 <code>list.append</code>，它们有很多不同。</p>
+
+<p><em>ps: 下面是对一些容易搞混的 <code>append</code> 操作的记录</em></p>
+
+<pre><code>package main
+
+import (
+    &quot;log&quot;
+)
+
+func main() {
+    a := []int{1, 2, 3, 4}
+    b := append(a[0:2], []int{7, 8}...)
+    log.Println(a, b)
+    // a == [1, 2, 7, 8]
+    // b == [1, 2, 7, 8]
+
+    a = []int{1, 2, 3, 4}
+    b = append(a[1:3], []int{7, 8}...)
+    log.Println(a, b)
+    // a == [1, 2, 3, 4]
+    // b == [1, 2, 7, 8]
+
+    a = []int{1, 2}
+    b = append(a[:1], 3)
+    log.Println(a, b)
+    // a == [1, 3]
+    // b == [1, 3]
+
+    a = []int{1, 2}
+    b = append(a, 3)
+    log.Println(a, b)
+    // a == [1, 2]
+    // b == [1, 2, 3]
+}
+</code></pre>
+
+</div>
+
+    
+<footer class='entry-footer-container'>
+  <div class='entry-footer'>
+  <div class='categories'>
+  <span class='taxonomyTerm-icon'><svg class='icon' viewbox='0 0 24 24' stroke-linecap='round' stroke-linejoin='round' stroke-width='2' aria-hidden='true'>
+  
+  <path d="M22,19a2,2,0,0,1-2,2H4a2,2,0,0,1-2-2V5A2,2,0,0,1,4,3H9l2,3h9a2,2,0,0,1,2,2Z"/>
+  
+</svg>
+</span>
+  <span class='screen-reader'>Categories: </span><a class='category' href='/categories/note'>Note</a></div>
+<div class='tags'>
+  <span class='taxonomyTerm-icon'><svg class='icon' viewbox='0 0 24 24' stroke-linecap='round' stroke-linejoin='round' stroke-width='2' aria-hidden='true'>
+  
+  <path d="M20.59,13.41l-7.17,7.17a2,2,0,0,1-2.83,0L2,12V2H12l8.59,8.59A2,2,0,0,1,20.59,13.41Z"/>
+  <line x1="7" y1="7" x2="7" y2="7"/>
+  
+</svg>
+</span>
+  <span class='screen-reader'>Tags: </span><a class='tag' href='/tags/go'>Go</a></div>
+
+  </div>
+</footer>
+
+
+  </article>
+  
+<nav class='entry-nav-container'>
+  <div class='entry-nav'><div class='prev-entry'>
+      <a href='/qianpeili.github.io/posts/%E6%89%93%E5%8D%B0go%E7%9A%84stacktrace/'>
+        <span aria-hidden='true'><svg class='icon' viewbox='0 0 24 24' stroke-linecap='round' stroke-linejoin='round' stroke-width='2' aria-hidden='true'>
+  
+  <line x1="20" y1="12" x2="4" y2="12"/>
+  <polyline points="10 18 4 12 10 6"/>
+  
+</svg>
+ Previous</span>
+        <span class='screen-reader'>Previous post: </span>打印 Go 的Stack Trace</a>
+    </div></div>
+</nav>
+
+  
+<div class='comments-container'>
+  <div id="disqus_thread"></div>
+<script>
+    var disqus_config = function () {
+    
+    
+    
+    };
+    (function() {
+        if (["localhost", "127.0.0.1"].indexOf(window.location.hostname) != -1) {
+            document.getElementById('disqus_thread').innerHTML = 'Disqus comments not available by default when the website is previewed locally.';
+            return;
+        }
+        var d = document, s = d.createElement('script'); s.async = true;
+        s.src = '//' + "zhuazi" + '.disqus.com/embed.js';
+        s.setAttribute('data-timestamp', +new Date());
+        (d.head || d.body).appendChild(s);
+    })();
+</script>
+<noscript>Please enable JavaScript to view the <a href="https://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+<a href="https://disqus.com" class="dsq-brlink">comments powered by <span class="logo-disqus">Disqus</span></a>
+</div>
+
+</main>
+
+    <footer id='footer' class='footer-container'>
+      <div class='footer'>
+        <div class='social-menu-container'>
+  <nav aria-label='Social Menu'>
+    <ul class='social-menu'><li>
+        <a href='https://github.com/qianpeili' target='_blank' rel='noopener'>
+          <span class='screen-reader'>Open Github account in new tab</span><svg class='icon' viewbox='0 0 24 24' stroke-linecap='round' stroke-linejoin='round' stroke-width='2' aria-hidden='true'>
+  
+  <path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22"/>
+  
+</svg>
+</a>
+      </li><li>
+        <a href='https://twitter.com/qianperry' target='_blank' rel='noopener'>
+          <span class='screen-reader'>Open Twitter account in new tab</span><svg class='icon' viewbox='0 0 24 24' stroke-linecap='round' stroke-linejoin='round' stroke-width='2' aria-hidden='true'>
+  
+  <path d="M23 3a10.9 10.9 0 0 1-3.14 1.53 4.48 4.48 0 0 0-7.86 3v1A10.66 10.66 0 0 1 3 4s-4 9 5 13a11.64 11.64 0 0 1-7 2c9 5 20 0 20-11.5a4.5 4.5 0 0 0-.08-.83A7.72 7.72 0 0 0 23 3z"/>
+  
+</svg>
+</a>
+      </li><li>
+        <a href='mailto:qianperry@outlook.com' target='_blank' rel='noopener'>
+          <span class='screen-reader'>Contact via Email</span><svg class='icon' viewbox='0 0 24 24' stroke-linecap='round' stroke-linejoin='round' stroke-width='2' aria-hidden='true'>
+  
+  <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/>
+  <polyline points="22,6 12,13 2,6"/>
+  
+</svg>
+</a>
+      </li></ul>
+  </nav>
+</div>
+        <div class='copyright'>
+  <p>
+        
+      
+
+       &copy; 2017 爪子 
+  </p>
+</div>
+
+      </div>
+    </footer>
+
+  </div><script src='/qianpeili.github.io/assets/js/main.5871befd.js'></script><script src='/qianpeili.github.io/js/custom.js'></script></body>
+
+</html>
+

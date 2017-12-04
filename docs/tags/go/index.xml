@@ -1,0 +1,102 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Go on 爪子</title>
+    <link>qianpeili.github.io/tags/go/</link>
+    <description>Recent content in Go on 爪子</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <lastBuildDate>Sun, 03 Dec 2017 18:23:21 +0800</lastBuildDate>
+    
+	<atom:link href="qianpeili.github.io/tags/go/index.xml" rel="self" type="application/rss+xml" />
+    
+    
+    <item>
+      <title>Go的append使用踩坑记录</title>
+      <link>qianpeili.github.io/posts/go%E7%9A%84append%E4%BD%BF%E7%94%A8%E8%B8%A9%E5%9D%91%E8%AE%B0%E5%BD%95/</link>
+      <pubDate>Sun, 03 Dec 2017 18:23:21 +0800</pubDate>
+      
+      <guid>qianpeili.github.io/posts/go%E7%9A%84append%E4%BD%BF%E7%94%A8%E8%B8%A9%E5%9D%91%E8%AE%B0%E5%BD%95/</guid>
+      <description>go 有个很好用的数据类型——slice，有点类似 python 里的 list。go 中给 slice 添加元素，用的是 append 函数，它跟python中的list.append方法有些不同，每次都会返回一个对象，所以我之前一直都把go中的append当做python中的 + 变形。
+在我之前的理解中，某些情况下，两者其实是差不多的，比如：
+go 代码
+package main import &amp;quot;log&amp;quot; func main() { a := []int{1, 2} a = append(a, []int{3, 4}...) log.Println(a) }  python 代码
+a = [1, 2] a = a + [3, 4] print(a)  输出结果 a 都是： [1, 2, 3, 4]，两者确实很相似
+但是我今天在刷题目时，想要实现这么一个情况：
+python 代码：
+a = [1, 2, 3, 4, 5] b = a[:2] + a[3:]  执行后的结果： a == [1, 2, 3, 4, 5], b == [1, 2, 4, 5]</description>
+    </item>
+    
+    <item>
+      <title>打印 Go 的Stack Trace</title>
+      <link>qianpeili.github.io/posts/%E6%89%93%E5%8D%B0go%E7%9A%84stacktrace/</link>
+      <pubDate>Sat, 04 Nov 2017 17:42:02 +0800</pubDate>
+      
+      <guid>qianpeili.github.io/posts/%E6%89%93%E5%8D%B0go%E7%9A%84stacktrace/</guid>
+      <description>算是写了第一个比较正式的 Go 项目吧，然后现在在考虑如何设计日志系统。
+服务采用 TCP 长连接，每个 session 都是单独启动一个 goroutine 处理事务（其实发消息也有一个协程，不过发消息部分逻辑简单），所以考虑在最顶层写一个 recover 函数，收集上报的错误信息并输出。大致是这么个东西：
+package main import ( &amp;quot;log&amp;quot; &amp;quot;errors&amp;quot; ) func main() { defer func() { if r := recover(); r != nil { log.Println(r) } }() // make a panic panic(errors.New(&amp;quot;ha! A bug&amp;quot;)) }  输出： 2017/11/04 17:19:16 ha! A bug
+但如果只是这样，其实并不能帮助我们很好的排查问题，我们知道有了一个 BUG，但不知道是哪里除了问题。因此我们打印出捕获错误时的 Stack Trace。内建库 runtime 就有这个功能：
+func Stack(buf []byte, all bool) int
+Stack formats a stack trace of the calling goroutine into buf and returns the number of bytes written to buf.</description>
+    </item>
+    
+    <item>
+      <title>Go跨平台编译</title>
+      <link>qianpeili.github.io/posts/go%E8%B7%A8%E5%B9%B3%E5%8F%B0%E7%BC%96%E8%AF%91/</link>
+      <pubDate>Wed, 01 Nov 2017 19:22:02 +0800</pubDate>
+      
+      <guid>qianpeili.github.io/posts/go%E8%B7%A8%E5%B9%B3%E5%8F%B0%E7%BC%96%E8%AF%91/</guid>
+      <description>公司开发系统是 Windows，服务器部署环境是 Linux。一开始测试的时候选的是 git pull 带生产机上，编译后启动。
+但这个方法太笨，一是代码容易泄露，二是生产机要同时同步库文件，不管是 go get 方式还是 govendor 方式都显得太麻烦。
+不过好在 Go 的跨平台编译非常方便，所以我们完全可以在开发环境下编译好可执行文件，再放入生产机部署。
+总结一下 windows环境下 go 跨平台编译的方式。
+GOOS 和 GOARCH 关于这两个环境变量的含义，我们可以从官方文档： Installing Go from source - The Go Programming Language中了解，分别是目标系统的 操作系统 和 编译架构。只要我们设置好这两个参数的内容，就可以轻松进行跨平台编译了。
+支持的列表
+$GOOS $GOARCH android arm darwin 386 darwin amd64 darwin arm darwin arm64 dragonfly amd64 freebsd 386 freebsd amd64 freebsd arm linux 386 linux amd64 linux arm linux arm64 linux ppc64 linux ppc64le linux mips linux mipsle linux mips64 linux mips64le netbsd 386 netbsd amd64 netbsd arm openbsd 386 openbsd amd64 openbsd arm plan9 386 plan9 amd64 solaris amd64 windows 386 windows amd64  Windows cmd 最直接的了，需要修改环境变量</description>
+    </item>
+    
+    <item>
+      <title>Go 的request.Body rewind 功能</title>
+      <link>qianpeili.github.io/posts/request-body%E7%9A%84rewind%E5%8A%9F%E8%83%BD/</link>
+      <pubDate>Sat, 16 Sep 2017 18:31:52 +0800</pubDate>
+      
+      <guid>qianpeili.github.io/posts/request-body%E7%9A%84rewind%E5%8A%9F%E8%83%BD/</guid>
+      <description>近日参加了实验楼的 楼赛 第15期 Go语言项目挑战 - 实验楼
+第一道题的题目要求是：
+ 实现一个简单的数据校验功能，对请求 body 做 md5 计算，然后把结果转为十六进制添加到请求 header 中，头部名称为X-Md5。也就是在HTTP 请求 header 中添加一个 X-Md5: 键值对，如果body为空那么就不填。
+ 我一开始的实现方式很直接暴力：
+func (t *Transport) RoundTrip(req *http.Request) (*http.Response, error) { if req.Body == nil { return t.RoundTripper.RoundTrip(req) } b, err := ioutil.ReadAll(req.Body) if len(b) == 0 { return t.RoundTripper.RoundTrip(req) } if err != nil { log.Fatal(err.Error()) } hexB := md5.Sum(b) req.Header.Add(&amp;quot;X-Md5&amp;quot;, hex.EncodeToString(hexB[:])) return t.RoundTripper.RoundTrip(req) }  直接读出 req.Body 中的字节数据，进行md5运算。我在自己的电脑上测试通过，但是实验环境下 go test 会报类似错误：</description>
+    </item>
+    
+    <item>
+      <title>【翻译】Go语言中的反射机制</title>
+      <link>qianpeili.github.io/posts/trans-go-reflect/</link>
+      <pubDate>Fri, 28 Jul 2017 20:48:11 +0800</pubDate>
+      
+      <guid>qianpeili.github.io/posts/trans-go-reflect/</guid>
+      <description>原文链接： The Laws of Reflection - The Go Blog
+作者： Rob Pike
+翻译： 钱佩丽
+介绍 反射( reflection )在计算机中指的是一个程序审查自身结构的能力，尤其是类型( Types )。 反射是元编程的一种形式，也是让人觉得头疼的一个点。
+在这篇文章中，我们将对反射在 Go 中的工作原理做一些解释说明。 各种计算机语言的反射机制不尽相同（有的甚至没有反射）， 但这篇文章，我们只关心 Go 语言中的反射， 文中所有反射，都是在 Go 语言的背景下。
+类型和接口 由于反射建立在类型机制上，所以我们先来介绍一下 Go 的类型。
+Go 是静态类型语言，每个变量都有一个静态的类型，就是说，在编译的时候，变量的类型必须是固定且唯一的。 比如： int, float32, *MyType, []byte 等等。如果我们如下申明：
+type MyInt int var i int var j MyInt  那么，变量 i 就是 int 类型，变量 j 就是 MyInt 类型。 尽管 i 和 j 拥有相同的底层类型， 但他们本身是完全不同的类型，他们不能直接互相赋值，必须通过类型转换。
+接口( interface )是 Go 类型中非常重要的一种类型，它代表一些方法的固定集合。 一个接口变量可以存放任意的（非接口）具体值，只要这个值实现了接口包含的所有方法。 比较著名的一对例子就是 io.</description>
+    </item>
+    
+    <item>
+      <title>Go的依赖管理工具govendor</title>
+      <link>qianpeili.github.io/posts/go%E7%9A%84%E4%BE%9D%E8%B5%96%E7%AE%A1%E7%90%86%E5%B7%A5%E5%85%B7govendor/</link>
+      <pubDate>Mon, 22 May 2017 18:11:05 +0800</pubDate>
+      
+      <guid>qianpeili.github.io/posts/go%E7%9A%84%E4%BE%9D%E8%B5%96%E7%AE%A1%E7%90%86%E5%B7%A5%E5%85%B7govendor/</guid>
+      <description>依赖管理是我接触 go 以来，觉得比较麻烦的事情。 不过在 go-1.5 版本中，出现了一个 vendor 的概念，并且 vendor 作为一个默认功能存在于1.7之后的版本中。
+vendor的概念就类似于python中的 virtualenv 建立的 env，它是一个文件夹，里面存放了项目所用的依赖。如果项目中有个文件 import 了第三方的 package，而这个 package 又存在项目的 vendor 目录中，这个文件编译的时候会从 vendor 中 import 这个 package
+比如：
+$GOPATH | src/ | | project/ | | | main.go | | | vendor/ | | | | github.com/pkg/sftp/ | | | | golang.org/x/crypto/ssh/ | | | | | agent/  其中 project/main.go 中:
+import ( ... &amp;quot;golang.org/x/crypto/ssh&amp;quot; )  因为项目 project 中有 vendor 目录，并且存在 golang.</description>
+    </item>
+    
+  </channel>
+</rss>
