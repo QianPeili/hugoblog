@@ -12,19 +12,19 @@ Submodule语法 git submodule [--quiet] add [&lt;options&gt;] [--] &lt;repositor
 <meta property='og:description' content='Submodule介绍 前几天因为项目需求，接触了Git的Submodule功能。
 客户端和服务端的项目各自独立开发，因为要用到一个共同的子库——SubA，SubA即需要独立保持版本信息，又需要同时给客户端和服务端的项目提供支持。Submodule正好可以帮助我们管理这个问题。
 Submodule语法 git submodule [--quiet] add [&lt;options&gt;] [--] &lt;repository[&lt;path&gt;] git submodule [--quiet] status [--cached] [--recursive] [--] [&lt;path&gt;…​] git submodule [--quiet] init [--] [&lt;path&gt;…​] git submodule [--quiet] deinit [-f|--force] (--all|[--] &lt;path&gt;…​) git submodule [--quiet] update [&lt;options&gt;] [--] [&lt;path&gt;…​] git submodule [--quiet] summary [&lt;options&gt;] [--] [&lt;path&gt;…​] git submodule [--quiet] foreach [--recursive] &lt;command&gt; git submodule [--quiet] sync [--recursive] [--] [&lt;path&gt;…​] git submodule [--quiet] absorbgitdirs [--] [&lt;path&gt;…​]  Submodule实践 目前有3个库： Main， SubA, SubB'>
-<meta property='og:url' content='www.qperrie.com/posts/git-submodule%E4%BD%BF%E7%94%A8/'>
+<meta property='og:url' content='https://qianpeili.github.io/hugoblog/posts/git-submodule%E4%BD%BF%E7%94%A8/'>
 <meta property='og:site_name' content='爪子'>
 <meta property='og:type' content='article'><meta property='article:section' content='Posts'><meta property='article:tag' content='git'><meta property='article:published_time' content='2017-06-13T19:11:01&#43;08:00'/><meta property='article:modified_time' content='2017-06-13T19:11:01&#43;08:00'/><meta name='twitter:card' content='summary'>
 
 <meta name="generator" content="Hugo 0.30.2" />
 
   <title>Git Submodule的使用 • 爪子</title>
-  <link rel='canonical' href='www.qperrie.com/posts/git-submodule%E4%BD%BF%E7%94%A8/'>
+  <link rel='canonical' href='https://qianpeili.github.io/hugoblog/posts/git-submodule%E4%BD%BF%E7%94%A8/'>
   
   
-  <link rel='icon' href='www.qperrie.com/favicon.ico'>
+  <link rel='icon' href='https://qianpeili.github.io/hugoblog/favicon.ico'>
 <link rel='stylesheet' href='https://fonts.googleapis.com/css?family=Ubuntu:400,400i,700&subset=latin'>
-<link rel='stylesheet' href='www.qperrie.com/assets/css/main.77da63e1.css'><link rel='stylesheet' href='www.qperrie.com/css/custom.css'>
+<link rel='stylesheet' href='https://qianpeili.github.io/hugoblog/assets/css/main.77da63e1.css'><link rel='stylesheet' href='https://qianpeili.github.io/hugoblog/css/custom.css'>
 <script>
 window.ga=window.ga||function(){(ga.q=ga.q||[]).push(arguments)};ga.l=+new Date;
 ga('create', 'UA-100449520-1', 'auto');
@@ -45,19 +45,19 @@ ga('send', 'pageview');
         <nav id='main-menu' class='main-menu-container' aria-label='Main Menu'>
   <ul class='main-menu'>
   <li>
-      <a href='www.qperrie.com/'>Home</a>
+      <a href='https://qianpeili.github.io/hugoblog/'>Home</a>
     </li>
   <li>
-      <a href='www.qperrie.com/posts'>Posts</a>
+      <a href='https://qianpeili.github.io/hugoblog/posts'>Posts</a>
     </li>
   <li>
-      <a href='www.qperrie.com/categories'>Categories</a>
+      <a href='https://qianpeili.github.io/hugoblog/categories'>Categories</a>
     </li>
   <li>
-      <a href='www.qperrie.com/tags'>Tags</a>
+      <a href='https://qianpeili.github.io/hugoblog/tags'>Tags</a>
     </li>
   <li>
-      <a href='www.qperrie.com/about'>About</a>
+      <a href='https://qianpeili.github.io/hugoblog/about'>About</a>
     </li>
   
   </ul>
@@ -259,7 +259,7 @@ Cloning into 'F:/MainCopy/submodule/A'...
   
 </svg>
 </span>
-  <span class='screen-reader'>Categories: </span><a class='category' href='www.qperrie.com/categories/note'>Note</a></div>
+  <span class='screen-reader'>Categories: </span><a class='category' href='https://qianpeili.github.io/hugoblog/categories/note'>Note</a></div>
 <div class='tags'>
   <span class='taxonomyTerm-icon'><svg class='icon' viewbox='0 0 24 24' stroke-linecap='round' stroke-linejoin='round' stroke-width='2' aria-hidden='true'>
   
@@ -268,7 +268,7 @@ Cloning into 'F:/MainCopy/submodule/A'...
   
 </svg>
 </span>
-  <span class='screen-reader'>Tags: </span><a class='tag' href='www.qperrie.com/tags/git'>Git</a></div>
+  <span class='screen-reader'>Tags: </span><a class='tag' href='https://qianpeili.github.io/hugoblog/tags/git'>Git</a></div>
 
   </div>
 </footer>
@@ -278,7 +278,7 @@ Cloning into 'F:/MainCopy/submodule/A'...
   
 <nav class='entry-nav-container'>
   <div class='entry-nav'><div class='prev-entry'>
-      <a href='www.qperrie.com/posts/nginx%E5%A6%82%E4%BD%95%E5%A4%84%E7%90%86%E4%B8%80%E4%B8%AA%E8%AF%B7%E6%B1%82/'>
+      <a href='https://qianpeili.github.io/hugoblog/posts/nginx%E5%A6%82%E4%BD%95%E5%A4%84%E7%90%86%E4%B8%80%E4%B8%AA%E8%AF%B7%E6%B1%82/'>
         <span aria-hidden='true'><svg class='icon' viewbox='0 0 24 24' stroke-linecap='round' stroke-linejoin='round' stroke-width='2' aria-hidden='true'>
   
   <line x1="20" y1="12" x2="4" y2="12"/>
@@ -288,7 +288,7 @@ Cloning into 'F:/MainCopy/submodule/A'...
  Previous</span>
         <span class='screen-reader'>Previous post: </span>【翻译】 Nginx 如何处理一个请求</a>
     </div><div class='next-entry'>
-      <a href='www.qperrie.com/posts/%E8%BE%93%E5%87%BA%E9%87%8D%E5%AE%9A%E5%90%91/'>
+      <a href='https://qianpeili.github.io/hugoblog/posts/%E8%BE%93%E5%87%BA%E9%87%8D%E5%AE%9A%E5%90%91/'>
         <span class='screen-reader'>Next post: </span>Bash输出重定向<span aria-hidden='true'>Next <svg class='icon' viewbox='0 0 24 24' stroke-linecap='round' stroke-linejoin='round' stroke-width='2' aria-hidden='true'>
   
   <line x1="4" y1="12" x2="20" y2="12"/>
@@ -370,7 +370,7 @@ Cloning into 'F:/MainCopy/submodule/A'...
       </div>
     </footer>
 
-  </div><script src='www.qperrie.com/assets/js/main.5871befd.js'></script><script src='www.qperrie.com/js/custom.js'></script></body>
+  </div><script src='https://qianpeili.github.io/hugoblog/assets/js/main.5871befd.js'></script><script src='https://qianpeili.github.io/hugoblog/js/custom.js'></script></body>
 
 </html>
 

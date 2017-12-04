@@ -2,20 +2,20 @@
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
     <title>Tcpdump on 爪子</title>
-    <link>www.qperrie.com/tags/tcpdump/</link>
+    <link>https://qianpeili.github.io/hugoblog/tags/tcpdump/</link>
     <description>Recent content in Tcpdump on 爪子</description>
     <generator>Hugo -- gohugo.io</generator>
     <lastBuildDate>Sat, 20 May 2017 13:46:45 +0800</lastBuildDate>
     
-	<atom:link href="www.qperrie.com/tags/tcpdump/index.xml" rel="self" type="application/rss+xml" />
+	<atom:link href="https://qianpeili.github.io/hugoblog/tags/tcpdump/index.xml" rel="self" type="application/rss+xml" />
     
     
     <item>
       <title>tcpdump的使用实例</title>
-      <link>www.qperrie.com/posts/tcpdump%E7%9A%84%E4%BD%BF%E7%94%A8%E5%AE%9E%E4%BE%8B/</link>
+      <link>https://qianpeili.github.io/hugoblog/posts/tcpdump%E7%9A%84%E4%BD%BF%E7%94%A8%E5%AE%9E%E4%BE%8B/</link>
       <pubDate>Sat, 20 May 2017 13:46:45 +0800</pubDate>
       
-      <guid>www.qperrie.com/posts/tcpdump%E7%9A%84%E4%BD%BF%E7%94%A8%E5%AE%9E%E4%BE%8B/</guid>
+      <guid>https://qianpeili.github.io/hugoblog/posts/tcpdump%E7%9A%84%E4%BD%BF%E7%94%A8%E5%AE%9E%E4%BE%8B/</guid>
       <description>介绍 tcpdump 是 Linux 系统下进行网络分析的重要工具，我也因为对抓包这一块有些好奇，就找了些资料学习，然后整理成这篇文章。
 使用说明 命令模式：
 tcpdump [ -AbdDefhHIJKlLnNOpqStuUvxX# ] [ -B buffer_size ] [ -c count ] [ -C file_size ] [ -G rotate_seconds ] [ -F file ] [ -i interface ] [ -j tstamp_type ] [ -m module ] [ -M secret ] [ --number ] [ -Q in|out|inout ] [ -r file ] [ -V file ] [ -s snaplen ] [ -T type ] [ -w file ] [ -W filecount ] [ -E spi@ipaddr algo:secret,.</description>
@@ -23,10 +23,10 @@ tcpdump [ -AbdDefhHIJKlLnNOpqStuUvxX# ] [ -B buffer_size ] [ -c count ] [ -C fil
     
     <item>
       <title>unicode小技巧</title>
-      <link>www.qperrie.com/posts/unicode%E5%B0%8F%E6%8A%80%E5%B7%A7/</link>
+      <link>https://qianpeili.github.io/hugoblog/posts/unicode%E5%B0%8F%E6%8A%80%E5%B7%A7/</link>
       <pubDate>Fri, 07 Apr 2017 10:20:30 +0800</pubDate>
       
-      <guid>www.qperrie.com/posts/unicode%E5%B0%8F%E6%8A%80%E5%B7%A7/</guid>
+      <guid>https://qianpeili.github.io/hugoblog/posts/unicode%E5%B0%8F%E6%8A%80%E5%B7%A7/</guid>
       <description>今天遇到一个问题
 在mysql查询日志时，发现一些unicode字符串存储变成了
 u7528u6237u53d6u6d88u8ba2u5355u8bf7u6c42  这个形式，手动加\虽然可行，但毕竟不是长久的办法

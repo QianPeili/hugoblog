@@ -2,7 +2,7 @@ publishDir = "docs"
 contentDir = "content"
 buildDrafts = false
 canonifyurls = true
-baseURL = "www.qperrie.com"
+baseURL = "https://qianpeili.github.io/hugoblog/"
 title = "爪子"
 
 # for smart copyright line, leave this blank and check [params.copyright]

@@ -2,20 +2,20 @@
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
     <title>Git on 爪子</title>
-    <link>www.qperrie.com/tags/git/</link>
+    <link>https://qianpeili.github.io/hugoblog/tags/git/</link>
     <description>Recent content in Git on 爪子</description>
     <generator>Hugo -- gohugo.io</generator>
     <lastBuildDate>Sat, 15 Jul 2017 14:46:17 +0800</lastBuildDate>
     
-	<atom:link href="www.qperrie.com/tags/git/index.xml" rel="self" type="application/rss+xml" />
+	<atom:link href="https://qianpeili.github.io/hugoblog/tags/git/index.xml" rel="self" type="application/rss+xml" />
     
     
     <item>
       <title>解决 Git Hooks 无法运行的问题</title>
-      <link>www.qperrie.com/posts/%E8%A7%A3%E5%86%B3git%E9%92%A9%E5%AD%90%E6%97%A0%E6%B3%95%E8%BF%90%E8%A1%8C%E7%9A%84%E9%97%AE%E9%A2%98/</link>
+      <link>https://qianpeili.github.io/hugoblog/posts/%E8%A7%A3%E5%86%B3git%E9%92%A9%E5%AD%90%E6%97%A0%E6%B3%95%E8%BF%90%E8%A1%8C%E7%9A%84%E9%97%AE%E9%A2%98/</link>
       <pubDate>Sat, 15 Jul 2017 14:46:17 +0800</pubDate>
       
-      <guid>www.qperrie.com/posts/%E8%A7%A3%E5%86%B3git%E9%92%A9%E5%AD%90%E6%97%A0%E6%B3%95%E8%BF%90%E8%A1%8C%E7%9A%84%E9%97%AE%E9%A2%98/</guid>
+      <guid>https://qianpeili.github.io/hugoblog/posts/%E8%A7%A3%E5%86%B3git%E9%92%A9%E5%AD%90%E6%97%A0%E6%B3%95%E8%BF%90%E8%A1%8C%E7%9A%84%E9%97%AE%E9%A2%98/</guid>
       <description>这两天在研究 Git Hooks 的过程中，遇到一个问题。
 在触发钩子时，终端一直输出：
 remote: error: cannot run hooks/post-receive: No such file or directory  其实这不是文件不存在的问题，反而是文件存在，但是有问题才会出现这个提示。
@@ -33,10 +33,10 @@ Git - remote: error: cannot run hooks/post-receive: No such file or directory - 
     
     <item>
       <title>通过 pre-hook 判断是否推送重复的内容</title>
-      <link>www.qperrie.com/posts/pre-receive%E4%B8%AD%E5%88%A4%E6%96%AD%E9%87%8D%E5%A4%8D%E7%9A%84%E6%96%87%E4%BB%B6/</link>
+      <link>https://qianpeili.github.io/hugoblog/posts/pre-receive%E4%B8%AD%E5%88%A4%E6%96%AD%E9%87%8D%E5%A4%8D%E7%9A%84%E6%96%87%E4%BB%B6/</link>
       <pubDate>Fri, 14 Jul 2017 18:20:59 +0800</pubDate>
       
-      <guid>www.qperrie.com/posts/pre-receive%E4%B8%AD%E5%88%A4%E6%96%AD%E9%87%8D%E5%A4%8D%E7%9A%84%E6%96%87%E4%BB%B6/</guid>
+      <guid>https://qianpeili.github.io/hugoblog/posts/pre-receive%E4%B8%AD%E5%88%A4%E6%96%AD%E9%87%8D%E5%A4%8D%E7%9A%84%E6%96%87%E4%BB%B6/</guid>
       <description>前言 昨天运维同事找我，要求实现一个 pre-receive 钩子，在里面判断推送的文件中是否有重复的文件，如果有就拒绝此次 push。问我该如何实现。
 虽然觉得这个判断标准有点莫名其妙，但还是想办法实现了一下。途中遇到过很多问题，以为无法实现，不过最终还是找到了解决方法。
 简单介绍 pre-receive  参考连接： Git - githooks Documentation
@@ -49,10 +49,10 @@ Writing objects: 100% (3/3), 253 bytes | 0 bytes/s, done.</description>
     
     <item>
       <title>Git Submodule的使用</title>
-      <link>www.qperrie.com/posts/git-submodule%E4%BD%BF%E7%94%A8/</link>
+      <link>https://qianpeili.github.io/hugoblog/posts/git-submodule%E4%BD%BF%E7%94%A8/</link>
       <pubDate>Tue, 13 Jun 2017 19:11:01 +0800</pubDate>
       
-      <guid>www.qperrie.com/posts/git-submodule%E4%BD%BF%E7%94%A8/</guid>
+      <guid>https://qianpeili.github.io/hugoblog/posts/git-submodule%E4%BD%BF%E7%94%A8/</guid>
       <description>Submodule介绍 前几天因为项目需求，接触了Git的Submodule功能。
 客户端和服务端的项目各自独立开发，因为要用到一个共同的子库——SubA，SubA即需要独立保持版本信息，又需要同时给客户端和服务端的项目提供支持。Submodule正好可以帮助我们管理这个问题。
 Submodule语法 git submodule [--quiet] add [&amp;lt;options&amp;gt;] [--] &amp;lt;repository[&amp;lt;path&amp;gt;] git submodule [--quiet] status [--cached] [--recursive] [--] [&amp;lt;path&amp;gt;…​] git submodule [--quiet] init [--] [&amp;lt;path&amp;gt;…​] git submodule [--quiet] deinit [-f|--force] (--all|[--] &amp;lt;path&amp;gt;…​) git submodule [--quiet] update [&amp;lt;options&amp;gt;] [--] [&amp;lt;path&amp;gt;…​] git submodule [--quiet] summary [&amp;lt;options&amp;gt;] [--] [&amp;lt;path&amp;gt;…​] git submodule [--quiet] foreach [--recursive] &amp;lt;command&amp;gt; git submodule [--quiet] sync [--recursive] [--] [&amp;lt;path&amp;gt;…​] git submodule [--quiet] absorbgitdirs [--] [&amp;lt;path&amp;gt;…​]  Submodule实践 目前有3个库： Main， SubA, SubB</description>
