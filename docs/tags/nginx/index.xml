@@ -2,20 +2,20 @@
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
     <title>Nginx on 爪子</title>
-    <link>qianpeili.github.io/hugoblog/tags/nginx/</link>
+    <link>/tags/nginx/</link>
     <description>Recent content in Nginx on 爪子</description>
     <generator>Hugo -- gohugo.io</generator>
     <lastBuildDate>Fri, 09 Jun 2017 20:12:05 +0800</lastBuildDate>
     
-	<atom:link href="qianpeili.github.io/hugoblog/tags/nginx/index.xml" rel="self" type="application/rss+xml" />
+	<atom:link href="/tags/nginx/index.xml" rel="self" type="application/rss+xml" />
     
     
     <item>
       <title>【翻译】 Nginx 如何处理一个请求</title>
-      <link>qianpeili.github.io/hugoblog/posts/nginx%E5%A6%82%E4%BD%95%E5%A4%84%E7%90%86%E4%B8%80%E4%B8%AA%E8%AF%B7%E6%B1%82/</link>
+      <link>/posts/nginx%E5%A6%82%E4%BD%95%E5%A4%84%E7%90%86%E4%B8%80%E4%B8%AA%E8%AF%B7%E6%B1%82/</link>
       <pubDate>Fri, 09 Jun 2017 20:12:05 +0800</pubDate>
       
-      <guid>qianpeili.github.io/hugoblog/posts/nginx%E5%A6%82%E4%BD%95%E5%A4%84%E7%90%86%E4%B8%80%E4%B8%AA%E8%AF%B7%E6%B1%82/</guid>
+      <guid>/posts/nginx%E5%A6%82%E4%BD%95%E5%A4%84%E7%90%86%E4%B8%80%E4%B8%AA%E8%AF%B7%E6%B1%82/</guid>
       <description>原文：How nginx processes a request
 网上不乏好的翻译，我再做一次翻译，只是为了让自己更好地理解，也方便以后自己翻阅。
 Name-based virtual servers nginx 首先需要判断哪个 Server 来处理这个请求。让我们来看一个简单的配置文件，里面定义了3个虚拟服务器，并且都监听了80端口。

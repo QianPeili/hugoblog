@@ -2,20 +2,20 @@
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
     <title>Note on 爪子</title>
-    <link>qianpeili.github.io/hugoblog/categories/note/</link>
+    <link>/categories/note/</link>
     <description>Recent content in Note on 爪子</description>
     <generator>Hugo -- gohugo.io</generator>
     <lastBuildDate>Sun, 03 Dec 2017 18:23:21 +0800</lastBuildDate>
     
-	<atom:link href="qianpeili.github.io/hugoblog/categories/note/index.xml" rel="self" type="application/rss+xml" />
+	<atom:link href="/categories/note/index.xml" rel="self" type="application/rss+xml" />
     
     
     <item>
       <title>Go的append使用踩坑记录</title>
-      <link>qianpeili.github.io/hugoblog/posts/go%E7%9A%84append%E4%BD%BF%E7%94%A8%E8%B8%A9%E5%9D%91%E8%AE%B0%E5%BD%95/</link>
+      <link>/posts/go%E7%9A%84append%E4%BD%BF%E7%94%A8%E8%B8%A9%E5%9D%91%E8%AE%B0%E5%BD%95/</link>
       <pubDate>Sun, 03 Dec 2017 18:23:21 +0800</pubDate>
       
-      <guid>qianpeili.github.io/hugoblog/posts/go%E7%9A%84append%E4%BD%BF%E7%94%A8%E8%B8%A9%E5%9D%91%E8%AE%B0%E5%BD%95/</guid>
+      <guid>/posts/go%E7%9A%84append%E4%BD%BF%E7%94%A8%E8%B8%A9%E5%9D%91%E8%AE%B0%E5%BD%95/</guid>
       <description>go 有个很好用的数据类型——slice，有点类似 python 里的 list。go 中给 slice 添加元素，用的是 append 函数，它跟python中的list.append方法有些不同，每次都会返回一个对象，所以我之前一直都把go中的append当做python中的 + 变形。
 在我之前的理解中，某些情况下，两者其实是差不多的，比如：
 go 代码
@@ -28,10 +28,10 @@ a = [1, 2, 3, 4, 5] b = a[:2] + a[3:]  执行后的结果： a == [1, 2, 3, 4, 5
     
     <item>
       <title>Go跨平台编译</title>
-      <link>qianpeili.github.io/hugoblog/posts/go%E8%B7%A8%E5%B9%B3%E5%8F%B0%E7%BC%96%E8%AF%91/</link>
+      <link>/posts/go%E8%B7%A8%E5%B9%B3%E5%8F%B0%E7%BC%96%E8%AF%91/</link>
       <pubDate>Wed, 01 Nov 2017 19:22:02 +0800</pubDate>
       
-      <guid>qianpeili.github.io/hugoblog/posts/go%E8%B7%A8%E5%B9%B3%E5%8F%B0%E7%BC%96%E8%AF%91/</guid>
+      <guid>/posts/go%E8%B7%A8%E5%B9%B3%E5%8F%B0%E7%BC%96%E8%AF%91/</guid>
       <description>公司开发系统是 Windows，服务器部署环境是 Linux。一开始测试的时候选的是 git pull 带生产机上，编译后启动。
 但这个方法太笨，一是代码容易泄露，二是生产机要同时同步库文件，不管是 go get 方式还是 govendor 方式都显得太麻烦。
 不过好在 Go 的跨平台编译非常方便，所以我们完全可以在开发环境下编译好可执行文件，再放入生产机部署。
@@ -43,10 +43,10 @@ $GOOS $GOARCH android arm darwin 386 darwin amd64 darwin arm darwin arm64 dragon
     
     <item>
       <title>Go 的request.Body rewind 功能</title>
-      <link>qianpeili.github.io/hugoblog/posts/request-body%E7%9A%84rewind%E5%8A%9F%E8%83%BD/</link>
+      <link>/posts/request-body%E7%9A%84rewind%E5%8A%9F%E8%83%BD/</link>
       <pubDate>Sat, 16 Sep 2017 18:31:52 +0800</pubDate>
       
-      <guid>qianpeili.github.io/hugoblog/posts/request-body%E7%9A%84rewind%E5%8A%9F%E8%83%BD/</guid>
+      <guid>/posts/request-body%E7%9A%84rewind%E5%8A%9F%E8%83%BD/</guid>
       <description>近日参加了实验楼的 楼赛 第15期 Go语言项目挑战 - 实验楼
 第一道题的题目要求是：
  实现一个简单的数据校验功能，对请求 body 做 md5 计算，然后把结果转为十六进制添加到请求 header 中，头部名称为X-Md5。也就是在HTTP 请求 header 中添加一个 X-Md5: 键值对，如果body为空那么就不填。
@@ -56,10 +56,10 @@ func (t *Transport) RoundTrip(req *http.Request) (*http.Response, error) { if re
     
     <item>
       <title>升级 GCC 来解决 heapdump build Error</title>
-      <link>qianpeili.github.io/hugoblog/posts/%E5%8D%87%E7%BA%A7gcc%E8%A7%A3%E5%86%B3heapdump%E5%AE%89%E8%A3%85%E9%94%99%E8%AF%AF/</link>
+      <link>/posts/%E5%8D%87%E7%BA%A7gcc%E8%A7%A3%E5%86%B3heapdump%E5%AE%89%E8%A3%85%E9%94%99%E8%AF%AF/</link>
       <pubDate>Wed, 16 Aug 2017 21:10:24 +0800</pubDate>
       
-      <guid>qianpeili.github.io/hugoblog/posts/%E5%8D%87%E7%BA%A7gcc%E8%A7%A3%E5%86%B3heapdump%E5%AE%89%E8%A3%85%E9%94%99%E8%AF%AF/</guid>
+      <guid>/posts/%E5%8D%87%E7%BA%A7gcc%E8%A7%A3%E5%86%B3heapdump%E5%AE%89%E8%A3%85%E9%94%99%E8%AF%AF/</guid>
       <description>今天要部署一个node.js的项目，第一次玩node.js有点崩溃。安装依赖的时候一个heapdump库出现了build error。
 在github上找到了类似的issue： [error] heapdump@0.3.7 Build Error · Issue #72 · bnoordhuis/node-heapdump
 里面提到的解决方式是升级GCC：
@@ -74,10 +74,10 @@ make -j 16 make -j 16 install  替换旧版的gcc</description>
     
     <item>
       <title>Bash输出重定向</title>
-      <link>qianpeili.github.io/hugoblog/posts/%E8%BE%93%E5%87%BA%E9%87%8D%E5%AE%9A%E5%90%91/</link>
+      <link>/posts/%E8%BE%93%E5%87%BA%E9%87%8D%E5%AE%9A%E5%90%91/</link>
       <pubDate>Sun, 09 Jul 2017 15:20:36 +0800</pubDate>
       
-      <guid>qianpeili.github.io/hugoblog/posts/%E8%BE%93%E5%87%BA%E9%87%8D%E5%AE%9A%E5%90%91/</guid>
+      <guid>/posts/%E8%BE%93%E5%87%BA%E9%87%8D%E5%AE%9A%E5%90%91/</guid>
       <description>对 bash 命令一直不太熟，每次使用 nohup 命令都要从网上现找。 有时会看到一些命令后面跟着 &amp;quot;2&amp;gt;&amp;amp;1&amp;quot; 的参数。比如
 nohupy python test.py &amp;gt; test.log 2&amp;gt;&amp;amp;1  之前也没有多管，直接用了。前几天又在其他人的 shell 脚本中看到 &amp;quot;2&amp;gt;&amp;amp;1&amp;quot;, 才想起去了解一下 ，现把内容整理一下做记录。
 主要内容借鉴于Bash One-Liners Explained, Part III: All about redirections - good coders code, great coders reuse，原文非常详细，欢迎访问原文。
@@ -90,10 +90,10 @@ python test.py &amp;gt; file 命令等同于 python test.</description>
     
     <item>
       <title>Git Submodule的使用</title>
-      <link>qianpeili.github.io/hugoblog/posts/git-submodule%E4%BD%BF%E7%94%A8/</link>
+      <link>/posts/git-submodule%E4%BD%BF%E7%94%A8/</link>
       <pubDate>Tue, 13 Jun 2017 19:11:01 +0800</pubDate>
       
-      <guid>qianpeili.github.io/hugoblog/posts/git-submodule%E4%BD%BF%E7%94%A8/</guid>
+      <guid>/posts/git-submodule%E4%BD%BF%E7%94%A8/</guid>
       <description>Submodule介绍 前几天因为项目需求，接触了Git的Submodule功能。
 客户端和服务端的项目各自独立开发，因为要用到一个共同的子库——SubA，SubA即需要独立保持版本信息，又需要同时给客户端和服务端的项目提供支持。Submodule正好可以帮助我们管理这个问题。
 Submodule语法 git submodule [--quiet] add [&amp;lt;options&amp;gt;] [--] &amp;lt;repository[&amp;lt;path&amp;gt;] git submodule [--quiet] status [--cached] [--recursive] [--] [&amp;lt;path&amp;gt;…​] git submodule [--quiet] init [--] [&amp;lt;path&amp;gt;…​] git submodule [--quiet] deinit [-f|--force] (--all|[--] &amp;lt;path&amp;gt;…​) git submodule [--quiet] update [&amp;lt;options&amp;gt;] [--] [&amp;lt;path&amp;gt;…​] git submodule [--quiet] summary [&amp;lt;options&amp;gt;] [--] [&amp;lt;path&amp;gt;…​] git submodule [--quiet] foreach [--recursive] &amp;lt;command&amp;gt; git submodule [--quiet] sync [--recursive] [--] [&amp;lt;path&amp;gt;…​] git submodule [--quiet] absorbgitdirs [--] [&amp;lt;path&amp;gt;…​]  Submodule实践 目前有3个库： Main， SubA, SubB</description>
@@ -101,10 +101,10 @@ Submodule语法 git submodule [--quiet] add [&amp;lt;options&amp;gt;] [--] &amp;
     
     <item>
       <title>Go的依赖管理工具govendor</title>
-      <link>qianpeili.github.io/hugoblog/posts/go%E7%9A%84%E4%BE%9D%E8%B5%96%E7%AE%A1%E7%90%86%E5%B7%A5%E5%85%B7govendor/</link>
+      <link>/posts/go%E7%9A%84%E4%BE%9D%E8%B5%96%E7%AE%A1%E7%90%86%E5%B7%A5%E5%85%B7govendor/</link>
       <pubDate>Mon, 22 May 2017 18:11:05 +0800</pubDate>
       
-      <guid>qianpeili.github.io/hugoblog/posts/go%E7%9A%84%E4%BE%9D%E8%B5%96%E7%AE%A1%E7%90%86%E5%B7%A5%E5%85%B7govendor/</guid>
+      <guid>/posts/go%E7%9A%84%E4%BE%9D%E8%B5%96%E7%AE%A1%E7%90%86%E5%B7%A5%E5%85%B7govendor/</guid>
       <description>依赖管理是我接触 go 以来，觉得比较麻烦的事情。 不过在 go-1.5 版本中，出现了一个 vendor 的概念，并且 vendor 作为一个默认功能存在于1.7之后的版本中。
 vendor的概念就类似于python中的 virtualenv 建立的 env，它是一个文件夹，里面存放了项目所用的依赖。如果项目中有个文件 import 了第三方的 package，而这个 package 又存在项目的 vendor 目录中，这个文件编译的时候会从 vendor 中 import 这个 package
 比如：
@@ -114,20 +114,20 @@ import ( ... &amp;quot;golang.org/x/crypto/ssh&amp;quot; )  因为项目 project
     
     <item>
       <title>tcp经受时延</title>
-      <link>qianpeili.github.io/hugoblog/posts/tcp%E7%BB%8F%E5%8F%97%E6%97%B6%E5%BB%B6/</link>
+      <link>/posts/tcp%E7%BB%8F%E5%8F%97%E6%97%B6%E5%BB%B6/</link>
       <pubDate>Sat, 20 May 2017 16:15:51 +0800</pubDate>
       
-      <guid>qianpeili.github.io/hugoblog/posts/tcp%E7%BB%8F%E5%8F%97%E6%97%B6%E5%BB%B6/</guid>
+      <guid>/posts/tcp%E7%BB%8F%E5%8F%97%E6%97%B6%E5%BB%B6/</guid>
       <description>学 TCP/IP 协议听到最多的就是三次握手和四次挥手协议了吧。由于最近在折腾 tcpdump ，就想着实战抓一下 tcp 协议的这个握手和挥手协议。于是我在本地向内网测试机器的服务上发起了一个 POST 请求，抓到如下信息：
 15:05:03.904647 IP socket-client.56558 &amp;gt; socket-server.3000: Flags [S], seq 2090421259, win 64240, options [mss 1460,nop,wscale 8,nop,nop,sackOK], length 0 15:05:03.904699 IP socket-server.3000 &amp;gt; socket-client.56558: Flags [S.], seq 2303886283, ack 2090421260, win 29200, options [mss 1460,nop,nop,sackOK,nop,wscale 7], length 0 15:05:03.905263 IP socket-client.56558 &amp;gt; socket-server.3000: Flags [.], ack 1, win 2053, length 0 15:05:03.905596 IP socket-client.56558 &amp;gt; socket-server.3000: Flags [P.], seq 1:230, ack 1, win 2053, length 229 15:05:03.</description>
     </item>
     
     <item>
       <title>tcpdump的使用实例</title>
-      <link>qianpeili.github.io/hugoblog/posts/tcpdump%E7%9A%84%E4%BD%BF%E7%94%A8%E5%AE%9E%E4%BE%8B/</link>
+      <link>/posts/tcpdump%E7%9A%84%E4%BD%BF%E7%94%A8%E5%AE%9E%E4%BE%8B/</link>
       <pubDate>Sat, 20 May 2017 13:46:45 +0800</pubDate>
       
-      <guid>qianpeili.github.io/hugoblog/posts/tcpdump%E7%9A%84%E4%BD%BF%E7%94%A8%E5%AE%9E%E4%BE%8B/</guid>
+      <guid>/posts/tcpdump%E7%9A%84%E4%BD%BF%E7%94%A8%E5%AE%9E%E4%BE%8B/</guid>
       <description>介绍 tcpdump 是 Linux 系统下进行网络分析的重要工具，我也因为对抓包这一块有些好奇，就找了些资料学习，然后整理成这篇文章。
 使用说明 命令模式：
 tcpdump [ -AbdDefhHIJKlLnNOpqStuUvxX# ] [ -B buffer_size ] [ -c count ] [ -C file_size ] [ -G rotate_seconds ] [ -F file ] [ -i interface ] [ -j tstamp_type ] [ -m module ] [ -M secret ] [ --number ] [ -Q in|out|inout ] [ -r file ] [ -V file ] [ -s snaplen ] [ -T type ] [ -w file ] [ -W filecount ] [ -E spi@ipaddr algo:secret,.</description>

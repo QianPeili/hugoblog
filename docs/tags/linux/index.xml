@@ -2,20 +2,20 @@
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
     <title>Linux on 爪子</title>
-    <link>qianpeili.github.io/hugoblog/tags/linux/</link>
+    <link>/tags/linux/</link>
     <description>Recent content in Linux on 爪子</description>
     <generator>Hugo -- gohugo.io</generator>
     <lastBuildDate>Wed, 16 Aug 2017 21:10:24 +0800</lastBuildDate>
     
-	<atom:link href="qianpeili.github.io/hugoblog/tags/linux/index.xml" rel="self" type="application/rss+xml" />
+	<atom:link href="/tags/linux/index.xml" rel="self" type="application/rss+xml" />
     
     
     <item>
       <title>升级 GCC 来解决 heapdump build Error</title>
-      <link>qianpeili.github.io/hugoblog/posts/%E5%8D%87%E7%BA%A7gcc%E8%A7%A3%E5%86%B3heapdump%E5%AE%89%E8%A3%85%E9%94%99%E8%AF%AF/</link>
+      <link>/posts/%E5%8D%87%E7%BA%A7gcc%E8%A7%A3%E5%86%B3heapdump%E5%AE%89%E8%A3%85%E9%94%99%E8%AF%AF/</link>
       <pubDate>Wed, 16 Aug 2017 21:10:24 +0800</pubDate>
       
-      <guid>qianpeili.github.io/hugoblog/posts/%E5%8D%87%E7%BA%A7gcc%E8%A7%A3%E5%86%B3heapdump%E5%AE%89%E8%A3%85%E9%94%99%E8%AF%AF/</guid>
+      <guid>/posts/%E5%8D%87%E7%BA%A7gcc%E8%A7%A3%E5%86%B3heapdump%E5%AE%89%E8%A3%85%E9%94%99%E8%AF%AF/</guid>
       <description>今天要部署一个node.js的项目，第一次玩node.js有点崩溃。安装依赖的时候一个heapdump库出现了build error。
 在github上找到了类似的issue： [error] heapdump@0.3.7 Build Error · Issue #72 · bnoordhuis/node-heapdump
 里面提到的解决方式是升级GCC：
@@ -30,10 +30,10 @@ make -j 16 make -j 16 install  替换旧版的gcc</description>
     
     <item>
       <title>Bash输出重定向</title>
-      <link>qianpeili.github.io/hugoblog/posts/%E8%BE%93%E5%87%BA%E9%87%8D%E5%AE%9A%E5%90%91/</link>
+      <link>/posts/%E8%BE%93%E5%87%BA%E9%87%8D%E5%AE%9A%E5%90%91/</link>
       <pubDate>Sun, 09 Jul 2017 15:20:36 +0800</pubDate>
       
-      <guid>qianpeili.github.io/hugoblog/posts/%E8%BE%93%E5%87%BA%E9%87%8D%E5%AE%9A%E5%90%91/</guid>
+      <guid>/posts/%E8%BE%93%E5%87%BA%E9%87%8D%E5%AE%9A%E5%90%91/</guid>
       <description>对 bash 命令一直不太熟，每次使用 nohup 命令都要从网上现找。 有时会看到一些命令后面跟着 &amp;quot;2&amp;gt;&amp;amp;1&amp;quot; 的参数。比如
 nohupy python test.py &amp;gt; test.log 2&amp;gt;&amp;amp;1  之前也没有多管，直接用了。前几天又在其他人的 shell 脚本中看到 &amp;quot;2&amp;gt;&amp;amp;1&amp;quot;, 才想起去了解一下 ，现把内容整理一下做记录。
 主要内容借鉴于Bash One-Liners Explained, Part III: All about redirections - good coders code, great coders reuse，原文非常详细，欢迎访问原文。
@@ -46,10 +46,10 @@ python test.py &amp;gt; file 命令等同于 python test.</description>
     
     <item>
       <title>tcpdump的使用实例</title>
-      <link>qianpeili.github.io/hugoblog/posts/tcpdump%E7%9A%84%E4%BD%BF%E7%94%A8%E5%AE%9E%E4%BE%8B/</link>
+      <link>/posts/tcpdump%E7%9A%84%E4%BD%BF%E7%94%A8%E5%AE%9E%E4%BE%8B/</link>
       <pubDate>Sat, 20 May 2017 13:46:45 +0800</pubDate>
       
-      <guid>qianpeili.github.io/hugoblog/posts/tcpdump%E7%9A%84%E4%BD%BF%E7%94%A8%E5%AE%9E%E4%BE%8B/</guid>
+      <guid>/posts/tcpdump%E7%9A%84%E4%BD%BF%E7%94%A8%E5%AE%9E%E4%BE%8B/</guid>
       <description>介绍 tcpdump 是 Linux 系统下进行网络分析的重要工具，我也因为对抓包这一块有些好奇，就找了些资料学习，然后整理成这篇文章。
 使用说明 命令模式：
 tcpdump [ -AbdDefhHIJKlLnNOpqStuUvxX# ] [ -B buffer_size ] [ -c count ] [ -C file_size ] [ -G rotate_seconds ] [ -F file ] [ -i interface ] [ -j tstamp_type ] [ -m module ] [ -M secret ] [ --number ] [ -Q in|out|inout ] [ -r file ] [ -V file ] [ -s snaplen ] [ -T type ] [ -w file ] [ -W filecount ] [ -E spi@ipaddr algo:secret,.</description>
@@ -57,10 +57,10 @@ tcpdump [ -AbdDefhHIJKlLnNOpqStuUvxX# ] [ -B buffer_size ] [ -c count ] [ -C fil
     
     <item>
       <title>unicode小技巧</title>
-      <link>qianpeili.github.io/hugoblog/posts/unicode%E5%B0%8F%E6%8A%80%E5%B7%A7/</link>
+      <link>/posts/unicode%E5%B0%8F%E6%8A%80%E5%B7%A7/</link>
       <pubDate>Fri, 07 Apr 2017 10:20:30 +0800</pubDate>
       
-      <guid>qianpeili.github.io/hugoblog/posts/unicode%E5%B0%8F%E6%8A%80%E5%B7%A7/</guid>
+      <guid>/posts/unicode%E5%B0%8F%E6%8A%80%E5%B7%A7/</guid>
       <description>今天遇到一个问题
 在mysql查询日志时，发现一些unicode字符串存储变成了
 u7528u6237u53d6u6d88u8ba2u5355u8bf7u6c42  这个形式，手动加\虽然可行，但毕竟不是长久的办法
