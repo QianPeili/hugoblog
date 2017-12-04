@@ -24,19 +24,19 @@ type MyInt int var i int var j MyInt  那么，变量 i 就是 int 类型，变�
 Go 是静态类型语言，每个变量都有一个静态的类型，就是说，在编译的时候，变量的类型必须是固定且唯一的。 比如： int, float32, *MyType, []byte 等等。如果我们如下申明：
 type MyInt int var i int var j MyInt  那么，变量 i 就是 int 类型，变量 j 就是 MyInt 类型。 尽管 i 和 j 拥有相同的底层类型， 但他们本身是完全不同的类型，他们不能直接互相赋值，必须通过类型转换。
 接口( interface )是 Go 类型中非常重要的一种类型，它代表一些方法的固定集合。 一个接口变量可以存放任意的（非接口）具体值，只要这个值实现了接口包含的所有方法。 比较著名的一对例子就是 io.'>
-<meta property='og:url' content='https://qianpeili.github.io/hugoblog/posts/trans-go-reflect/'>
+<meta property='og:url' content='www.qperrie.com/posts/trans-go-reflect/'>
 <meta property='og:site_name' content='爪子'>
 <meta property='og:type' content='article'><meta property='article:section' content='Posts'><meta property='article:tag' content='go'><meta property='article:published_time' content='2017-07-28T20:48:11&#43;08:00'/><meta property='article:modified_time' content='2017-07-28T20:48:11&#43;08:00'/><meta name='twitter:card' content='summary'>
 
 <meta name="generator" content="Hugo 0.30.2" />
 
   <title>【翻译】Go语言中的反射机制 • 爪子</title>
-  <link rel='canonical' href='https://qianpeili.github.io/hugoblog/posts/trans-go-reflect/'>
+  <link rel='canonical' href='www.qperrie.com/posts/trans-go-reflect/'>
   
   
-  <link rel='icon' href='/hugoblog/favicon.ico'>
+  <link rel='icon' href='/www.qperrie.com/favicon.ico'>
 <link rel='stylesheet' href='https://fonts.googleapis.com/css?family=Ubuntu:400,400i,700&subset=latin'>
-<link rel='stylesheet' href='/hugoblog/assets/css/main.77da63e1.css'><link rel='stylesheet' href='/hugoblog/css/custom.css'>
+<link rel='stylesheet' href='/www.qperrie.com/assets/css/main.77da63e1.css'><link rel='stylesheet' href='/www.qperrie.com/css/custom.css'>
 <script>
 window.ga=window.ga||function(){(ga.q=ga.q||[]).push(arguments)};ga.l=+new Date;
 ga('create', 'UA-100449520-1', 'auto');
@@ -57,19 +57,19 @@ ga('send', 'pageview');
         <nav id='main-menu' class='main-menu-container' aria-label='Main Menu'>
   <ul class='main-menu'>
   <li>
-      <a href='/hugoblog/'>Home</a>
+      <a href='www.qperrie.com/'>Home</a>
     </li>
   <li>
-      <a href='posts'>Posts</a>
+      <a href='www.qperrie.com/posts'>Posts</a>
     </li>
   <li>
-      <a href='categories'>Categories</a>
+      <a href='www.qperrie.com/categories'>Categories</a>
     </li>
   <li>
-      <a href='tags'>Tags</a>
+      <a href='www.qperrie.com/tags'>Tags</a>
     </li>
   <li>
-      <a href='about'>About</a>
+      <a href='www.qperrie.com/about'>About</a>
     </li>
   
   </ul>
@@ -634,7 +634,7 @@ fmt.Println(&quot;t is now&quot;, t)
   
 <nav class='entry-nav-container'>
   <div class='entry-nav'><div class='prev-entry'>
-      <a href='/hugoblog/posts/%E8%A7%A3%E5%86%B3git%E9%92%A9%E5%AD%90%E6%97%A0%E6%B3%95%E8%BF%90%E8%A1%8C%E7%9A%84%E9%97%AE%E9%A2%98/'>
+      <a href='/www.qperrie.com/posts/%E8%A7%A3%E5%86%B3git%E9%92%A9%E5%AD%90%E6%97%A0%E6%B3%95%E8%BF%90%E8%A1%8C%E7%9A%84%E9%97%AE%E9%A2%98/'>
         <span aria-hidden='true'><svg class='icon' viewbox='0 0 24 24' stroke-linecap='round' stroke-linejoin='round' stroke-width='2' aria-hidden='true'>
   
   <line x1="20" y1="12" x2="4" y2="12"/>
@@ -644,7 +644,7 @@ fmt.Println(&quot;t is now&quot;, t)
  Previous</span>
         <span class='screen-reader'>Previous post: </span>解决 Git Hooks 无法运行的问题</a>
     </div><div class='next-entry'>
-      <a href='/hugoblog/posts/%E5%8D%87%E7%BA%A7gcc%E8%A7%A3%E5%86%B3heapdump%E5%AE%89%E8%A3%85%E9%94%99%E8%AF%AF/'>
+      <a href='/www.qperrie.com/posts/%E5%8D%87%E7%BA%A7gcc%E8%A7%A3%E5%86%B3heapdump%E5%AE%89%E8%A3%85%E9%94%99%E8%AF%AF/'>
         <span class='screen-reader'>Next post: </span>升级 GCC 来解决 heapdump build Error<span aria-hidden='true'>Next <svg class='icon' viewbox='0 0 24 24' stroke-linecap='round' stroke-linejoin='round' stroke-width='2' aria-hidden='true'>
   
   <line x1="4" y1="12" x2="20" y2="12"/>
@@ -726,7 +726,7 @@ fmt.Println(&quot;t is now&quot;, t)
       </div>
     </footer>
 
-  </div><script src='/hugoblog/assets/js/main.5871befd.js'></script><script src='/hugoblog/js/custom.js'></script></body>
+  </div><script src='/www.qperrie.com/assets/js/main.5871befd.js'></script><script src='/www.qperrie.com/js/custom.js'></script></body>
 
 </html>
 

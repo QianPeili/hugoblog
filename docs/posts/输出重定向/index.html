@@ -22,19 +22,19 @@ nohupy python test.py &gt; test.log 2&gt;&amp;1  之前也没有多管，直接�
 当我们输入一个命令：
 python test.py &gt; file  &gt; 就是输出重定向运算符，bash 首先会以写的形式打开 file，成功后上述命令的 stdout 就会被发送到这个打开的 file 中。如果打开失败，则整个命令失败。
 python test.py &gt; file 命令等同于 python test.'>
-<meta property='og:url' content='https://qianpeili.github.io/hugoblog/posts/%E8%BE%93%E5%87%BA%E9%87%8D%E5%AE%9A%E5%90%91/'>
+<meta property='og:url' content='www.qperrie.com/posts/%E8%BE%93%E5%87%BA%E9%87%8D%E5%AE%9A%E5%90%91/'>
 <meta property='og:site_name' content='爪子'>
 <meta property='og:type' content='article'><meta property='article:section' content='Posts'><meta property='article:tag' content='linux'><meta property='article:published_time' content='2017-07-09T15:20:36&#43;08:00'/><meta property='article:modified_time' content='2017-07-09T15:20:36&#43;08:00'/><meta name='twitter:card' content='summary'>
 
 <meta name="generator" content="Hugo 0.30.2" />
 
   <title>Bash输出重定向 • 爪子</title>
-  <link rel='canonical' href='https://qianpeili.github.io/hugoblog/posts/%E8%BE%93%E5%87%BA%E9%87%8D%E5%AE%9A%E5%90%91/'>
+  <link rel='canonical' href='www.qperrie.com/posts/%E8%BE%93%E5%87%BA%E9%87%8D%E5%AE%9A%E5%90%91/'>
   
   
-  <link rel='icon' href='/hugoblog/favicon.ico'>
+  <link rel='icon' href='/www.qperrie.com/favicon.ico'>
 <link rel='stylesheet' href='https://fonts.googleapis.com/css?family=Ubuntu:400,400i,700&subset=latin'>
-<link rel='stylesheet' href='/hugoblog/assets/css/main.77da63e1.css'><link rel='stylesheet' href='/hugoblog/css/custom.css'>
+<link rel='stylesheet' href='/www.qperrie.com/assets/css/main.77da63e1.css'><link rel='stylesheet' href='/www.qperrie.com/css/custom.css'>
 <script>
 window.ga=window.ga||function(){(ga.q=ga.q||[]).push(arguments)};ga.l=+new Date;
 ga('create', 'UA-100449520-1', 'auto');
@@ -55,19 +55,19 @@ ga('send', 'pageview');
         <nav id='main-menu' class='main-menu-container' aria-label='Main Menu'>
   <ul class='main-menu'>
   <li>
-      <a href='/hugoblog/'>Home</a>
+      <a href='www.qperrie.com/'>Home</a>
     </li>
   <li>
-      <a href='posts'>Posts</a>
+      <a href='www.qperrie.com/posts'>Posts</a>
     </li>
   <li>
-      <a href='categories'>Categories</a>
+      <a href='www.qperrie.com/categories'>Categories</a>
     </li>
   <li>
-      <a href='tags'>Tags</a>
+      <a href='www.qperrie.com/tags'>Tags</a>
     </li>
   <li>
-      <a href='about'>About</a>
+      <a href='www.qperrie.com/about'>About</a>
     </li>
   
   </ul>
@@ -140,7 +140,7 @@ One min read
 
 <p>当 bash 启动时，会开启三个标准文件描述符：stdin, stdout, stderr。</p>
 
-<p><img src="/hugoblog/images/r-1.png" alt="" /></p>
+<p><img src="/images/r-1.png" alt="" /></p>
 
 <p>它们都指向了 <code>/dev/tty0</code> 即我们当前使用的控制台。 <code>0</code> 代表 stdin， <code>1</code> 代表 stdout, <code>2</code> 代表stderr。</p>
 
@@ -153,11 +153,11 @@ One min read
 
 <p><code>python test.py &gt; file</code> 命令等同于 <code>python test.py 1&gt;file</code>，因为 <code>1</code> 就代表标准输出 <code>stdout</code>。这个时候的文件描述符指向如下：</p>
 
-<p><img src="/hugoblog/images/r-2.png" alt="" /></p>
+<p><img src="/images/r-2.png" alt="" /></p>
 
 <p>那么 <code>2&gt;&amp;1</code> 代表什么呢，它代表的是，将 <code>2</code> 所在文件描述符指向 <code>1</code> 所指向的内容。 如果 <code>1</code> 此时指向的是 <code>file</code>， 那么 <code>2</code> 也指向同一个 <code>file</code>。如下图所示：</p>
 
-<p><img src="/hugoblog/images/r-3.png" alt="" /></p>
+<p><img src="/images/r-3.png" alt="" /></p>
 
 <p>另外命令<code>python test.py &amp;&gt; file</code>可以实现与 <code>2&gt;&amp;1</code> 一样的效果， <code>&amp;&gt;</code> 运算符指的是同时把命令的 stdout 和 stderr 重定向到同一个 <code>file</code>中。</p>
 
@@ -177,11 +177,11 @@ One min read
 
 <p>第一个命令的效果是：</p>
 
-<p><img src="/hugoblog/images/r-3.png" alt="" /></p>
+<p><img src="/images/r-3.png" alt="" /></p>
 
 <p>但是第二个命令的效果是：</p>
 
-<p><img src="/hugoblog/images/r-4.png" alt="" /></p>
+<p><img src="/images/r-4.png" alt="" /></p>
 
 </div>
 
@@ -214,7 +214,7 @@ One min read
   
 <nav class='entry-nav-container'>
   <div class='entry-nav'><div class='prev-entry'>
-      <a href='/hugoblog/posts/git-submodule%E4%BD%BF%E7%94%A8/'>
+      <a href='/www.qperrie.com/posts/git-submodule%E4%BD%BF%E7%94%A8/'>
         <span aria-hidden='true'><svg class='icon' viewbox='0 0 24 24' stroke-linecap='round' stroke-linejoin='round' stroke-width='2' aria-hidden='true'>
   
   <line x1="20" y1="12" x2="4" y2="12"/>
@@ -224,7 +224,7 @@ One min read
  Previous</span>
         <span class='screen-reader'>Previous post: </span>Git Submodule的使用</a>
     </div><div class='next-entry'>
-      <a href='/hugoblog/posts/pre-receive%E4%B8%AD%E5%88%A4%E6%96%AD%E9%87%8D%E5%A4%8D%E7%9A%84%E6%96%87%E4%BB%B6/'>
+      <a href='/www.qperrie.com/posts/pre-receive%E4%B8%AD%E5%88%A4%E6%96%AD%E9%87%8D%E5%A4%8D%E7%9A%84%E6%96%87%E4%BB%B6/'>
         <span class='screen-reader'>Next post: </span>通过 pre-hook 判断是否推送重复的内容<span aria-hidden='true'>Next <svg class='icon' viewbox='0 0 24 24' stroke-linecap='round' stroke-linejoin='round' stroke-width='2' aria-hidden='true'>
   
   <line x1="4" y1="12" x2="20" y2="12"/>
@@ -306,7 +306,7 @@ One min read
       </div>
     </footer>
 
-  </div><script src='/hugoblog/assets/js/main.5871befd.js'></script><script src='/hugoblog/js/custom.js'></script></body>
+  </div><script src='/www.qperrie.com/assets/js/main.5871befd.js'></script><script src='/www.qperrie.com/js/custom.js'></script></body>
 
 </html>
 

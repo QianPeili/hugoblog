@@ -1,7 +1,7 @@
 publishDir = "docs"
 contentDir = "content"
 buildDrafts = false
-baseURL = "https://qianpeili.github.io/hugoblog/"
+baseURL = "www.qperrie.com"
 title = "爪子"
 
 # for smart copyright line, leave this blank and check [params.copyright]
@@ -85,22 +85,22 @@ url = "/"
 name = "Posts"
 weight = -40
 identifier = "posts"
-url = "posts"
+url = "/posts"
 [[menu.main]]
 name = "Categories"
 weight = -30
 identifier = "categories"
-url = "categories"
+url = "/categories"
 [[menu.main]]
 name = "Tags"
 weight = -20
 identifier = "tags"
-url = "tags"
+url = "/tags"
 [[menu.main]]
 name = "About"
 weight = -10
 identifier = "about"
-url = "about"
+url = "/about"
 
 [blackfriday]
 hrefTargetBlank = true

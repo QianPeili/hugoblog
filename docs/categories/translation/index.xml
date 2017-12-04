@@ -2,20 +2,20 @@
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
     <title>Translation on 爪子</title>
-    <link>https://qianpeili.github.io/hugoblog/categories/translation/</link>
+    <link>www.qperrie.com/categories/translation/</link>
     <description>Recent content in Translation on 爪子</description>
     <generator>Hugo -- gohugo.io</generator>
     <lastBuildDate>Fri, 28 Jul 2017 20:48:11 +0800</lastBuildDate>
     
-	<atom:link href="https://qianpeili.github.io/hugoblog/categories/translation/index.xml" rel="self" type="application/rss+xml" />
+	<atom:link href="www.qperrie.com/categories/translation/index.xml" rel="self" type="application/rss+xml" />
     
     
     <item>
       <title>【翻译】Go语言中的反射机制</title>
-      <link>https://qianpeili.github.io/hugoblog/posts/trans-go-reflect/</link>
+      <link>www.qperrie.com/posts/trans-go-reflect/</link>
       <pubDate>Fri, 28 Jul 2017 20:48:11 +0800</pubDate>
       
-      <guid>https://qianpeili.github.io/hugoblog/posts/trans-go-reflect/</guid>
+      <guid>www.qperrie.com/posts/trans-go-reflect/</guid>
       <description>原文链接： The Laws of Reflection - The Go Blog
 作者： Rob Pike
 翻译： 钱佩丽
@@ -29,10 +29,10 @@ type MyInt int var i int var j MyInt  那么，变量 i 就是 int 类型，变�
     
     <item>
       <title>【翻译】 Nginx 如何处理一个请求</title>
-      <link>https://qianpeili.github.io/hugoblog/posts/nginx%E5%A6%82%E4%BD%95%E5%A4%84%E7%90%86%E4%B8%80%E4%B8%AA%E8%AF%B7%E6%B1%82/</link>
+      <link>www.qperrie.com/posts/nginx%E5%A6%82%E4%BD%95%E5%A4%84%E7%90%86%E4%B8%80%E4%B8%AA%E8%AF%B7%E6%B1%82/</link>
       <pubDate>Fri, 09 Jun 2017 20:12:05 +0800</pubDate>
       
-      <guid>https://qianpeili.github.io/hugoblog/posts/nginx%E5%A6%82%E4%BD%95%E5%A4%84%E7%90%86%E4%B8%80%E4%B8%AA%E8%AF%B7%E6%B1%82/</guid>
+      <guid>www.qperrie.com/posts/nginx%E5%A6%82%E4%BD%95%E5%A4%84%E7%90%86%E4%B8%80%E4%B8%AA%E8%AF%B7%E6%B1%82/</guid>
       <description>原文：How nginx processes a request
 网上不乏好的翻译，我再做一次翻译，只是为了让自己更好地理解，也方便以后自己翻阅。
 Name-based virtual servers nginx 首先需要判断哪个 Server 来处理这个请求。让我们来看一个简单的配置文件，里面定义了3个虚拟服务器，并且都监听了80端口。
