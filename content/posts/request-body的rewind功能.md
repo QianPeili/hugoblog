@@ -1,5 +1,5 @@
 ---
-title: "go 的request.Body rewind 功能" 
+title: "Go 的request.Body rewind 功能" 
 date: 2017-09-16T18:31:52+08:00
 category:
  - 笔记
