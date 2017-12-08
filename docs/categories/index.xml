@@ -5,9 +5,19 @@
     <link>https://qianpeili.github.io/hugoblog/categories/</link>
     <description>Recent content in Categories on 爪子</description>
     <generator>Hugo -- gohugo.io</generator>
+    <lastBuildDate>Fri, 08 Dec 2017 10:46:55 +0800</lastBuildDate>
     
 	<atom:link href="https://qianpeili.github.io/hugoblog/categories/index.xml" rel="self" type="application/rss+xml" />
     
+    
+    <item>
+      <title>Action</title>
+      <link>https://qianpeili.github.io/hugoblog/categories/action/</link>
+      <pubDate>Fri, 08 Dec 2017 10:46:55 +0800</pubDate>
+      
+      <guid>https://qianpeili.github.io/hugoblog/categories/action/</guid>
+      <description></description>
+    </item>
     
     <item>
       <title>Coding</title>

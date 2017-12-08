@@ -1,13 +1,13 @@
 <?xml version="1.0" encoding="utf-8" standalone="yes" ?>
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
-    <title>Mongodb on 爪子</title>
-    <link>https://qianpeili.github.io/hugoblog/tags/mongodb/</link>
-    <description>Recent content in Mongodb on 爪子</description>
+    <title>Docker on 爪子</title>
+    <link>https://qianpeili.github.io/hugoblog/tags/docker/</link>
+    <description>Recent content in Docker on 爪子</description>
     <generator>Hugo -- gohugo.io</generator>
     <lastBuildDate>Fri, 08 Dec 2017 10:46:55 +0800</lastBuildDate>
     
-	<atom:link href="https://qianpeili.github.io/hugoblog/tags/mongodb/index.xml" rel="self" type="application/rss+xml" />
+	<atom:link href="https://qianpeili.github.io/hugoblog/tags/docker/index.xml" rel="self" type="application/rss+xml" />
     
     
     <item>
@@ -20,17 +20,6 @@
 使用 Docker 搭建副本集 本段内容主要参考了网上 Soham Kamani 写的 Creating a MongoDB replica set using Docker 🍃。更详细的内容可以查看原文。
 安装docker-ce Get Docker CE for Ubuntu | Docker Documentation
 下载 mongo:3.6 镜像 docker pull mongo:3.6  创建副本集专用 Network docker network create mongo-cluster  启动 3 个 mongo 实例 docker run -P -d \ --name mongo1 \ --net mongo-cluster \ mongo:3.6 mongod --bind_ip 0.</description>
-    </item>
-    
-    <item>
-      <title>用mongodb统计去重后的数量</title>
-      <link>https://qianpeili.github.io/hugoblog/posts/calculate_unique_size_with_mongodb/</link>
-      <pubDate>Thu, 16 Mar 2017 18:11:29 +0800</pubDate>
-      
-      <guid>https://qianpeili.github.io/hugoblog/posts/calculate_unique_size_with_mongodb/</guid>
-      <description>假设有一个活动记录表，记录了玩家的参与信息，每个玩家有多条记录，格式如下
-{ _id: ObjectId(), uid: 1014, score: 10 }  要求统计参与活动的玩家中，分数大于等于10的人数。
-var num = db.activity_log.aggregate([ {$match: {&amp;quot;score&amp;quot;: {&amp;quot;$ge&amp;quot;: 10}}}, # 筛选 {$group: {&amp;quot;_id&amp;quot;: null, &amp;quot;users&amp;quot;: {$addToSet: &amp;quot;$uid&amp;quot;}}}, # 将玩家ID放入一个集合，作去重 {&amp;quot;$project&amp;quot;: {&amp;quot;_id&amp;quot;: {&amp;quot;$size&amp;quot;: &amp;quot;$users&amp;quot;}}} # 求集合大小 ]);  得出结果{&amp;quot;_id&amp;quot;: 46}</description>
     </item>
     
   </channel>

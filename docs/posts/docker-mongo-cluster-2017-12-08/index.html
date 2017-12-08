@@ -1,0 +1,385 @@
+<!DOCTYPE html>
+<html lang='en'>
+
+<head>
+  <meta charset='utf-8'>
+<meta name='viewport' content='width=device-width, initial-scale=1'>
+<meta name='description' content='昨天 Mongodb 3.6 发布了，想尝试下新特性，尤其是 Change stream，写完代码跑起来，结果告诉我需要 replica set 模式下才能使用，坑爹啊！于是临时在网上找了找相关资料，准备用 docker 搭一个简单的 replica set（下文统一用“副本集”称呼）。
+使用 Docker 搭建副本集 本段内容主要参考了网上 Soham Kamani 写的 Creating a MongoDB replica set using Docker 🍃。更详细的内容可以查看原文。
+安装docker-ce Get Docker CE for Ubuntu | Docker Documentation
+下载 mongo:3.6 镜像 docker pull mongo:3.6  创建副本集专用 Network docker network create mongo-cluster  启动 3 个 mongo 实例 docker run -P -d \ --name mongo1 \ --net mongo-cluster \ mongo:3.6 mongod --bind_ip 0.'>
+
+<meta property='og:title' content='用 Docker搭建 MongoDB replica set • 爪子'>
+<meta property='og:description' content='昨天 Mongodb 3.6 发布了，想尝试下新特性，尤其是 Change stream，写完代码跑起来，结果告诉我需要 replica set 模式下才能使用，坑爹啊！于是临时在网上找了找相关资料，准备用 docker 搭一个简单的 replica set（下文统一用“副本集”称呼）。
+使用 Docker 搭建副本集 本段内容主要参考了网上 Soham Kamani 写的 Creating a MongoDB replica set using Docker 🍃。更详细的内容可以查看原文。
+安装docker-ce Get Docker CE for Ubuntu | Docker Documentation
+下载 mongo:3.6 镜像 docker pull mongo:3.6  创建副本集专用 Network docker network create mongo-cluster  启动 3 个 mongo 实例 docker run -P -d \ --name mongo1 \ --net mongo-cluster \ mongo:3.6 mongod --bind_ip 0.'>
+<meta property='og:url' content='https://qianpeili.github.io/hugoblog/posts/docker-mongo-cluster-2017-12-08/'>
+<meta property='og:site_name' content='爪子'>
+<meta property='og:type' content='article'><meta property='article:section' content='Posts'><meta property='article:tag' content='docker'><meta property='article:tag' content='mongodb'><meta property='article:published_time' content='2017-12-08T10:46:55&#43;08:00'/><meta property='article:modified_time' content='2017-12-08T10:46:55&#43;08:00'/><meta name='twitter:card' content='summary'>
+
+<meta name="generator" content="Hugo 0.30.2" />
+
+  <title>用 Docker搭建 MongoDB replica set • 爪子</title>
+  <link rel='canonical' href='https://qianpeili.github.io/hugoblog/posts/docker-mongo-cluster-2017-12-08/'>
+  
+  
+  <link rel='icon' href='https://qianpeili.github.io/hugoblog/favicon.ico'>
+<link rel='stylesheet' href='https://fonts.googleapis.com/css?family=Ubuntu:400,400i,700&subset=latin'>
+<link rel='stylesheet' href='https://qianpeili.github.io/hugoblog/assets/css/main.77da63e1.css'><link rel='stylesheet' href='https://qianpeili.github.io/hugoblog/css/custom.css'>
+<script>
+window.ga=window.ga||function(){(ga.q=ga.q||[]).push(arguments)};ga.l=+new Date;
+ga('create', 'UA-100449520-1', 'auto');
+ga('send', 'pageview');
+</script>
+<script async src='//www.google-analytics.com/analytics.js'></script>
+
+</head>
+
+
+<body class='page type-posts'>
+  <div class='site'>
+
+    <a class='screen-reader' href='#main'>Skip to Content</a>
+
+    <header id='header' class='header-container'>
+      <div class='header site-header'>
+        <nav id='main-menu' class='main-menu-container' aria-label='Main Menu'>
+  <ul class='main-menu'>
+  <li>
+      <a href='https://qianpeili.github.io/hugoblog/'>Home</a>
+    </li>
+  <li>
+      <a href='https://qianpeili.github.io/hugoblog/posts'>Posts</a>
+    </li>
+  <li>
+      <a href='https://qianpeili.github.io/hugoblog/categories'>Categories</a>
+    </li>
+  <li>
+      <a href='https://qianpeili.github.io/hugoblog/tags'>Tags</a>
+    </li>
+  <li>
+      <a href='https://qianpeili.github.io/hugoblog/about'>About</a>
+    </li>
+  
+  </ul>
+</nav>
+
+        <div class='header-info'>
+          
+          <p class='site-title title'>爪子</p>
+          
+          <p class='site-description subtitle'>易燃易爆炸</p>
+        </div>
+      </div>
+    </header>
+
+
+<main id='main' class='main'>
+  <article lang='en' class='entry'>
+    <header class='header-container'>
+  <div class='header entry-header'>
+    <div class='header-info'>
+      <h1 class='title'>用 Docker搭建 MongoDB replica set</h1>
+      
+
+    </div>
+    
+<div class='meta'>
+  <span class='posted-on'><svg class='icon' viewbox='0 0 24 24' stroke-linecap='round' stroke-linejoin='round' stroke-width='2' aria-hidden='true'>
+  
+  <rect x="3" y="4" width="18" height="18" rx="2" ry="2"/>
+  <line x1="16" y1="2" x2="16" y2="6"/>
+  <line x1="8" y1="2" x2="8" y2="6"/>
+  <line x1="3" y1="10" x2="21" y2="10"/>
+  
+</svg>
+<span class='screen-reader'>Posted on </span>
+  <time class='date' datetime='2017-12-08T10:46:55&#43;08:00'>2017, Dec 08</time>
+</span>
+
+  
+  
+<span class='reading-time'><svg class='icon' viewbox='0 0 24 24' stroke-linecap='round' stroke-linejoin='round' stroke-width='2' aria-hidden='true'>
+  
+  <circle cx="12" cy="12" r="10"/>
+  <polyline points="12 6 12 12 15 15"/>
+  
+</svg>
+2 mins read
+</span>
+
+
+</div>
+
+
+  </div>
+</header>
+
+    
+    
+
+    <div class='entry-content'>
+  
+
+<p>昨天 <code>Mongodb 3.6</code> 发布了，想尝试下新特性，尤其是 <code>Change stream</code>，写完代码跑起来，结果告诉我需要 <code>replica set</code> 模式下才能使用，坑爹啊！于是临时在网上找了找相关资料，准备用 <code>docker</code> 搭一个简单的 <code>replica set</code>（下文统一用“副本集”称呼）。</p>
+
+<h2 id="使用-docker-搭建副本集">使用 <code>Docker</code> 搭建副本集</h2>
+
+<p>本段内容主要参考了网上 <strong>Soham Kamani</strong> 写的 <a href="https://www.sohamkamani.com/blog/2016/06/30/docker-mongo-replica-set/" target="_blank">Creating a MongoDB replica set using Docker 🍃</a>。更详细的内容可以查看原文。</p>
+
+<h5 id="安装docker-ce">安装docker-ce</h5>
+
+<p><a href="https://docs.docker.com/engine/installation/linux/docker-ce/ubuntu/#install-docker-ce-1" target="_blank">Get Docker CE for Ubuntu | Docker Documentation</a></p>
+
+<h5 id="下载-mongo-3-6-镜像">下载 mongo:3.6 镜像</h5>
+
+<pre><code>docker pull mongo:3.6
+</code></pre>
+
+<h5 id="创建副本集专用-network">创建副本集专用 Network</h5>
+
+<pre><code>docker network create mongo-cluster
+</code></pre>
+
+<h5 id="启动-3-个-mongo-实例">启动 3 个 mongo 实例</h5>
+
+<pre><code>docker run -P -d \
+--name mongo1 \
+--net mongo-cluster \
+mongo:3.6 mongod --bind_ip 0.0.0.0 --replSet mongo-set
+
+docker run -P -d \
+--name mongo2 \
+--net mongo-cluster \
+mongo:3.6 mongod --bind_ip 0.0.0.0 --replSet mongo-set
+
+docker run -P -d \
+--name mongo3 \
+--net mongo-cluster \
+mongo:3.6 mongod --bind_ip 0.0.0.0 --replSet mongo-set
+</code></pre>
+
+<p>其实3个命令除了名字没有其他不同，<code>-P</code> 的作用是让系统自己选择一个大端口号对镜像暴露的端口进行映射，懒人必备。</p>
+
+<p>这里跟参考问答有个不同是设置了 <code>--bind_ip 0.0.0.0</code>， 因为至少在 mongo:3.6 的镜像里，默认监听的是本地地址，导致容器建无法互相连接，无法进行副本集设置。</p>
+
+<h5 id="初始化副本集设置">初始化副本集设置</h5>
+
+<p>通过 docker 命令进入 mongo1 的数据库交互界面</p>
+
+<pre><code>docker exec -it mongo1 mongo
+</code></pre>
+
+<p>然后用开始配置副本集配置</p>
+
+<pre><code>MongoDB shell version v3.6.0
+connecting to: mongodb://127.0.0.1:27017
+MongoDB server version: 3.6.0
+Welcome to the MongoDB shell.
+&gt; config={&quot;_id&quot;:&quot;mongo-set&quot;,&quot;members&quot;:[{&quot;_id&quot;:0,&quot;host&quot;:&quot;mongo1:27017&quot;},{&quot;_id&quot;:1,&quot;host&quot;:&quot;mongo2:27017&quot;},{&quot;_id&quot;:2,&quot;host&quot;:&quot;mongo3:27017&quot;}]}
+{
+    &quot;_id&quot; : &quot;mongo-set&quot;,
+    &quot;members&quot; : [
+        {
+            &quot;_id&quot; : 0,
+            &quot;host&quot; : &quot;mongo1:27017&quot;
+        },
+        {
+            &quot;_id&quot; : 1,
+            &quot;host&quot; : &quot;mongo2:27017&quot;
+        },
+        {
+            &quot;_id&quot; : 2,
+            &quot;host&quot; : &quot;mongo3:27017&quot;
+        }
+    ]
+  }
+&gt; rs.initiate(config)
+{
+        &quot;ok&quot; : 1,
+        &quot;operationTime&quot; : Timestamp(1512702787, 1),
+        &quot;$clusterTime&quot; : {
+                &quot;clusterTime&quot; : Timestamp(1512702787, 1),
+                &quot;signature&quot; : {
+                        &quot;hash&quot; : BinData(0,&quot;AAAAAAAAAAAAAAAAAAAAAAAAAAA=&quot;),
+                        &quot;keyId&quot; : NumberLong(0)
+                }
+        }
+}
+</code></pre>
+
+<p>看到 <code>&quot;ok&quot;: 1</code>，副本集就配好了，通过 <code>rs.status()</code> 可以查看副本集状态。而我的命令提示符已经变成了： <code>mongo-set:SECONDARY&gt;</code>。（其实比较奇怪，<code>mongo1</code> 应该是 <code>PRIMARY</code> 才对）</p>
+
+<h3 id="使用-docker-compose-搭建副本集">使用 <code>Docker-compose</code> 搭建副本集</h3>
+
+<p>上面的方式，虽然比手动在宿主机上搭个副本集方便太多了，但是还是有点麻烦，所以我准备尝试用 <code>docker-compose</code> 更快速地搭建一个副本集。</p>
+
+<h5 id="安装-docker-compose">安装 docker-compose</h5>
+
+<p><a href="https://docs.docker.com/compose/install/" target="_blank">Install Docker Compose | Docker Documentation</a></p>
+
+<h5 id="编写-docker-compose-yml">编写 docker-compose.yml</h5>
+
+<pre><code>version: '3'
+services:
+  mongo4:
+    image: mongo:3.6
+    networks:
+      - mongo-cluster-2
+    command: mongod --bind_ip 0.0.0.0 --replSet mongo-set-2
+
+  mongo5:
+    image: mongo:3.6
+    networks:
+      - mongo-cluster-2    
+    command: mongod --bind_ip 0.0.0.0 --replSet mongo-set-2
+
+  mongo6:
+    image: mongo:3.6    
+    networks:
+      - mongo-cluster-2
+    command: mongod --bind_ip 0.0.0.0 --replSet mongo-set-2
+
+networks:
+    mongo-cluster-2:
+</code></pre>
+
+<h5 id="启动服务">启动服务</h5>
+
+<pre><code>docker-compose up -d
+</code></pre>
+
+<p><code>-d</code> 参数表示以 <code>daemon</code> 形式运行服务。用 <code>docker ps</code> 命令可以看到新的3个容器已经起来了。</p>
+
+<pre><code>CONTAINER ID        IMAGE               COMMAND                  CREATED             STATUS                 PORTS                                               NAMES
+a973bacfecb6        mongo:3.6           &quot;docker-entrypoint...&quot;   5 seconds ago       Up 3 seconds           27017/tcp                                           mongoreplcompose_mongo5_1
+f98b7ef74a47        mongo:3.6           &quot;docker-entrypoint...&quot;   5 seconds ago       Up 4 seconds           27017/tcp                                           mongoreplcompose_mongo6_1
+58e7ecb2c474        mongo:3.6           &quot;docker-entrypoint...&quot;   5 seconds ago       Up 4 seconds           27017/tcp                                           mongoreplcompose_mongo4_1
+</code></pre>
+
+<h5 id="配置副本集">配置副本集</h5>
+
+<p>后续操作就跟之前一样了，不再赘述。</p>
+
+<h3 id="总结">总结</h3>
+
+<p>有 <code>docker</code> 还是很方便地，但还是只会简单地使用。这次搭建副本集，也是用了最简单的参数，不适合用在生产环境。不过作为开发环境的搭建，还是绰绰有余的～～</p>
+
+</div>
+
+    
+<footer class='entry-footer-container'>
+  <div class='entry-footer'>
+  <div class='categories'>
+  <span class='taxonomyTerm-icon'><svg class='icon' viewbox='0 0 24 24' stroke-linecap='round' stroke-linejoin='round' stroke-width='2' aria-hidden='true'>
+  
+  <path d="M22,19a2,2,0,0,1-2,2H4a2,2,0,0,1-2-2V5A2,2,0,0,1,4,3H9l2,3h9a2,2,0,0,1,2,2Z"/>
+  
+</svg>
+</span>
+  <span class='screen-reader'>Categories: </span><a class='category' href='https://qianpeili.github.io/hugoblog/categories/action'>Action</a></div>
+<div class='tags'>
+  <span class='taxonomyTerm-icon'><svg class='icon' viewbox='0 0 24 24' stroke-linecap='round' stroke-linejoin='round' stroke-width='2' aria-hidden='true'>
+  
+  <path d="M20.59,13.41l-7.17,7.17a2,2,0,0,1-2.83,0L2,12V2H12l8.59,8.59A2,2,0,0,1,20.59,13.41Z"/>
+  <line x1="7" y1="7" x2="7" y2="7"/>
+  
+</svg>
+</span>
+  <span class='screen-reader'>Tags: </span><a class='tag' href='https://qianpeili.github.io/hugoblog/tags/docker'>Docker</a>, <a class='tag' href='https://qianpeili.github.io/hugoblog/tags/mongodb'>Mongodb</a></div>
+
+  </div>
+</footer>
+
+
+  </article>
+  
+<nav class='entry-nav-container'>
+  <div class='entry-nav'><div class='prev-entry'>
+      <a href='https://qianpeili.github.io/hugoblog/posts/go%E7%9A%84append%E4%BD%BF%E7%94%A8%E8%B8%A9%E5%9D%91%E8%AE%B0%E5%BD%95/'>
+        <span aria-hidden='true'><svg class='icon' viewbox='0 0 24 24' stroke-linecap='round' stroke-linejoin='round' stroke-width='2' aria-hidden='true'>
+  
+  <line x1="20" y1="12" x2="4" y2="12"/>
+  <polyline points="10 18 4 12 10 6"/>
+  
+</svg>
+ Previous</span>
+        <span class='screen-reader'>Previous post: </span>Go的append使用踩坑记录</a>
+    </div></div>
+</nav>
+
+  
+<div class='comments-container'>
+  <div id="disqus_thread"></div>
+<script>
+    var disqus_config = function () {
+    
+    
+    
+    };
+    (function() {
+        if (["localhost", "127.0.0.1"].indexOf(window.location.hostname) != -1) {
+            document.getElementById('disqus_thread').innerHTML = 'Disqus comments not available by default when the website is previewed locally.';
+            return;
+        }
+        var d = document, s = d.createElement('script'); s.async = true;
+        s.src = '//' + "zhuazi" + '.disqus.com/embed.js';
+        s.setAttribute('data-timestamp', +new Date());
+        (d.head || d.body).appendChild(s);
+    })();
+</script>
+<noscript>Please enable JavaScript to view the <a href="https://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+<a href="https://disqus.com" class="dsq-brlink">comments powered by <span class="logo-disqus">Disqus</span></a>
+</div>
+
+</main>
+
+    <footer id='footer' class='footer-container'>
+      <div class='footer'>
+        <div class='social-menu-container'>
+  <nav aria-label='Social Menu'>
+    <ul class='social-menu'><li>
+        <a href='https://github.com/qianpeili' target='_blank' rel='noopener'>
+          <span class='screen-reader'>Open Github account in new tab</span><svg class='icon' viewbox='0 0 24 24' stroke-linecap='round' stroke-linejoin='round' stroke-width='2' aria-hidden='true'>
+  
+  <path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22"/>
+  
+</svg>
+</a>
+      </li><li>
+        <a href='https://twitter.com/qianperry' target='_blank' rel='noopener'>
+          <span class='screen-reader'>Open Twitter account in new tab</span><svg class='icon' viewbox='0 0 24 24' stroke-linecap='round' stroke-linejoin='round' stroke-width='2' aria-hidden='true'>
+  
+  <path d="M23 3a10.9 10.9 0 0 1-3.14 1.53 4.48 4.48 0 0 0-7.86 3v1A10.66 10.66 0 0 1 3 4s-4 9 5 13a11.64 11.64 0 0 1-7 2c9 5 20 0 20-11.5a4.5 4.5 0 0 0-.08-.83A7.72 7.72 0 0 0 23 3z"/>
+  
+</svg>
+</a>
+      </li><li>
+        <a href='mailto:qianperry@outlook.com' target='_blank' rel='noopener'>
+          <span class='screen-reader'>Contact via Email</span><svg class='icon' viewbox='0 0 24 24' stroke-linecap='round' stroke-linejoin='round' stroke-width='2' aria-hidden='true'>
+  
+  <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/>
+  <polyline points="22,6 12,13 2,6"/>
+  
+</svg>
+</a>
+      </li></ul>
+  </nav>
+</div>
+        <div class='copyright'>
+  <p>
+        
+      
+
+       &copy; 2017 爪子 
+  </p>
+</div>
+
+      </div>
+    </footer>
+
+  </div><script src='https://qianpeili.github.io/hugoblog/assets/js/main.5871befd.js'></script><script src='https://qianpeili.github.io/hugoblog/js/custom.js'></script></body>
+
+</html>
+

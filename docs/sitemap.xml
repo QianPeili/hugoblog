@@ -3,6 +3,11 @@
   xmlns:xhtml="http://www.w3.org/1999/xhtml">
   
   <url>
+    <loc>https://qianpeili.github.io/hugoblog/posts/docker-mongo-cluster-2017-12-08/</loc>
+    <lastmod>2017-12-08T10:46:55+08:00</lastmod>
+  </url>
+  
+  <url>
     <loc>https://qianpeili.github.io/hugoblog/about/</loc>
     <lastmod>2017-12-03T20:48:23+08:00</lastmod>
   </url>
@@ -93,18 +98,31 @@
   </url>
   
   <url>
+    <loc>https://qianpeili.github.io/hugoblog/categories/action/</loc>
+    <lastmod>2017-12-08T10:46:55+08:00</lastmod>
+    <priority>0</priority>
+  </url>
+  
+  <url>
     <loc>https://qianpeili.github.io/hugoblog/authors/</loc>
     <priority>0</priority>
   </url>
   
   <url>
     <loc>https://qianpeili.github.io/hugoblog/categories/</loc>
+    <lastmod>2017-12-08T10:46:55+08:00</lastmod>
     <priority>0</priority>
   </url>
   
   <url>
     <loc>https://qianpeili.github.io/hugoblog/categories/coding/</loc>
     <lastmod>2017-07-14T18:20:59+08:00</lastmod>
+    <priority>0</priority>
+  </url>
+  
+  <url>
+    <loc>https://qianpeili.github.io/hugoblog/tags/docker/</loc>
+    <lastmod>2017-12-08T10:46:55+08:00</lastmod>
     <priority>0</priority>
   </url>
   
@@ -134,7 +152,7 @@
   
   <url>
     <loc>https://qianpeili.github.io/hugoblog/tags/mongodb/</loc>
-    <lastmod>2017-03-16T18:11:29+08:00</lastmod>
+    <lastmod>2017-12-08T10:46:55+08:00</lastmod>
     <priority>0</priority>
   </url>
   
@@ -158,7 +176,7 @@
   
   <url>
     <loc>https://qianpeili.github.io/hugoblog/posts/</loc>
-    <lastmod>2017-12-03T18:23:21+08:00</lastmod>
+    <lastmod>2017-12-08T10:46:55+08:00</lastmod>
     <priority>0</priority>
   </url>
   
@@ -170,7 +188,7 @@
   
   <url>
     <loc>https://qianpeili.github.io/hugoblog/tags/</loc>
-    <lastmod>2017-08-16T21:10:24+08:00</lastmod>
+    <lastmod>2017-12-08T10:46:55+08:00</lastmod>
     <priority>0</priority>
   </url>
   
@@ -200,7 +218,7 @@
   
   <url>
     <loc>https://qianpeili.github.io/hugoblog/</loc>
-    <lastmod>2017-12-03T18:23:21+08:00</lastmod>
+    <lastmod>2017-12-08T10:46:55+08:00</lastmod>
     <priority>0</priority>
   </url>
   

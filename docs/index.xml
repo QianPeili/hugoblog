@@ -5,10 +5,22 @@
     <link>https://qianpeili.github.io/hugoblog/</link>
     <description>Recent content on 爪子</description>
     <generator>Hugo -- gohugo.io</generator>
-    <lastBuildDate>Sun, 03 Dec 2017 18:23:21 +0800</lastBuildDate>
+    <lastBuildDate>Fri, 08 Dec 2017 10:46:55 +0800</lastBuildDate>
     
 	<atom:link href="https://qianpeili.github.io/hugoblog/index.xml" rel="self" type="application/rss+xml" />
     
+    
+    <item>
+      <title>用 Docker搭建 MongoDB replica set</title>
+      <link>https://qianpeili.github.io/hugoblog/posts/docker-mongo-cluster-2017-12-08/</link>
+      <pubDate>Fri, 08 Dec 2017 10:46:55 +0800</pubDate>
+      
+      <guid>https://qianpeili.github.io/hugoblog/posts/docker-mongo-cluster-2017-12-08/</guid>
+      <description>昨天 Mongodb 3.6 发布了，想尝试下新特性，尤其是 Change stream，写完代码跑起来，结果告诉我需要 replica set 模式下才能使用，坑爹啊！于是临时在网上找了找相关资料，准备用 docker 搭一个简单的 replica set（下文统一用“副本集”称呼）。
+使用 Docker 搭建副本集 本段内容主要参考了网上 Soham Kamani 写的 Creating a MongoDB replica set using Docker 🍃。更详细的内容可以查看原文。
+安装docker-ce Get Docker CE for Ubuntu | Docker Documentation
+下载 mongo:3.6 镜像 docker pull mongo:3.6  创建副本集专用 Network docker network create mongo-cluster  启动 3 个 mongo 实例 docker run -P -d \ --name mongo1 \ --net mongo-cluster \ mongo:3.6 mongod --bind_ip 0.</description>
+    </item>
     
     <item>
       <title>Go的append使用踩坑记录</title>
