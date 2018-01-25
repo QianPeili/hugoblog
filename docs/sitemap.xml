@@ -3,6 +3,11 @@
   xmlns:xhtml="http://www.w3.org/1999/xhtml">
   
   <url>
+    <loc>https://qianpeili.github.io/hugoblog/posts/mysql-cnf-ignore/</loc>
+    <lastmod>2018-01-25T11:16:52+08:00</lastmod>
+  </url>
+  
+  <url>
     <loc>https://qianpeili.github.io/hugoblog/posts/docker-mongo-cluster-2017-12-08/</loc>
     <lastmod>2017-12-08T21:30:18+08:00</lastmod>
   </url>
@@ -157,6 +162,12 @@
   </url>
   
   <url>
+    <loc>https://qianpeili.github.io/hugoblog/tags/mysql/</loc>
+    <lastmod>2018-01-25T11:16:52+08:00</lastmod>
+    <priority>0</priority>
+  </url>
+  
+  <url>
     <loc>https://qianpeili.github.io/hugoblog/tags/nginx/</loc>
     <lastmod>2017-06-09T20:12:05+08:00</lastmod>
     <priority>0</priority>
@@ -170,13 +181,13 @@
   
   <url>
     <loc>https://qianpeili.github.io/hugoblog/categories/note/</loc>
-    <lastmod>2017-12-03T18:23:21+08:00</lastmod>
+    <lastmod>2018-01-25T11:16:52+08:00</lastmod>
     <priority>0</priority>
   </url>
   
   <url>
     <loc>https://qianpeili.github.io/hugoblog/posts/</loc>
-    <lastmod>2017-12-08T21:30:18+08:00</lastmod>
+    <lastmod>2018-01-25T11:16:52+08:00</lastmod>
     <priority>0</priority>
   </url>
   
@@ -218,7 +229,7 @@
   
   <url>
     <loc>https://qianpeili.github.io/hugoblog/</loc>
-    <lastmod>2017-12-08T21:30:18+08:00</lastmod>
+    <lastmod>2018-01-25T11:16:52+08:00</lastmod>
     <priority>0</priority>
   </url>
   
