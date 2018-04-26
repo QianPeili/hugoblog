@@ -4,36 +4,24 @@
 <head>
   <meta charset='utf-8'>
 <meta name='viewport' content='width=device-width, initial-scale=1'>
-<meta name='description' content=' 在项目组的机子上部署了一个 mysql 服务，上面跑了一个事件。
-mysql 默认是关闭事件调度器的，我们需要通过手动运行命令打开它：
-SET GLOBAL event_scheduler = ON;  但是这样一旦 mysql 重启，设置就失效了。因为我们的机子就是普通的台式机，公司有时候会断电，mysql 会时不时重启。于是我修改了 /etc/my.cnf 文件，设置 event_scheduler=1，重启 mysql 服务后发现配置并未生效。我怀疑是因为 mysql 并没有使用这份配置，于是我又修改了 /etc/mysql/my.cnf，重启后同样未生效。
-偶然通过命令：
-mysql --print-defaults  发现打印出的内容有这样一条：
-mysql: [Warning] World-writable config file &#39;/etc/mysql/my.cnf&#39; is ignored.  网上查了一下，原因是因为配置文件可写权限太广（777），mysql 认为文件不安全，会忽略这份配置。
-因此修改文件权限：
-chmod 644 /etc/mysql/my.cnf  即可解决问题。 再运行 mysql --print-defaults 就不会输出之前那条 warning 了。
-继续重启 mysql，查看事件调度器已经自动开启。
-TODO  没有找到对应的启动日志，是否无法根据启动日志获取这条warning。 service mysql status 命令可以看到一些日志，但也不包含这条warning。  '>
+<meta name='description' content='之前为了修一个BUG，脑子一抽把当前写了很久的功能 hard reset 掉了，其它分支也没有记录。
+不过好在虽然项目的节点图里看不到那些节点了，但 git 还是保留了这些提交记录，我们可以使用 git 重新找回丢失的节点。
+Step 1 查看最近提交 git log --reflog  上面的命令可以显示最近的 commit 数据。如：
+commit adcf5a5a2b3533102f761ff94493d0f6a4a35257 Author: 爪子 &lt;zhuazi@example.com&gt; Date: Thu Apr 26 17:48:13 2018 &#43;0800 modify something commit 78ac5cf1ca16c90946d40769299ec91b55c495b2 Author: 爪子 &lt;zhuazi@example.com&gt; Date: Thu Apr 26 17:42:12 2018 &#43;0800 fix something. commit 2661e4b9859aefe261dc81c8f3e66d172edcc755 Author: 爪子 &lt;zhuazi@example.com&gt; Date: Thu Apr 26 17:37:47 2018 &#43;0800 refactor something  Step 2 回到需要的节点 我们可以看到 modify something 这个节点的哈希值是adcf5a5a2b3533102f761ff94493d0f6a4a35257，假设我们希望回到这个节点，我们就可以用这个命令：'>
 
-<meta property='og:title' content='Mysql配置文件因为权限而未生效 • 爪子'>
-<meta property='og:description' content=' 在项目组的机子上部署了一个 mysql 服务，上面跑了一个事件。
-mysql 默认是关闭事件调度器的，我们需要通过手动运行命令打开它：
-SET GLOBAL event_scheduler = ON;  但是这样一旦 mysql 重启，设置就失效了。因为我们的机子就是普通的台式机，公司有时候会断电，mysql 会时不时重启。于是我修改了 /etc/my.cnf 文件，设置 event_scheduler=1，重启 mysql 服务后发现配置并未生效。我怀疑是因为 mysql 并没有使用这份配置，于是我又修改了 /etc/mysql/my.cnf，重启后同样未生效。
-偶然通过命令：
-mysql --print-defaults  发现打印出的内容有这样一条：
-mysql: [Warning] World-writable config file &#39;/etc/mysql/my.cnf&#39; is ignored.  网上查了一下，原因是因为配置文件可写权限太广（777），mysql 认为文件不安全，会忽略这份配置。
-因此修改文件权限：
-chmod 644 /etc/mysql/my.cnf  即可解决问题。 再运行 mysql --print-defaults 就不会输出之前那条 warning 了。
-继续重启 mysql，查看事件调度器已经自动开启。
-TODO  没有找到对应的启动日志，是否无法根据启动日志获取这条warning。 service mysql status 命令可以看到一些日志，但也不包含这条warning。  '>
-<meta property='og:url' content='https://qianpeili.github.io/hugoblog/posts/mysql-cnf-ignore/'>
+<meta property='og:title' content='GIT 找回丢失的 commit • 爪子'>
+<meta property='og:description' content='之前为了修一个BUG，脑子一抽把当前写了很久的功能 hard reset 掉了，其它分支也没有记录。
+不过好在虽然项目的节点图里看不到那些节点了，但 git 还是保留了这些提交记录，我们可以使用 git 重新找回丢失的节点。
+Step 1 查看最近提交 git log --reflog  上面的命令可以显示最近的 commit 数据。如：
+commit adcf5a5a2b3533102f761ff94493d0f6a4a35257 Author: 爪子 &lt;zhuazi@example.com&gt; Date: Thu Apr 26 17:48:13 2018 &#43;0800 modify something commit 78ac5cf1ca16c90946d40769299ec91b55c495b2 Author: 爪子 &lt;zhuazi@example.com&gt; Date: Thu Apr 26 17:42:12 2018 &#43;0800 fix something. commit 2661e4b9859aefe261dc81c8f3e66d172edcc755 Author: 爪子 &lt;zhuazi@example.com&gt; Date: Thu Apr 26 17:37:47 2018 &#43;0800 refactor something  Step 2 回到需要的节点 我们可以看到 modify something 这个节点的哈希值是adcf5a5a2b3533102f761ff94493d0f6a4a35257，假设我们希望回到这个节点，我们就可以用这个命令：'>
+<meta property='og:url' content='https://qianpeili.github.io/hugoblog/posts/git-find-lost-commit/'>
 <meta property='og:site_name' content='爪子'>
-<meta property='og:type' content='article'><meta property='article:section' content='Posts'><meta property='article:tag' content='mysql'><meta property='article:published_time' content='2018-01-25T11:16:52&#43;08:00'/><meta property='article:modified_time' content='2018-01-25T11:16:52&#43;08:00'/><meta name='twitter:card' content='summary'>
+<meta property='og:type' content='article'><meta property='article:section' content='Posts'><meta property='article:tag' content='git'><meta property='article:published_time' content='2018-04-26T20:01:32&#43;08:00'/><meta property='article:modified_time' content='2018-04-26T20:01:32&#43;08:00'/><meta name='twitter:card' content='summary'>
 
 <meta name="generator" content="Hugo 0.30.2" />
 
-  <title>Mysql配置文件因为权限而未生效 • 爪子</title>
-  <link rel='canonical' href='https://qianpeili.github.io/hugoblog/posts/mysql-cnf-ignore/'>
+  <title>GIT 找回丢失的 commit • 爪子</title>
+  <link rel='canonical' href='https://qianpeili.github.io/hugoblog/posts/git-find-lost-commit/'>
   
   
   <link rel='icon' href='https://qianpeili.github.io/hugoblog/favicon.ico'>
@@ -92,7 +80,7 @@ ga('send', 'pageview');
     <header class='header-container'>
   <div class='header entry-header'>
     <div class='header-info'>
-      <h1 class='title'>Mysql配置文件因为权限而未生效</h1>
+      <h1 class='title'>GIT 找回丢失的 commit</h1>
       
 
     </div>
@@ -107,7 +95,7 @@ ga('send', 'pageview');
   
 </svg>
 <span class='screen-reader'>Posted on </span>
-  <time class='date' datetime='2018-01-25T11:16:52&#43;08:00'>2018, Jan 25</time>
+  <time class='date' datetime='2018-04-26T20:01:32&#43;08:00'>2018, Apr 26</time>
 </span>
 
   
@@ -134,42 +122,44 @@ One min read
     <div class='entry-content'>
   
 
-<p>在项目组的机子上部署了一个 <code>mysql</code> 服务，上面跑了一个事件。</p>
+<p>之前为了修一个BUG，脑子一抽把当前写了很久的功能 hard reset 掉了，其它分支也没有记录。</p>
 
-<p><code>mysql</code> 默认是关闭事件调度器的，我们需要通过手动运行命令打开它：</p>
+<p>不过好在虽然项目的节点图里看不到那些节点了，但 git 还是保留了这些提交记录，我们可以使用 git 重新找回丢失的节点。</p>
 
-<pre><code>SET GLOBAL event_scheduler = ON;  
+<h3 id="step-1-查看最近提交">Step 1 查看最近提交</h3>
+
+<pre><code>git log --reflog 
 </code></pre>
 
-<p>但是这样一旦 <code>mysql</code> 重启，设置就失效了。因为我们的机子就是普通的台式机，公司有时候会断电，<code>mysql</code> 会时不时重启。于是我修改了 <code>/etc/my.cnf</code> 文件，设置 <code>event_scheduler=1</code>，重启 <code>mysql</code> 服务后发现配置并未生效。我怀疑是因为 <code>mysql</code> 并没有使用这份配置，于是我又修改了 <code>/etc/mysql/my.cnf</code>，重启后同样未生效。</p>
+<p>上面的命令可以显示最近的 commit 数据。如：</p>
 
-<p>偶然通过命令：</p>
+<pre><code>commit adcf5a5a2b3533102f761ff94493d0f6a4a35257
+Author: 爪子 &lt;zhuazi@example.com&gt;
+Date:   Thu Apr 26 17:48:13 2018 +0800
 
-<pre><code>mysql --print-defaults
+    modify something
+
+commit 78ac5cf1ca16c90946d40769299ec91b55c495b2
+Author: 爪子 &lt;zhuazi@example.com&gt;
+Date:   Thu Apr 26 17:42:12 2018 +0800
+
+    fix something.
+
+commit 2661e4b9859aefe261dc81c8f3e66d172edcc755
+Author: 爪子 &lt;zhuazi@example.com&gt;
+Date:   Thu Apr 26 17:37:47 2018 +0800
+
+    refactor something
 </code></pre>
 
-<p>发现打印出的内容有这样一条：</p>
+<h3 id="step-2-回到需要的节点">Step 2 回到需要的节点</h3>
 
-<pre><code>mysql: [Warning] World-writable config file '/etc/mysql/my.cnf' is ignored.
+<p>我们可以看到 <code>modify something</code> 这个节点的哈希值是<code>adcf5a5a2b3533102f761ff94493d0f6a4a35257</code>，假设我们希望回到这个节点，我们就可以用这个命令：</p>
+
+<pre><code>git reset --hard adcf5a5a2b3533102f761ff94493d0f6a4a35257
 </code></pre>
 
-<p>网上查了一下，原因是因为配置文件可写权限太广（777），<code>mysql</code> 认为文件不安全，会忽略这份配置。</p>
-
-<p>因此修改文件权限：</p>
-
-<pre><code>chmod 644 /etc/mysql/my.cnf
-</code></pre>
-
-<p>即可解决问题。 再运行 <code>mysql --print-defaults</code> 就不会输出之前那条 <code>warning</code> 了。</p>
-
-<p>继续重启 <code>mysql</code>，查看事件调度器已经自动开启。</p>
-
-<h3 id="todo">TODO</h3>
-
-<ol>
-<li>没有找到对应的启动日志，是否无法根据启动日志获取这条warning。</li>
-<li>service mysql status 命令可以看到一些日志，但也不包含这条warning。</li>
-</ol>
+<p>当前分支的 <code>HEAD</code> 就会跳到这个节点了。</p>
 
 </div>
 
@@ -192,7 +182,7 @@ One min read
   
 </svg>
 </span>
-  <span class='screen-reader'>Tags: </span><a class='tag' href='https://qianpeili.github.io/hugoblog/tags/mysql'>Mysql</a></div>
+  <span class='screen-reader'>Tags: </span><a class='tag' href='https://qianpeili.github.io/hugoblog/tags/git'>Git</a></div>
 
   </div>
 </footer>
@@ -202,7 +192,7 @@ One min read
   
 <nav class='entry-nav-container'>
   <div class='entry-nav'><div class='prev-entry'>
-      <a href='https://qianpeili.github.io/hugoblog/posts/docker-mongo-cluster-2017-12-08/'>
+      <a href='https://qianpeili.github.io/hugoblog/posts/mysql-cnf-ignore/'>
         <span aria-hidden='true'><svg class='icon' viewbox='0 0 24 24' stroke-linecap='round' stroke-linejoin='round' stroke-width='2' aria-hidden='true'>
   
   <line x1="20" y1="12" x2="4" y2="12"/>
@@ -210,17 +200,7 @@ One min read
   
 </svg>
  Previous</span>
-        <span class='screen-reader'>Previous post: </span>用 Docker搭建 MongoDB replica set</a>
-    </div><div class='next-entry'>
-      <a href='https://qianpeili.github.io/hugoblog/posts/git-find-lost-commit/'>
-        <span class='screen-reader'>Next post: </span>GIT 找回丢失的 commit<span aria-hidden='true'>Next <svg class='icon' viewbox='0 0 24 24' stroke-linecap='round' stroke-linejoin='round' stroke-width='2' aria-hidden='true'>
-  
-  <line x1="4" y1="12" x2="20" y2="12"/>
-  <polyline points="14 6 20 12 14 18"/>
-  
-</svg>
-</span>
-      </a>
+        <span class='screen-reader'>Previous post: </span>Mysql配置文件因为权限而未生效</a>
     </div></div>
 </nav>
 
