@@ -5,10 +5,25 @@
     <link>https://qianpeili.github.io/hugoblog/categories/note/</link>
     <description>Recent content in Note on 爪子</description>
     <generator>Hugo -- gohugo.io</generator>
-    <lastBuildDate>Thu, 26 Apr 2018 20:01:32 +0800</lastBuildDate>
+    <lastBuildDate>Wed, 18 Jul 2018 15:20:36 +0800</lastBuildDate>
     
 	<atom:link href="https://qianpeili.github.io/hugoblog/categories/note/index.xml" rel="self" type="application/rss+xml" />
     
+    
+    <item>
+      <title>Nginx Upload Module的编译和使用</title>
+      <link>https://qianpeili.github.io/hugoblog/posts/nginx-upload-module-in-action/</link>
+      <pubDate>Wed, 18 Jul 2018 15:20:36 +0800</pubDate>
+      
+      <guid>https://qianpeili.github.io/hugoblog/posts/nginx-upload-module-in-action/</guid>
+      <description>服务端需要增加一个文件上传功能，最直接可能就是后端程序里加个接收文件并保存的功能。但是之前看到 nginx 有个上传模块，而且如果直接 nginx 层把文件保存下来，就不需要再把文件转发到后端层处理了。
+那么就开始吧。
+一、下载 Nginx Upload Module 源码 模块的 github 地址： fdintino/nginx-upload-module: A module for nginx web server for handling file uploads using multipart/form-data encoding (RFC 1867).
+git clone https://github.com/fdintino/nginx-upload-module.git  二、重新编译并重启 Nginx 为了将新模块添加到 nginx 程序中，需要重新编译 nginx。
+nginx -V 可以输出原先的 nginx 所用的编译参数，原样复制后，添加新参数 --add-module=/path/to/nginx-upload-module。如：
+./configure &amp;lt;old configure options&amp;gt; --add-module=../nginx-upload-module  make &amp;amp; make install 之后，新的 nginx 二进制文件会替换原有的二进制文件，而原有的二进制文件会被重命名为 nginx.old。（这一步也可以在 make 之后手动操作）。这个时候调用 nginx -V 命令我们可以看到编译参数已经包含了新的内容。
+然后通过向 master 进程发送 SIGUSR2 信号来重启 nginx 服务。</description>
+    </item>
     
     <item>
       <title>GIT 找回丢失的 commit</title>

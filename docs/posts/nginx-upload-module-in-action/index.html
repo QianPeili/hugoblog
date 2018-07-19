@@ -1,0 +1,387 @@
+<!DOCTYPE html>
+<html lang='en'>
+
+<head>
+  <meta charset='utf-8'>
+<meta name='viewport' content='width=device-width, initial-scale=1'>
+<meta name='description' content='服务端需要增加一个文件上传功能，最直接可能就是后端程序里加个接收文件并保存的功能。但是之前看到 nginx 有个上传模块，而且如果直接 nginx 层把文件保存下来，就不需要再把文件转发到后端层处理了。
+那么就开始吧。
+一、下载 Nginx Upload Module 源码 模块的 github 地址： fdintino/nginx-upload-module: A module for nginx web server for handling file uploads using multipart/form-data encoding (RFC 1867).
+git clone https://github.com/fdintino/nginx-upload-module.git  二、重新编译并重启 Nginx 为了将新模块添加到 nginx 程序中，需要重新编译 nginx。
+nginx -V 可以输出原先的 nginx 所用的编译参数，原样复制后，添加新参数 --add-module=/path/to/nginx-upload-module。如：
+./configure &lt;old configure options&gt; --add-module=../nginx-upload-module  make &amp; make install 之后，新的 nginx 二进制文件会替换原有的二进制文件，而原有的二进制文件会被重命名为 nginx.old。（这一步也可以在 make 之后手动操作）。这个时候调用 nginx -V 命令我们可以看到编译参数已经包含了新的内容。
+然后通过向 master 进程发送 SIGUSR2 信号来重启 nginx 服务。'>
+
+<meta property='og:title' content='Nginx Upload Module的编译和使用 • 爪子'>
+<meta property='og:description' content='服务端需要增加一个文件上传功能，最直接可能就是后端程序里加个接收文件并保存的功能。但是之前看到 nginx 有个上传模块，而且如果直接 nginx 层把文件保存下来，就不需要再把文件转发到后端层处理了。
+那么就开始吧。
+一、下载 Nginx Upload Module 源码 模块的 github 地址： fdintino/nginx-upload-module: A module for nginx web server for handling file uploads using multipart/form-data encoding (RFC 1867).
+git clone https://github.com/fdintino/nginx-upload-module.git  二、重新编译并重启 Nginx 为了将新模块添加到 nginx 程序中，需要重新编译 nginx。
+nginx -V 可以输出原先的 nginx 所用的编译参数，原样复制后，添加新参数 --add-module=/path/to/nginx-upload-module。如：
+./configure &lt;old configure options&gt; --add-module=../nginx-upload-module  make &amp; make install 之后，新的 nginx 二进制文件会替换原有的二进制文件，而原有的二进制文件会被重命名为 nginx.old。（这一步也可以在 make 之后手动操作）。这个时候调用 nginx -V 命令我们可以看到编译参数已经包含了新的内容。
+然后通过向 master 进程发送 SIGUSR2 信号来重启 nginx 服务。'>
+<meta property='og:url' content='https://qianpeili.github.io/hugoblog/posts/nginx-upload-module-in-action/'>
+<meta property='og:site_name' content='爪子'>
+<meta property='og:type' content='article'><meta property='article:section' content='Posts'><meta property='article:tag' content='nginx'><meta property='article:published_time' content='2018-07-18T15:20:36&#43;08:00'/><meta property='article:modified_time' content='2018-07-18T15:20:36&#43;08:00'/><meta name='twitter:card' content='summary'>
+
+<meta name="generator" content="Hugo 0.30.2" />
+
+  <title>Nginx Upload Module的编译和使用 • 爪子</title>
+  <link rel='canonical' href='https://qianpeili.github.io/hugoblog/posts/nginx-upload-module-in-action/'>
+  
+  
+  <link rel='icon' href='https://qianpeili.github.io/hugoblog/favicon.ico'>
+<link rel='stylesheet' href='https://fonts.googleapis.com/css?family=Ubuntu:400,400i,700&subset=latin'>
+<link rel='stylesheet' href='https://qianpeili.github.io/hugoblog/assets/css/main.77da63e1.css'><link rel='stylesheet' href='https://qianpeili.github.io/hugoblog/css/custom.css'>
+<script>
+window.ga=window.ga||function(){(ga.q=ga.q||[]).push(arguments)};ga.l=+new Date;
+ga('create', 'UA-100449520-1', 'auto');
+ga('send', 'pageview');
+</script>
+<script async src='//www.google-analytics.com/analytics.js'></script>
+
+</head>
+
+
+<body class='page type-posts'>
+  <div class='site'>
+
+    <a class='screen-reader' href='#main'>Skip to Content</a>
+
+    <header id='header' class='header-container'>
+      <div class='header site-header'>
+        <nav id='main-menu' class='main-menu-container' aria-label='Main Menu'>
+  <ul class='main-menu'>
+  <li>
+      <a href='https://qianpeili.github.io/hugoblog/'>Home</a>
+    </li>
+  <li>
+      <a href='https://qianpeili.github.io/hugoblog/posts'>Posts</a>
+    </li>
+  <li>
+      <a href='https://qianpeili.github.io/hugoblog/categories'>Categories</a>
+    </li>
+  <li>
+      <a href='https://qianpeili.github.io/hugoblog/tags'>Tags</a>
+    </li>
+  <li>
+      <a href='https://qianpeili.github.io/hugoblog/about'>About</a>
+    </li>
+  
+  </ul>
+</nav>
+
+        <div class='header-info'>
+          
+          <p class='site-title title'>爪子</p>
+          
+          <p class='site-description subtitle'>易燃易爆炸</p>
+        </div>
+      </div>
+    </header>
+
+
+<main id='main' class='main'>
+  <article lang='en' class='entry'>
+    <header class='header-container'>
+  <div class='header entry-header'>
+    <div class='header-info'>
+      <h1 class='title'>Nginx Upload Module的编译和使用</h1>
+      
+
+    </div>
+    
+<div class='meta'>
+  <span class='posted-on'><svg class='icon' viewbox='0 0 24 24' stroke-linecap='round' stroke-linejoin='round' stroke-width='2' aria-hidden='true'>
+  
+  <rect x="3" y="4" width="18" height="18" rx="2" ry="2"/>
+  <line x1="16" y1="2" x2="16" y2="6"/>
+  <line x1="8" y1="2" x2="8" y2="6"/>
+  <line x1="3" y1="10" x2="21" y2="10"/>
+  
+</svg>
+<span class='screen-reader'>Posted on </span>
+  <time class='date' datetime='2018-07-18T15:20:36&#43;08:00'>2018, Jul 18</time>
+</span>
+
+  
+  
+<span class='reading-time'><svg class='icon' viewbox='0 0 24 24' stroke-linecap='round' stroke-linejoin='round' stroke-width='2' aria-hidden='true'>
+  
+  <circle cx="12" cy="12" r="10"/>
+  <polyline points="12 6 12 12 15 15"/>
+  
+</svg>
+2 mins read
+</span>
+
+
+</div>
+
+
+  </div>
+</header>
+
+    
+    
+
+    <div class='entry-content'>
+  
+
+<p>服务端需要增加一个文件上传功能，最直接可能就是后端程序里加个接收文件并保存的功能。但是之前看到 nginx 有个上传模块，而且如果直接 nginx 层把文件保存下来，就不需要再把文件转发到后端层处理了。</p>
+
+<p>那么就开始吧。</p>
+
+<h3 id="一-下载-nginx-upload-module-源码">一、下载 Nginx Upload Module 源码</h3>
+
+<p>模块的 github 地址： <a href="https://github.com/fdintino/nginx-upload-module/tree/master" target="_blank">fdintino/nginx-upload-module: A module for nginx web server for handling file uploads using multipart/form-data encoding (RFC 1867).</a></p>
+
+<pre><code>git clone https://github.com/fdintino/nginx-upload-module.git
+</code></pre>
+
+<h3 id="二-重新编译并重启-nginx">二、重新编译并重启 Nginx</h3>
+
+<p>为了将新模块添加到 nginx 程序中，需要重新编译 nginx。</p>
+
+<p><code>nginx -V</code> 可以输出原先的 nginx 所用的编译参数，原样复制后，添加新参数 <code>--add-module=/path/to/nginx-upload-module</code>。如：</p>
+
+<pre><code>./configure &lt;old configure options&gt; --add-module=../nginx-upload-module
+</code></pre>
+
+<p><code>make &amp; make install</code> 之后，新的 nginx 二进制文件会替换原有的二进制文件，而原有的二进制文件会被重命名为 <code>nginx.old</code>。（这一步也可以在 <code>make</code> 之后手动操作）。这个时候调用 <code>nginx -V</code> 命令我们可以看到编译参数已经包含了新的内容。</p>
+
+<p>然后通过向 master 进程发送 SIGUSR2 信号来重启 nginx 服务。</p>
+
+<pre><code>kill -s SIGUSR2 &lt;nginx master pid&gt;
+</code></pre>
+
+<h3 id="配置上传模块">配置上传模块</h3>
+
+<p>直接用的官方的配置例子，除了 upload_store 做了改动。</p>
+
+<pre><code>server {
+    client_max_body_size 100m;
+    listen       80;
+
+    # Upload form should be submitted to this location
+    location /upload {
+        # Pass altered request body to this location
+        upload_pass   @test;
+
+        # Store files to this directory
+        # The directory is hashed, subdirectories 0 1 2 3 4 5 6 7 8 9 should exist
+        # upload_store /tmp 1;
+        # 如果不需要把文件根据哈希值分开存放，则不需要填后面的值
+        upload_store /data/upload;
+
+        # Allow uploaded files to be read only by user
+        upload_store_access user:r;
+
+        # Set specified fields in request body
+        upload_set_form_field $upload_field_name.name &quot;$upload_file_name&quot;;
+        upload_set_form_field $upload_field_name.content_type &quot;$upload_content_type&quot;;
+        upload_set_form_field $upload_field_name.path &quot;$upload_tmp_path&quot;;
+
+        # Inform backend about hash and size of a file
+        upload_aggregate_form_field &quot;$upload_field_name.md5&quot; &quot;$upload_file_md5&quot;;
+        upload_aggregate_form_field &quot;$upload_field_name.size&quot; &quot;$upload_file_size&quot;;
+
+        upload_pass_form_field &quot;^submit$|^description$&quot;;
+
+        upload_cleanup 400 404 499 500-505;
+    }
+
+    # Pass altered request body to a backend
+    location @test {
+        proxy_pass   http://localhost:8080;
+        # 如果不需要传到后台操作，可以直接 return
+        # return 200 &quot;Upload success!&quot;;
+    }
+}
+</code></pre>
+
+<p>这个配置会把所有通过表单上传的文件保存到临时目录，然后根绝 <code>upload_set_form_field</code> 参数生成新的表单值，传送给后端处理。比如下面三条配置：</p>
+
+<pre><code>upload_set_form_field $upload_field_name.name &quot;$upload_file_name&quot;;
+upload_set_form_field $upload_field_name.content_type &quot;$upload_content_type&quot;;
+upload_set_form_field $upload_field_name.path &quot;$upload_tmp_path&quot;;
+</code></pre>
+
+<p>如果你通过页面的 <code>&lt;input type=&quot;file&quot; name=&quot;picture&quot;&gt;</code> 上传了一张叫<code>a.jpg</code>的图片，那么发给后端的表单中就会有类似这样的信息：</p>
+
+<pre><code>picture.name=a.jpg
+picture.content_type=image/jpeg
+picture.path=/data/upload/0000000001
+</code></pre>
+
+<h3 id="搭个测试后端">搭个测试后端</h3>
+
+<p>用 python 的 flask 框架搭了个测试后端，json 序列化后直接原样返回表单中的数据。</p>
+
+<pre><code>import flask
+import json
+
+from flask import request
+
+app = flask.Flask(__name__)
+
+@app.route(&quot;/upload&quot;, methods=[&quot;POST&quot;])
+def upload():
+    return json.dumps(request.form)
+
+if __name__ == '__main__':
+    app.run(port=8080)
+</code></pre>
+
+<p>然后用 <code>curl</code> 做个测试：</p>
+
+<pre><code>curl -X POST -F testFile1=@out.json -F testFile2=@mysql.txt -F testStr=hello http://localhost:8020/upload
+</code></pre>
+
+<p>我们用表单发送了两个文件和一个文本消息，返回的内容是：</p>
+
+<pre><code>{
+    &quot;testFile1.md5&quot;: &quot;b6672090cd99478a4ea5a1f23a4736cd&quot;,
+    &quot;testFile1.content_type&quot;: &quot;application/octet-stream&quot;,
+    &quot;testFile1.path&quot;: &quot;/data/upload/0000000336&quot;,
+    &quot;testFile1.name&quot;: &quot;out.json&quot;,
+    &quot;testFile1.size&quot;: &quot;59930&quot;,
+    &quot;testFile2.name&quot;: &quot;mysql.txt&quot;,
+    &quot;testFile2.size&quot;: &quot;135582&quot;,
+    &quot;testFile2.content_type&quot;: &quot;text/plain&quot;,
+    &quot;testFile2.md5&quot;: &quot;d54ee6b3fa1e377b101c5b33a101aece&quot;,
+    &quot;testFile2.path&quot;: &quot;/data/upload/0000000337&quot;
+}
+</code></pre>
+
+<p>可以看到两个文件的信息都正确返回了，但是非文件的内容（ <code>testStr</code>）被忽略了。</p>
+
+<h3 id="其它">其它</h3>
+
+<p>不通过表单形式直接发送单个文件需要开启 <code>upload_resumable</code> 参数，并且头消息里带上 <code>Content-Disposition</code> 信息。否则会提示 <code>415 Unsupported Media Type</code>。从 nginx 错误日志里可以看到： <code>Content-Type is not multipart/form-data and resumable uploads are off: application/x-www-form-urlencoded</code></p>
+
+<p><code>upload_resumable</code> 参数是为了开启断点续传功能，这篇先不做尝试。</p>
+
+<p>upload 模块不支持根据上传文件名字自动命名功能，详情可见 <a href="https://github.com/fdintino/nginx-upload-module/issues/69" target="_blank">Change names of temporary files to original. · Issue #69 · fdintino/nginx-upload-module</a>。</p>
+
+<p>所以如果要修改文件名字，建议在后端进行操作，或者修改 upload 模块，加入自己需要的功能。</p>
+
+</div>
+
+    
+<footer class='entry-footer-container'>
+  <div class='entry-footer'>
+  <div class='categories'>
+  <span class='taxonomyTerm-icon'><svg class='icon' viewbox='0 0 24 24' stroke-linecap='round' stroke-linejoin='round' stroke-width='2' aria-hidden='true'>
+  
+  <path d="M22,19a2,2,0,0,1-2,2H4a2,2,0,0,1-2-2V5A2,2,0,0,1,4,3H9l2,3h9a2,2,0,0,1,2,2Z"/>
+  
+</svg>
+</span>
+  <span class='screen-reader'>Categories: </span><a class='category' href='https://qianpeili.github.io/hugoblog/categories/note'>Note</a></div>
+<div class='tags'>
+  <span class='taxonomyTerm-icon'><svg class='icon' viewbox='0 0 24 24' stroke-linecap='round' stroke-linejoin='round' stroke-width='2' aria-hidden='true'>
+  
+  <path d="M20.59,13.41l-7.17,7.17a2,2,0,0,1-2.83,0L2,12V2H12l8.59,8.59A2,2,0,0,1,20.59,13.41Z"/>
+  <line x1="7" y1="7" x2="7" y2="7"/>
+  
+</svg>
+</span>
+  <span class='screen-reader'>Tags: </span><a class='tag' href='https://qianpeili.github.io/hugoblog/tags/nginx'>Nginx</a></div>
+
+  </div>
+</footer>
+
+
+  </article>
+  
+<nav class='entry-nav-container'>
+  <div class='entry-nav'><div class='prev-entry'>
+      <a href='https://qianpeili.github.io/hugoblog/posts/git-find-lost-commit/'>
+        <span aria-hidden='true'><svg class='icon' viewbox='0 0 24 24' stroke-linecap='round' stroke-linejoin='round' stroke-width='2' aria-hidden='true'>
+  
+  <line x1="20" y1="12" x2="4" y2="12"/>
+  <polyline points="10 18 4 12 10 6"/>
+  
+</svg>
+ Previous</span>
+        <span class='screen-reader'>Previous post: </span>GIT 找回丢失的 commit</a>
+    </div></div>
+</nav>
+
+  
+<div class='comments-container'>
+  <div id="disqus_thread"></div>
+<script>
+    var disqus_config = function () {
+    
+    
+    
+    };
+    (function() {
+        if (["localhost", "127.0.0.1"].indexOf(window.location.hostname) != -1) {
+            document.getElementById('disqus_thread').innerHTML = 'Disqus comments not available by default when the website is previewed locally.';
+            return;
+        }
+        var d = document, s = d.createElement('script'); s.async = true;
+        s.src = '//' + "zhuazi" + '.disqus.com/embed.js';
+        s.setAttribute('data-timestamp', +new Date());
+        (d.head || d.body).appendChild(s);
+    })();
+</script>
+<noscript>Please enable JavaScript to view the <a href="https://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+<a href="https://disqus.com" class="dsq-brlink">comments powered by <span class="logo-disqus">Disqus</span></a>
+</div>
+
+</main>
+
+    <footer id='footer' class='footer-container'>
+      <div class='footer'>
+        <div class='social-menu-container'>
+  <nav aria-label='Social Menu'>
+    <ul class='social-menu'><li>
+        <a href='https://github.com/qianpeili' target='_blank' rel='noopener'>
+          <span class='screen-reader'>Open Github account in new tab</span><svg class='icon' viewbox='0 0 24 24' stroke-linecap='round' stroke-linejoin='round' stroke-width='2' aria-hidden='true'>
+  
+  <path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22"/>
+  
+</svg>
+</a>
+      </li><li>
+        <a href='https://twitter.com/qianperry' target='_blank' rel='noopener'>
+          <span class='screen-reader'>Open Twitter account in new tab</span><svg class='icon' viewbox='0 0 24 24' stroke-linecap='round' stroke-linejoin='round' stroke-width='2' aria-hidden='true'>
+  
+  <path d="M23 3a10.9 10.9 0 0 1-3.14 1.53 4.48 4.48 0 0 0-7.86 3v1A10.66 10.66 0 0 1 3 4s-4 9 5 13a11.64 11.64 0 0 1-7 2c9 5 20 0 20-11.5a4.5 4.5 0 0 0-.08-.83A7.72 7.72 0 0 0 23 3z"/>
+  
+</svg>
+</a>
+      </li><li>
+        <a href='mailto:qianperry@outlook.com' target='_blank' rel='noopener'>
+          <span class='screen-reader'>Contact via Email</span><svg class='icon' viewbox='0 0 24 24' stroke-linecap='round' stroke-linejoin='round' stroke-width='2' aria-hidden='true'>
+  
+  <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/>
+  <polyline points="22,6 12,13 2,6"/>
+  
+</svg>
+</a>
+      </li></ul>
+  </nav>
+</div>
+        <div class='copyright'>
+  <p>
+        
+          
+        
+      
+
+       &copy; 2017-2018 爪子 
+  </p>
+</div>
+
+      </div>
+    </footer>
+
+  </div><script src='https://qianpeili.github.io/hugoblog/assets/js/main.5871befd.js'></script><script src='https://qianpeili.github.io/hugoblog/js/custom.js'></script></body>
+
+</html>
+
