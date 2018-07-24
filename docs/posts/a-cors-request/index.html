@@ -1,0 +1,369 @@
+<!DOCTYPE html>
+<html lang='en'>
+
+<head>
+  <meta charset='utf-8'>
+<meta name='viewport' content='width=device-width, initial-scale=1'>
+<meta name='description' content='客户端写了一个基于WebGL的网页游戏，测试阶段涉及到跨域请求，按照之前的经验，我简单地给服务端的Response添加了一个头信息：Access-Control-Allow-Origin: *。
+有个接口直接自己测试OK，但是客户端侧却收到了404的状态码，看日志发现原本应该是POST方法的请求变成了OPTIONS，并且原本发送的 json 数据也并没有发送，在网上查找了一下，发现是因为触发了 CORS(Cross-Origin Resource Sharing: 跨域资源共享)机制。
+CORS 的官方解释是：
+ 对那些可能对服务器数据产生副作用的 HTTP 请求方法（特别是 GET 以外的 HTTP 请求，或者搭配某些 MIME 类型的 POST 请求），浏览器必须首先使用 OPTIONS 方法发起一个预检请求（preflight request），从而获知服务端是否允许该跨域请求。服务器确认允许之后，才发起实际的 HTTP 请求。在预检请求的返回中，服务器端也可以通知客户端，是否需要携带身份凭证（包括 Cookies 和 HTTP 认证相关数据）
+ 跨域请求被分成了两类，简单请求和非简单请求。简单请求的标准：
+  请求方式为 HTTP/1.1 GET 或者 POST，如果是POST，则请求的Content-Type为以下之一： application/x-www-form-urlencoded, multipart/form-data, 或text/plain
+ 在请求中，不会发送自定义的头部（如X-Modified）
+   对于简单请求，浏览器不会发起预检请求，因此，只需要我之前那样在服务端返回一个 Access-Control-Allow-Origin: * 头信息就可以了。
+我们客户端请求的 Content-Type 为 application/json，属于非简单请求，因此浏览器会先发送一个 OPTIONS 方法的预检请求。
+了解原因后提供一个对应 url 的 OPTIONS 请求接口，并且在 Response 添加了如下头信息：
+Access-Control-Allow-Origin: * Access-Control-Allow-Methods: POST, GET, OPTIONS Access-Control-Allow-Headers: Content-Type  客户端就可以正常执行请求了。'>
+
+<meta property='og:title' content='一次CORS请求经历 • 爪子'>
+<meta property='og:description' content='客户端写了一个基于WebGL的网页游戏，测试阶段涉及到跨域请求，按照之前的经验，我简单地给服务端的Response添加了一个头信息：Access-Control-Allow-Origin: *。
+有个接口直接自己测试OK，但是客户端侧却收到了404的状态码，看日志发现原本应该是POST方法的请求变成了OPTIONS，并且原本发送的 json 数据也并没有发送，在网上查找了一下，发现是因为触发了 CORS(Cross-Origin Resource Sharing: 跨域资源共享)机制。
+CORS 的官方解释是：
+ 对那些可能对服务器数据产生副作用的 HTTP 请求方法（特别是 GET 以外的 HTTP 请求，或者搭配某些 MIME 类型的 POST 请求），浏览器必须首先使用 OPTIONS 方法发起一个预检请求（preflight request），从而获知服务端是否允许该跨域请求。服务器确认允许之后，才发起实际的 HTTP 请求。在预检请求的返回中，服务器端也可以通知客户端，是否需要携带身份凭证（包括 Cookies 和 HTTP 认证相关数据）
+ 跨域请求被分成了两类，简单请求和非简单请求。简单请求的标准：
+  请求方式为 HTTP/1.1 GET 或者 POST，如果是POST，则请求的Content-Type为以下之一： application/x-www-form-urlencoded, multipart/form-data, 或text/plain
+ 在请求中，不会发送自定义的头部（如X-Modified）
+   对于简单请求，浏览器不会发起预检请求，因此，只需要我之前那样在服务端返回一个 Access-Control-Allow-Origin: * 头信息就可以了。
+我们客户端请求的 Content-Type 为 application/json，属于非简单请求，因此浏览器会先发送一个 OPTIONS 方法的预检请求。
+了解原因后提供一个对应 url 的 OPTIONS 请求接口，并且在 Response 添加了如下头信息：
+Access-Control-Allow-Origin: * Access-Control-Allow-Methods: POST, GET, OPTIONS Access-Control-Allow-Headers: Content-Type  客户端就可以正常执行请求了。'>
+<meta property='og:url' content='https://qianpeili.github.io/hugoblog/posts/a-cors-request/'>
+<meta property='og:site_name' content='爪子'>
+<meta property='og:type' content='article'><meta property='article:section' content='Posts'><meta property='article:tag' content='http'><meta property='article:published_time' content='2018-07-23T20:44:39&#43;08:00'/><meta property='article:modified_time' content='2018-07-23T20:44:39&#43;08:00'/><meta name='twitter:card' content='summary'>
+
+<meta name="generator" content="Hugo 0.30.2" />
+
+  <title>一次CORS请求经历 • 爪子</title>
+  <link rel='canonical' href='https://qianpeili.github.io/hugoblog/posts/a-cors-request/'>
+  
+  
+  <link rel='icon' href='https://qianpeili.github.io/hugoblog/favicon.ico'>
+<link rel='stylesheet' href='https://fonts.googleapis.com/css?family=Ubuntu:400,400i,700&subset=latin'>
+<link rel='stylesheet' href='https://qianpeili.github.io/hugoblog/assets/css/main.77da63e1.css'><link rel='stylesheet' href='https://qianpeili.github.io/hugoblog/css/custom.css'>
+<script>
+window.ga=window.ga||function(){(ga.q=ga.q||[]).push(arguments)};ga.l=+new Date;
+ga('create', 'UA-100449520-1', 'auto');
+ga('send', 'pageview');
+</script>
+<script async src='//www.google-analytics.com/analytics.js'></script>
+
+</head>
+
+
+<body class='page type-posts'>
+  <div class='site'>
+
+    <a class='screen-reader' href='#main'>Skip to Content</a>
+
+    <header id='header' class='header-container'>
+      <div class='header site-header'>
+        <nav id='main-menu' class='main-menu-container' aria-label='Main Menu'>
+  <ul class='main-menu'>
+  <li>
+      <a href='https://qianpeili.github.io/hugoblog/'>Home</a>
+    </li>
+  <li>
+      <a href='https://qianpeili.github.io/hugoblog/posts'>Posts</a>
+    </li>
+  <li>
+      <a href='https://qianpeili.github.io/hugoblog/categories'>Categories</a>
+    </li>
+  <li>
+      <a href='https://qianpeili.github.io/hugoblog/tags'>Tags</a>
+    </li>
+  <li>
+      <a href='https://qianpeili.github.io/hugoblog/about'>About</a>
+    </li>
+  
+  </ul>
+</nav>
+
+        <div class='header-info'>
+          
+          <p class='site-title title'>爪子</p>
+          
+          <p class='site-description subtitle'>易燃易爆炸</p>
+        </div>
+      </div>
+    </header>
+
+
+<main id='main' class='main'>
+  <article lang='en' class='entry'>
+    <header class='header-container'>
+  <div class='header entry-header'>
+    <div class='header-info'>
+      <h1 class='title'>一次CORS请求经历</h1>
+      
+
+    </div>
+    
+<div class='meta'>
+  <span class='posted-on'><svg class='icon' viewbox='0 0 24 24' stroke-linecap='round' stroke-linejoin='round' stroke-width='2' aria-hidden='true'>
+  
+  <rect x="3" y="4" width="18" height="18" rx="2" ry="2"/>
+  <line x1="16" y1="2" x2="16" y2="6"/>
+  <line x1="8" y1="2" x2="8" y2="6"/>
+  <line x1="3" y1="10" x2="21" y2="10"/>
+  
+</svg>
+<span class='screen-reader'>Posted on </span>
+  <time class='date' datetime='2018-07-23T20:44:39&#43;08:00'>2018, Jul 23</time>
+</span>
+
+  
+  
+<span class='reading-time'><svg class='icon' viewbox='0 0 24 24' stroke-linecap='round' stroke-linejoin='round' stroke-width='2' aria-hidden='true'>
+  
+  <circle cx="12" cy="12" r="10"/>
+  <polyline points="12 6 12 12 15 15"/>
+  
+</svg>
+One min read
+</span>
+
+
+</div>
+
+
+  </div>
+</header>
+
+    
+    
+
+    <div class='entry-content'>
+  
+
+<p>客户端写了一个基于WebGL的网页游戏，测试阶段涉及到跨域请求，按照之前的经验，我简单地给服务端的Response添加了一个头信息：<code>Access-Control-Allow-Origin: *</code>。</p>
+
+<p>有个接口直接自己测试OK，但是客户端侧却收到了<code>404</code>的状态码，看日志发现原本应该是<code>POST</code>方法的请求变成了<code>OPTIONS</code>，并且原本发送的 json 数据也并没有发送，在网上查找了一下，发现是因为触发了 CORS(Cross-Origin Resource Sharing: 跨域资源共享)机制。</p>
+
+<p>CORS 的官方解释是：</p>
+
+<blockquote>
+<p>对那些可能对服务器数据产生副作用的 HTTP 请求方法（特别是 GET 以外的 HTTP 请求，或者搭配某些 MIME 类型的 POST 请求），浏览器必须首先使用 OPTIONS 方法发起一个预检请求（preflight request），从而获知服务端是否允许该跨域请求。服务器确认允许之后，才发起实际的 HTTP 请求。在预检请求的返回中，服务器端也可以通知客户端，是否需要携带身份凭证（包括 Cookies 和 HTTP 认证相关数据）</p>
+</blockquote>
+
+<p>跨域请求被分成了两类，简单请求和非简单请求。简单请求的标准：</p>
+
+<blockquote>
+<ul>
+<li><p>请求方式为 HTTP/1.1 GET 或者 POST，如果是POST，则请求的Content-Type为以下之一： application/x-www-form-urlencoded, multipart/form-data, 或text/plain</p></li>
+
+<li><p>在请求中，不会发送自定义的头部（如X-Modified）</p></li>
+</ul>
+</blockquote>
+
+<p>对于简单请求，浏览器不会发起预检请求，因此，只需要我之前那样在服务端返回一个 <code>Access-Control-Allow-Origin: *</code> 头信息就可以了。</p>
+
+<p>我们客户端请求的 <code>Content-Type</code> 为 <code>application/json</code>，属于非简单请求，因此浏览器会先发送一个 <code>OPTIONS</code> 方法的预检请求。</p>
+
+<p>了解原因后提供一个对应 url 的 OPTIONS 请求接口，并且在 Response 添加了如下头信息：</p>
+
+<pre><code>Access-Control-Allow-Origin: *
+Access-Control-Allow-Methods: POST, GET, OPTIONS
+Access-Control-Allow-Headers: Content-Type
+</code></pre>
+
+<p>客户端就可以正常执行请求了。</p>
+
+<h3 id="简单请求详细标准">简单请求详细标准</h3>
+
+<ul>
+<li>使用下列方法之一：
+
+<ul>
+<li>GET</li>
+<li>HEAD</li>
+<li>POST</li>
+</ul></li>
+<li>Fetch 规范定义了对 CORS 安全的首部字段集合，不得人为设置该集合之外的其他首部字段。该集合为：
+
+<ul>
+<li>Accept</li>
+<li>Accept-Language</li>
+<li>Content-Language</li>
+<li>Content-Type （需要注意额外的限制）</li>
+<li>DPR</li>
+<li>Downlink</li>
+<li>Save-Data</li>
+<li>Viewport-Width</li>
+<li>Width</li>
+</ul></li>
+<li>Content-Type 的值仅限于下列三者之一：
+
+<ul>
+<li>text/plain</li>
+<li>multipart/form-data</li>
+<li>application/x-www-form-urlencoded</li>
+</ul></li>
+<li>请求中的任意XMLHttpRequestUpload 对象均没有注册任何事件监听器；XMLHttpRequestUpload 对象可以使用 XMLHttpRequest.upload 属性访问。</li>
+<li>请求中没有使用 ReadableStream 对象。</li>
+</ul>
+
+<h3 id="非简单请求详细标准">非简单请求详细标准</h3>
+
+<ul>
+<li>使用了下面任一 HTTP 方法：
+
+<ul>
+<li>PUT</li>
+<li>DELETE</li>
+<li>CONNECT</li>
+<li>OPTIONS</li>
+<li>TRACE</li>
+<li>PATCH</li>
+</ul></li>
+<li>人为设置了对 CORS 安全的首部字段集合之外的其他首部字段。该集合为：
+
+<ul>
+<li>Accept</li>
+<li>Accept-Language</li>
+<li>Content-Language</li>
+<li>Content-Type (but note the additional requirements below)</li>
+<li>DPR</li>
+<li>Downlink</li>
+<li>Save-Data</li>
+<li>Viewport-Width</li>
+<li>Width</li>
+</ul></li>
+<li>Content-Type 的值不属于下列之一:
+
+<ul>
+<li>application/x-www-form-urlencoded</li>
+<li>multipart/form-data</li>
+<li>text/plain</li>
+</ul></li>
+<li>请求中的XMLHttpRequestUpload 对象注册了任意多个事件监听器。</li>
+<li>请求中使用了ReadableStream对象。</li>
+</ul>
+
+<h2 id="参考文章">参考文章</h2>
+
+<ul>
+<li><a href="http://www.ruanyifeng.com/blog/2016/04/cors.html" target="_blank">跨域资源共享 CORS 详解 - 阮一峰的网络日志</a></li>
+<li><a href="https://developer.mozilla.org/zh-CN/docs/Web/HTTP/Access_control_CORS" target="_blank">HTTP访问控制（CORS） - HTTP | MDN</a></li>
+<li><a href="https://developer.mozilla.org/zh-CN/docs/Web/HTTP/Server-Side_Access_Control" target="_blank">Server-Side Access Control - HTTP | MDN</a></li>
+</ul>
+
+</div>
+
+    
+<footer class='entry-footer-container'>
+  <div class='entry-footer'>
+  <div class='categories'>
+  <span class='taxonomyTerm-icon'><svg class='icon' viewbox='0 0 24 24' stroke-linecap='round' stroke-linejoin='round' stroke-width='2' aria-hidden='true'>
+  
+  <path d="M22,19a2,2,0,0,1-2,2H4a2,2,0,0,1-2-2V5A2,2,0,0,1,4,3H9l2,3h9a2,2,0,0,1,2,2Z"/>
+  
+</svg>
+</span>
+  <span class='screen-reader'>Categories: </span><a class='category' href='https://qianpeili.github.io/hugoblog/categories/note'>Note</a></div>
+<div class='tags'>
+  <span class='taxonomyTerm-icon'><svg class='icon' viewbox='0 0 24 24' stroke-linecap='round' stroke-linejoin='round' stroke-width='2' aria-hidden='true'>
+  
+  <path d="M20.59,13.41l-7.17,7.17a2,2,0,0,1-2.83,0L2,12V2H12l8.59,8.59A2,2,0,0,1,20.59,13.41Z"/>
+  <line x1="7" y1="7" x2="7" y2="7"/>
+  
+</svg>
+</span>
+  <span class='screen-reader'>Tags: </span><a class='tag' href='https://qianpeili.github.io/hugoblog/tags/http'>Http</a></div>
+
+  </div>
+</footer>
+
+
+  </article>
+  
+<nav class='entry-nav-container'>
+  <div class='entry-nav'><div class='prev-entry'>
+      <a href='https://qianpeili.github.io/hugoblog/posts/nginx-upload-module-in-action/'>
+        <span aria-hidden='true'><svg class='icon' viewbox='0 0 24 24' stroke-linecap='round' stroke-linejoin='round' stroke-width='2' aria-hidden='true'>
+  
+  <line x1="20" y1="12" x2="4" y2="12"/>
+  <polyline points="10 18 4 12 10 6"/>
+  
+</svg>
+ Previous</span>
+        <span class='screen-reader'>Previous post: </span>Nginx Upload Module的编译和使用</a>
+    </div></div>
+</nav>
+
+  
+<div class='comments-container'>
+  <div id="disqus_thread"></div>
+<script>
+    var disqus_config = function () {
+    
+    
+    
+    };
+    (function() {
+        if (["localhost", "127.0.0.1"].indexOf(window.location.hostname) != -1) {
+            document.getElementById('disqus_thread').innerHTML = 'Disqus comments not available by default when the website is previewed locally.';
+            return;
+        }
+        var d = document, s = d.createElement('script'); s.async = true;
+        s.src = '//' + "zhuazi" + '.disqus.com/embed.js';
+        s.setAttribute('data-timestamp', +new Date());
+        (d.head || d.body).appendChild(s);
+    })();
+</script>
+<noscript>Please enable JavaScript to view the <a href="https://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+<a href="https://disqus.com" class="dsq-brlink">comments powered by <span class="logo-disqus">Disqus</span></a>
+</div>
+
+</main>
+
+    <footer id='footer' class='footer-container'>
+      <div class='footer'>
+        <div class='social-menu-container'>
+  <nav aria-label='Social Menu'>
+    <ul class='social-menu'><li>
+        <a href='https://github.com/qianpeili' target='_blank' rel='noopener'>
+          <span class='screen-reader'>Open Github account in new tab</span><svg class='icon' viewbox='0 0 24 24' stroke-linecap='round' stroke-linejoin='round' stroke-width='2' aria-hidden='true'>
+  
+  <path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22"/>
+  
+</svg>
+</a>
+      </li><li>
+        <a href='https://twitter.com/qianperry' target='_blank' rel='noopener'>
+          <span class='screen-reader'>Open Twitter account in new tab</span><svg class='icon' viewbox='0 0 24 24' stroke-linecap='round' stroke-linejoin='round' stroke-width='2' aria-hidden='true'>
+  
+  <path d="M23 3a10.9 10.9 0 0 1-3.14 1.53 4.48 4.48 0 0 0-7.86 3v1A10.66 10.66 0 0 1 3 4s-4 9 5 13a11.64 11.64 0 0 1-7 2c9 5 20 0 20-11.5a4.5 4.5 0 0 0-.08-.83A7.72 7.72 0 0 0 23 3z"/>
+  
+</svg>
+</a>
+      </li><li>
+        <a href='mailto:qianperry@outlook.com' target='_blank' rel='noopener'>
+          <span class='screen-reader'>Contact via Email</span><svg class='icon' viewbox='0 0 24 24' stroke-linecap='round' stroke-linejoin='round' stroke-width='2' aria-hidden='true'>
+  
+  <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/>
+  <polyline points="22,6 12,13 2,6"/>
+  
+</svg>
+</a>
+      </li></ul>
+  </nav>
+</div>
+        <div class='copyright'>
+  <p>
+        
+          
+        
+      
+
+       &copy; 2017-2018 爪子 
+  </p>
+</div>
+
+      </div>
+    </footer>
+
+  </div><script src='https://qianpeili.github.io/hugoblog/assets/js/main.5871befd.js'></script><script src='https://qianpeili.github.io/hugoblog/js/custom.js'></script></body>
+
+</html>
+

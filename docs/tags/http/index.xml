@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Http on 爪子</title>
+    <link>https://qianpeili.github.io/hugoblog/tags/http/</link>
+    <description>Recent content in Http on 爪子</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <lastBuildDate>Mon, 23 Jul 2018 20:44:39 +0800</lastBuildDate>
+    
+	<atom:link href="https://qianpeili.github.io/hugoblog/tags/http/index.xml" rel="self" type="application/rss+xml" />
+    
+    
+    <item>
+      <title>一次CORS请求经历</title>
+      <link>https://qianpeili.github.io/hugoblog/posts/a-cors-request/</link>
+      <pubDate>Mon, 23 Jul 2018 20:44:39 +0800</pubDate>
+      
+      <guid>https://qianpeili.github.io/hugoblog/posts/a-cors-request/</guid>
+      <description>客户端写了一个基于WebGL的网页游戏，测试阶段涉及到跨域请求，按照之前的经验，我简单地给服务端的Response添加了一个头信息：Access-Control-Allow-Origin: *。
+有个接口直接自己测试OK，但是客户端侧却收到了404的状态码，看日志发现原本应该是POST方法的请求变成了OPTIONS，并且原本发送的 json 数据也并没有发送，在网上查找了一下，发现是因为触发了 CORS(Cross-Origin Resource Sharing: 跨域资源共享)机制。
+CORS 的官方解释是：
+ 对那些可能对服务器数据产生副作用的 HTTP 请求方法（特别是 GET 以外的 HTTP 请求，或者搭配某些 MIME 类型的 POST 请求），浏览器必须首先使用 OPTIONS 方法发起一个预检请求（preflight request），从而获知服务端是否允许该跨域请求。服务器确认允许之后，才发起实际的 HTTP 请求。在预检请求的返回中，服务器端也可以通知客户端，是否需要携带身份凭证（包括 Cookies 和 HTTP 认证相关数据）
+ 跨域请求被分成了两类，简单请求和非简单请求。简单请求的标准：
+  请求方式为 HTTP/1.1 GET 或者 POST，如果是POST，则请求的Content-Type为以下之一： application/x-www-form-urlencoded, multipart/form-data, 或text/plain
+ 在请求中，不会发送自定义的头部（如X-Modified）
+   对于简单请求，浏览器不会发起预检请求，因此，只需要我之前那样在服务端返回一个 Access-Control-Allow-Origin: * 头信息就可以了。
+我们客户端请求的 Content-Type 为 application/json，属于非简单请求，因此浏览器会先发送一个 OPTIONS 方法的预检请求。
+了解原因后提供一个对应 url 的 OPTIONS 请求接口，并且在 Response 添加了如下头信息：
+Access-Control-Allow-Origin: * Access-Control-Allow-Methods: POST, GET, OPTIONS Access-Control-Allow-Headers: Content-Type  客户端就可以正常执行请求了。</description>
+    </item>
+    
+  </channel>
+</rss>
