@@ -5,10 +5,23 @@
     <link>https://qianpeili.github.io/hugoblog/posts/</link>
     <description>Recent content in Posts on 爪子</description>
     <generator>Hugo -- gohugo.io</generator>
-    <lastBuildDate>Mon, 23 Jul 2018 20:44:39 +0800</lastBuildDate>
+    <lastBuildDate>Sat, 01 Sep 2018 20:37:42 +0800</lastBuildDate>
     
 	<atom:link href="https://qianpeili.github.io/hugoblog/posts/index.xml" rel="self" type="application/rss+xml" />
     
+    
+    <item>
+      <title>Go Module 小试</title>
+      <link>https://qianpeili.github.io/hugoblog/posts/go_module_try/</link>
+      <pubDate>Sat, 01 Sep 2018 20:37:42 +0800</pubDate>
+      
+      <guid>https://qianpeili.github.io/hugoblog/posts/go_module_try/</guid>
+      <description>go module 小试 go 1.11 前段日子发布了，其中一个新特性就是 go module 的支持，go module 可以让我们的项目目录不需要强制在 GOPATH 下。
+开启 go module 开启 go module 特性主要依赖于一个环境变量： GO111MODULE，它有三个值：
+ off：不开启 go module 支持，go 命令所有依赖都会从 vendor 和 GOPATH 目录查找。 on：开启 go module 支持，go 命令不会去 GOPATH 目录查找依赖，这个时候命令处于 module-aware mode auto(the default) or unset：这种情况下，如果当前目录不在 ${GOPATH}/src 目录下，并且当前目录或者父级目录包含 go.mod 文件就表示开启 go module.  在 module-aware 模式，GOPATH 不再控制项目的依赖导入，但是依旧会存储下载的依赖源代码（${GOPATH}/pkg/mod 目录）以及安装的命令文件（${GOPATH}/bin目录）。
+go mod 命令 go mod
+download download modules to local cache edit edit go.</description>
+    </item>
     
     <item>
       <title>一次CORS请求经历</title>
