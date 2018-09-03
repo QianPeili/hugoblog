@@ -1,0 +1,367 @@
+<!DOCTYPE html>
+<html lang='en'>
+
+<head>
+  <meta charset='utf-8'>
+<meta name='viewport' content='width=device-width, initial-scale=1'>
+<meta name='description' content='go module 小试 go 1.11 前段日子发布了，其中一个新特性就是 go module 的支持，go module 可以让我们的项目目录不需要强制在 GOPATH 下。
+开启 go module 开启 go module 特性主要依赖于一个环境变量： GO111MODULE，它有三个值：
+ off：不开启 go module 支持，go 命令所有依赖都会从 vendor 和 GOPATH 目录查找。 on：开启 go module 支持，go 命令不会去 GOPATH 目录查找依赖，这个时候命令处于 module-aware mode auto(the default) or unset：这种情况下，如果当前目录不在 ${GOPATH}/src 目录下，并且当前目录或者父级目录包含 go.mod 文件就表示开启 go module.  在 module-aware 模式，GOPATH 不再控制项目的依赖导入，但是依旧会存储下载的依赖源代码（${GOPATH}/pkg/mod 目录）以及安装的命令文件（${GOPATH}/bin目录）。
+go mod 命令 go mod
+download download modules to local cache edit edit go.'>
+
+<meta property='og:title' content='Go Module 小试 • 爪子'>
+<meta property='og:description' content='go module 小试 go 1.11 前段日子发布了，其中一个新特性就是 go module 的支持，go module 可以让我们的项目目录不需要强制在 GOPATH 下。
+开启 go module 开启 go module 特性主要依赖于一个环境变量： GO111MODULE，它有三个值：
+ off：不开启 go module 支持，go 命令所有依赖都会从 vendor 和 GOPATH 目录查找。 on：开启 go module 支持，go 命令不会去 GOPATH 目录查找依赖，这个时候命令处于 module-aware mode auto(the default) or unset：这种情况下，如果当前目录不在 ${GOPATH}/src 目录下，并且当前目录或者父级目录包含 go.mod 文件就表示开启 go module.  在 module-aware 模式，GOPATH 不再控制项目的依赖导入，但是依旧会存储下载的依赖源代码（${GOPATH}/pkg/mod 目录）以及安装的命令文件（${GOPATH}/bin目录）。
+go mod 命令 go mod
+download download modules to local cache edit edit go.'>
+<meta property='og:url' content='https://qianpeili.github.io/hugoblog/posts/go_module_try/'>
+<meta property='og:site_name' content='爪子'>
+<meta property='og:type' content='article'><meta property='article:section' content='Posts'><meta property='article:published_time' content='2018-09-01T20:37:42&#43;08:00'/><meta property='article:modified_time' content='2018-09-01T20:37:42&#43;08:00'/><meta name='twitter:card' content='summary'>
+
+<meta name="generator" content="Hugo 0.30.2" />
+
+  <title>Go Module 小试 • 爪子</title>
+  <link rel='canonical' href='https://qianpeili.github.io/hugoblog/posts/go_module_try/'>
+  
+  
+  <link rel='icon' href='https://qianpeili.github.io/hugoblog/favicon.ico'>
+<link rel='stylesheet' href='https://fonts.googleapis.com/css?family=Ubuntu:400,400i,700&subset=latin'>
+<link rel='stylesheet' href='https://qianpeili.github.io/hugoblog/assets/css/main.77da63e1.css'><link rel='stylesheet' href='https://qianpeili.github.io/hugoblog/css/custom.css'>
+<script>
+window.ga=window.ga||function(){(ga.q=ga.q||[]).push(arguments)};ga.l=+new Date;
+ga('create', 'UA-100449520-1', 'auto');
+ga('send', 'pageview');
+</script>
+<script async src='//www.google-analytics.com/analytics.js'></script>
+
+</head>
+
+
+<body class='page type-posts'>
+  <div class='site'>
+
+    <a class='screen-reader' href='#main'>Skip to Content</a>
+
+    <header id='header' class='header-container'>
+      <div class='header site-header'>
+        <nav id='main-menu' class='main-menu-container' aria-label='Main Menu'>
+  <ul class='main-menu'>
+  <li>
+      <a href='https://qianpeili.github.io/hugoblog/'>Home</a>
+    </li>
+  <li>
+      <a href='https://qianpeili.github.io/hugoblog/posts'>Posts</a>
+    </li>
+  <li>
+      <a href='https://qianpeili.github.io/hugoblog/categories'>Categories</a>
+    </li>
+  <li>
+      <a href='https://qianpeili.github.io/hugoblog/tags'>Tags</a>
+    </li>
+  <li>
+      <a href='https://qianpeili.github.io/hugoblog/about'>About</a>
+    </li>
+  
+  </ul>
+</nav>
+
+        <div class='header-info'>
+          
+          <p class='site-title title'>爪子</p>
+          
+          <p class='site-description subtitle'>易燃易爆炸</p>
+        </div>
+      </div>
+    </header>
+
+
+<main id='main' class='main'>
+  <article lang='en' class='entry'>
+    <header class='header-container'>
+  <div class='header entry-header'>
+    <div class='header-info'>
+      <h1 class='title'>Go Module 小试</h1>
+      
+
+    </div>
+    
+<div class='meta'>
+  <span class='posted-on'><svg class='icon' viewbox='0 0 24 24' stroke-linecap='round' stroke-linejoin='round' stroke-width='2' aria-hidden='true'>
+  
+  <rect x="3" y="4" width="18" height="18" rx="2" ry="2"/>
+  <line x1="16" y1="2" x2="16" y2="6"/>
+  <line x1="8" y1="2" x2="8" y2="6"/>
+  <line x1="3" y1="10" x2="21" y2="10"/>
+  
+</svg>
+<span class='screen-reader'>Posted on </span>
+  <time class='date' datetime='2018-09-01T20:37:42&#43;08:00'>2018, Sep 01</time>
+</span>
+
+  
+  
+<span class='reading-time'><svg class='icon' viewbox='0 0 24 24' stroke-linecap='round' stroke-linejoin='round' stroke-width='2' aria-hidden='true'>
+  
+  <circle cx="12" cy="12" r="10"/>
+  <polyline points="12 6 12 12 15 15"/>
+  
+</svg>
+2 mins read
+</span>
+
+
+</div>
+
+
+  </div>
+</header>
+
+    
+    
+
+    <div class='entry-content'>
+  
+
+<h1 id="go-module-小试">go module 小试</h1>
+
+<p>go 1.11 前段日子发布了，其中一个新特性就是 <code>go module</code> 的支持，go module 可以让我们的项目目录不需要强制在 GOPATH 下。</p>
+
+<h3 id="开启-go-module">开启 go module</h3>
+
+<p>开启 go module 特性主要依赖于一个环境变量： <code>GO111MODULE</code>，它有三个值：</p>
+
+<ul>
+<li>off：不开启 go module 支持，go 命令所有依赖都会从 vendor 和 GOPATH 目录查找。</li>
+<li>on：开启 go module 支持，go 命令不会去 GOPATH 目录查找依赖，这个时候命令处于 <code>module-aware mode</code></li>
+<li>auto(the default) or unset：这种情况下，如果当前目录不在 <code>${GOPATH}/src</code> 目录下，并且当前目录或者父级目录包含 go.mod 文件就表示开启 go module.</li>
+</ul>
+
+<p>在 module-aware 模式，GOPATH 不再控制项目的依赖导入，但是依旧会存储下载的依赖源代码（<code>${GOPATH}/pkg/mod</code> 目录）以及安装的命令文件（<code>${GOPATH}/bin</code>目录）。</p>
+
+<h3 id="go-mod-命令">go mod 命令</h3>
+
+<p>go mod</p>
+
+<pre><code>download    download modules to local cache
+edit        edit go.mod from tools or scripts
+graph       print module requirement graph
+init        initialize new module in current directory
+tidy        add missing and remove unused modules
+vendor      make vendored copy of dependencies
+verify      verify dependencies have expected content
+why         explain why packages or modules are needed
+</code></pre>
+
+<h3 id="go-module-基本使用">go module 基本使用</h3>
+
+<p><strong>初始化一个模块</strong></p>
+
+<p><code>go mod init gomod</code></p>
+
+<p>如果是一个新模块，当前目录会生成一个 go.mod 文件，里面的内容是：module gomod。</p>
+
+<p>如果模块以及存在其他依赖管理工具，比如：godep, dep, glide&hellip; ，这么这个命令会根据已有配置生产 require 条目。</p>
+
+<p>比如，下面是一份 dep 项目里的 Gopkg.lock 文件内容：</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-toml" data-lang="toml">[[<span style="color:#a6e22e">projects</span>]]
+  <span style="color:#a6e22e">name</span> = <span style="color:#e6db74">&#34;github.com/gin-contrib/sse&#34;</span>
+  <span style="color:#a6e22e">revision</span> = <span style="color:#e6db74">&#34;22d885f9ecc78bf4ee5d72b937e4bbcdc58e8cae&#34;</span>
+  ...
+
+[[<span style="color:#a6e22e">projects</span>]]
+  <span style="color:#a6e22e">name</span> = <span style="color:#e6db74">&#34;github.com/gin-gonic/gin&#34;</span>
+  <span style="color:#a6e22e">version</span> = <span style="color:#e6db74">&#34;v1.3.0&#34;</span>
+  ...
+
+[[<span style="color:#a6e22e">projects</span>]]
+  <span style="color:#a6e22e">name</span> = <span style="color:#e6db74">&#34;github.com/golang/protobuf&#34;</span>
+  <span style="color:#a6e22e">version</span> = <span style="color:#e6db74">&#34;v1.2.0&#34;</span>
+  ...
+
+[[<span style="color:#a6e22e">projects</span>]]
+  <span style="color:#a6e22e">name</span> = <span style="color:#e6db74">&#34;github.com/json-iterator/go&#34;</span>
+  <span style="color:#a6e22e">version</span> = <span style="color:#e6db74">&#34;v1.1.5&#34;</span>
+  ...
+
+[[<span style="color:#a6e22e">projects</span>]]
+  <span style="color:#a6e22e">name</span> = <span style="color:#e6db74">&#34;github.com/mattn/go-isatty&#34;</span>
+  <span style="color:#a6e22e">version</span> = <span style="color:#e6db74">&#34;v0.0.4&#34;</span>
+
+[[<span style="color:#a6e22e">projects</span>]]
+  <span style="color:#a6e22e">name</span> = <span style="color:#e6db74">&#34;github.com/modern-go/concurrent&#34;</span>
+  <span style="color:#a6e22e">version</span> = <span style="color:#e6db74">&#34;1.0.3&#34;</span>
+  ...
+
+[[<span style="color:#a6e22e">projects</span>]]
+  <span style="color:#a6e22e">name</span> = <span style="color:#e6db74">&#34;github.com/modern-go/reflect2&#34;</span>
+  <span style="color:#a6e22e">version</span> = <span style="color:#e6db74">&#34;1.0.1&#34;</span>
+  ...
+
+[[<span style="color:#a6e22e">projects</span>]]
+  <span style="color:#a6e22e">name</span> = <span style="color:#e6db74">&#34;github.com/ugorji/go&#34;</span>
+  <span style="color:#a6e22e">version</span> = <span style="color:#e6db74">&#34;v1.1.1&#34;</span>
+  ...
+
+[[<span style="color:#a6e22e">projects</span>]]
+  <span style="color:#a6e22e">name</span> = <span style="color:#e6db74">&#34;golang.org/x/sys&#34;</span>
+  <span style="color:#a6e22e">revision</span> = <span style="color:#e6db74">&#34;fa5fdf94c78965f1aa8423f0cc50b8b8d728b05a&#34;</span>
+  ...
+
+[[<span style="color:#a6e22e">projects</span>]]
+  <span style="color:#a6e22e">name</span> = <span style="color:#e6db74">&#34;gopkg.in/go-playground/validator.v8&#34;</span>
+  <span style="color:#a6e22e">version</span> = <span style="color:#e6db74">&#34;v8.18.2&#34;</span>
+  ...
+
+[[<span style="color:#a6e22e">projects</span>]]
+  <span style="color:#a6e22e">name</span> = <span style="color:#e6db74">&#34;gopkg.in/yaml.v2&#34;</span>
+  <span style="color:#a6e22e">version</span> = <span style="color:#e6db74">&#34;v2.2.1&#34;</span>
+  ...
+
+...</code></pre></div>
+<p>go mod init 时会提示：</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-shell" data-lang="shell">go: creating new go.mod: module gomod
+go: copying requirements from Gopkg.lock</code></pre></div>
+<p>然后生成的 go.mod 文件内容：</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-mod" data-lang="mod">module gomod
+
+require (
+    github.com/gin-contrib/sse v0.0.0-20170109093832-22d885f9ecc7
+    github.com/gin-gonic/gin v1.3.0
+    github.com/golang/protobuf v1.2.0
+    github.com/json-iterator/go v1.1.5
+    github.com/mattn/go-isatty v0.0.4
+    github.com/modern-go/concurrent v0.0.0-20180306012644-bacd9c7ef1dd
+    github.com/modern-go/reflect2 v0.0.0-20180701023420-4b7aa43c6742
+    github.com/ugorji/go v1.1.1
+    golang.org/x/sys v0.0.0-20180831094639-fa5fdf94c789
+    gopkg.in/go-playground/validator.v8 v8.18.2
+    gopkg.in/yaml.v2 v2.2.1
+)</code></pre></div>
+<p><strong>添加依赖</strong></p>
+
+<ul>
+<li>在 module-aware 模式，如果使用 go get 下载了新的依赖， go.mod 会自动添加对应的依赖条目。</li>
+<li>使用 go mod edit -require path@version 往 go.mod 中添加指定依赖，然后通过 go mod verify 或者 go mod download 下载依赖</li>
+</ul>
+
+<p><strong>删除依赖</strong></p>
+
+<ul>
+<li>通过 go mod edit -droprequire 删除依赖</li>
+<li>在代码中取消对应的依赖，然后通过 go mod tidy 自动删除没有使用的依赖</li>
+</ul>
+
+<p><strong>其他</strong></p>
+
+<p>go mod vendor 命令可以将依赖拷贝到模块的 vendor 目录，方便离线使用。</p>
+
+<h3 id="参考">参考</h3>
+
+<p><a href="https://golang.org/cmd/go/#hdr-Module_maintenance" target="_blank">go - hdr-Module_maintenance</a></p>
+
+<p><a href="https://golang.org/cmd/go/#hdr-Module_queries" target="_blank">go - hdr-Module_queries</a></p>
+
+</div>
+
+    
+<footer class='entry-footer-container'>
+  <div class='entry-footer'>
+  
+  </div>
+</footer>
+
+
+  </article>
+  
+<nav class='entry-nav-container'>
+  <div class='entry-nav'><div class='prev-entry'>
+      <a href='https://qianpeili.github.io/hugoblog/posts/a-cors-request/'>
+        <span aria-hidden='true'><svg class='icon' viewbox='0 0 24 24' stroke-linecap='round' stroke-linejoin='round' stroke-width='2' aria-hidden='true'>
+  
+  <line x1="20" y1="12" x2="4" y2="12"/>
+  <polyline points="10 18 4 12 10 6"/>
+  
+</svg>
+ Previous</span>
+        <span class='screen-reader'>Previous post: </span>一次CORS请求经历</a>
+    </div></div>
+</nav>
+
+  
+<div class='comments-container'>
+  <div id="disqus_thread"></div>
+<script>
+    var disqus_config = function () {
+    
+    
+    
+    };
+    (function() {
+        if (["localhost", "127.0.0.1"].indexOf(window.location.hostname) != -1) {
+            document.getElementById('disqus_thread').innerHTML = 'Disqus comments not available by default when the website is previewed locally.';
+            return;
+        }
+        var d = document, s = d.createElement('script'); s.async = true;
+        s.src = '//' + "zhuazi" + '.disqus.com/embed.js';
+        s.setAttribute('data-timestamp', +new Date());
+        (d.head || d.body).appendChild(s);
+    })();
+</script>
+<noscript>Please enable JavaScript to view the <a href="https://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+<a href="https://disqus.com" class="dsq-brlink">comments powered by <span class="logo-disqus">Disqus</span></a>
+</div>
+
+</main>
+
+    <footer id='footer' class='footer-container'>
+      <div class='footer'>
+        <div class='social-menu-container'>
+  <nav aria-label='Social Menu'>
+    <ul class='social-menu'><li>
+        <a href='https://github.com/qianpeili' target='_blank' rel='noopener'>
+          <span class='screen-reader'>Open Github account in new tab</span><svg class='icon' viewbox='0 0 24 24' stroke-linecap='round' stroke-linejoin='round' stroke-width='2' aria-hidden='true'>
+  
+  <path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22"/>
+  
+</svg>
+</a>
+      </li><li>
+        <a href='https://twitter.com/qianperry' target='_blank' rel='noopener'>
+          <span class='screen-reader'>Open Twitter account in new tab</span><svg class='icon' viewbox='0 0 24 24' stroke-linecap='round' stroke-linejoin='round' stroke-width='2' aria-hidden='true'>
+  
+  <path d="M23 3a10.9 10.9 0 0 1-3.14 1.53 4.48 4.48 0 0 0-7.86 3v1A10.66 10.66 0 0 1 3 4s-4 9 5 13a11.64 11.64 0 0 1-7 2c9 5 20 0 20-11.5a4.5 4.5 0 0 0-.08-.83A7.72 7.72 0 0 0 23 3z"/>
+  
+</svg>
+</a>
+      </li><li>
+        <a href='mailto:qianperry@outlook.com' target='_blank' rel='noopener'>
+          <span class='screen-reader'>Contact via Email</span><svg class='icon' viewbox='0 0 24 24' stroke-linecap='round' stroke-linejoin='round' stroke-width='2' aria-hidden='true'>
+  
+  <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/>
+  <polyline points="22,6 12,13 2,6"/>
+  
+</svg>
+</a>
+      </li></ul>
+  </nav>
+</div>
+        <div class='copyright'>
+  <p>
+        
+          
+        
+      
+
+       &copy; 2017-2018 爪子 
+  </p>
+</div>
+
+      </div>
+    </footer>
+
+  </div><script src='https://qianpeili.github.io/hugoblog/assets/js/main.5871befd.js'></script><script src='https://qianpeili.github.io/hugoblog/js/custom.js'></script></body>
+
+</html>
+
